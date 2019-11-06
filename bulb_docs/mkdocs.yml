@@ -1,0 +1,22 @@
+site_name: bulb
+nav:
+  - bulb:
+    - Presentation: presentation.md
+    - Installation: installation.md
+    - Getting started: getting-started.md
+    - Nodes: nodes.md
+    - Relationships: relationships.md
+    - Authentication: authentication.md
+    - Sessions: sessions.md
+    - Administration: administration.md
+    - Handling: handling.md
+    - SFTP and CDN (staticfiles): staticfiles.md
+    - Advanced Neo4j concepts: advanced-bulb-concepts.md
+    - Settings: settings.md
+    - Conventions: conventions.md
+    - License : license.md
+theme: readthedocs
+markdown_extensions:
+  - toc:
+      permalink: True
+      toc_depth: 2

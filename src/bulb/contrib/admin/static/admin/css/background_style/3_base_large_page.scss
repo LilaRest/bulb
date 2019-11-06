@@ -1,0 +1,40 @@
+/* Width test's div (TO DELETE IN PROD) */
+@media #{$large-screen} {
+    div#mq-test {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 50px;
+        width: 50px;
+        background-color: darkorange;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-family: Cuprum, sans-serif;
+        font-size: 28px;
+    }
+
+    div#mq-test::before {
+        content: "L"
+    }
+}
+
+
+
+
+/*
+    ##################################################
+    ################# LARGE SCREENS ##################
+    ##################################################
+    (tablet landscape, desktop, and other large screens)
+*/
+@media #{$large-screen} {
+
+    html {
+
+        body {
+
+        }
+    }
+}

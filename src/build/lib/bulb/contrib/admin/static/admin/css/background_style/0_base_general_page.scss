@@ -1,0 +1,432 @@
+/* Width test's div (TO DELETE IN PROD) */
+div#mq-test {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 50px;
+    width: 50px;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: Cuprum, sans-serif;
+    font-size: 28px;
+    z-index: 9999;
+}
+
+div#mq-test::before {
+    content: "G"
+}
+
+        /* Position */
+
+        /* Dimensions */
+
+        /* Style */
+
+        /* For child properties */
+
+
+
+
+
+/*
+    ##################################################
+    ##################### GENERAL ####################
+    ##################################################
+*/
+
+html {
+    background-color: $old-white;
+
+    body {
+        /* Position */
+
+        /* Dimensions */
+        width: 100vw;
+        height: 100%;
+
+        /* Style */
+
+        /* For child properties */
+        overflow-x: hidden;
+
+
+        a:focus {
+            /* Position */
+
+            /* Dimensions */
+
+            /* Style */
+
+            /* Animations */
+            outline: none;
+
+            /* For child properties */
+        }
+
+
+
+        header#principal-header {
+            /* Position */
+
+            /* Dimensions */
+
+            /* Style */
+            background-color: $dark-grey;
+            border: {
+                left-color: $old-white;
+                right-color: $old-white;
+                left-style: solid;
+                right-style: solid;
+                left-width: 1px;
+                right-width: 1px;
+            }
+
+            /* For child properties */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+
+            h1 {
+                /* Position */
+                padding: 20px;
+
+                /* Dimensions */
+
+                /* Style */
+                text-align: center;
+                font-family: "Gentium", sans-serif;
+                font-size: 40px;
+                color: $old-white;
+                background-color: $middle-turquoise;
+
+                /* For child properties */
+            }
+
+
+            nav#website-navigation-box {
+                /* Position */
+                padding: {
+                    top: 7.5px;
+                    bottom: 7.5px;
+                }
+
+                /* Dimensions */
+
+                /* Style */
+                background-color: $dark-grey;
+
+                /* For child properties */
+
+
+                ul {
+                    /* Position */
+
+                    /* Dimensions */
+                    padding: 0;
+
+                    /* Style */
+
+                    /* For child properties */
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-wrap: wrap;
+
+
+                    li {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        list-style: none;
+
+                        /* For child properties */
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+
+                        a, input[type=submit] {
+                            /* Position */
+
+                            /* Dimensions */
+                            padding: 5px;
+                            margin: 7.5px;
+
+                            /* Style */
+                            text-decoration: none;
+                            color: $old-white;
+                            background-color: $middle-turquoise;
+                            border-style: solid;
+                            border-color: $old-white;
+                            border-width: 1px;
+                            border-radius: 2px;
+                            cursor: pointer;
+                            font-family: "Lato", sans-serif;
+                            font-size: 18px;
+
+                            /* Animations */
+                            transition-duration: 150ms;
+
+                            /* For child properties */
+
+                            &:hover {
+                                background-color: $dark-grey;
+                                color: $old-white;
+                                border-color: $old-white;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            nav#administration-navigation-box {
+                /* Position */
+
+                /* Dimensions */
+                padding: 10px;
+
+                /* Style */
+                background-color: $dark-grey;
+                color: $old-white;
+                border-top: {
+                    color: white;
+                    width: 1px;
+                    style: solid;
+                }
+
+                /* For child properties */
+                display: flex;
+                align-items: center;
+
+                a {
+                    /* Position */
+
+                    /* Dimensions */
+                    padding: 7px;
+
+                    /* Style */
+                    background-color: $old-white;
+                    color: $dark-grey;
+                    font-size: 17px;
+                    font-family: Lato, sans-serif;
+                    border-radius: 10px;
+                    text-decoration: none;
+                    text-align: center;
+                    transition-duration: 200ms;
+
+                    /* For child properties */
+                    display: inline-block;
+
+                    &:hover {
+                        background-color: #464646;
+                        padding: 10px;
+                        color: $old-white;
+                    }
+                }
+
+                i {
+                    /* Position */
+
+                    /* Dimensions */
+                    padding: 5px;
+
+                    /* Style */
+
+                    /* For child properties */
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
+
+            hr {
+                /* Position */
+                width: 80%;
+                align-self: center;
+
+                /* Dimensions */
+                height: 0;
+
+                /* Style */
+                color: $old-white;
+                background-color: $old-white;
+                font-size: 1px;
+                border-style: solid;
+
+                /* For child properties */
+                display: inline-block;
+            }
+        }
+
+
+        ul#messages-box {
+            /* Position */
+            margin: 0;
+            padding: 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+
+            /* Dimensions */
+            max-height: 30vh;
+
+            /* Style */
+            background-color: black;
+
+            /* For child properties */
+
+
+            li {
+                /* Position */
+
+                /* Dimensions */
+                height: 4vh;
+
+                /* Style */
+                font-size: 2.5vh;
+                font-family: Lato, sans-serif;
+                border-top-style: solid;
+                border-top-width: 1px;
+                border-top-color: black;
+
+                /* For child properties */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+
+            li.success {
+                background-color: #1bee42;
+            }
+
+
+            li.error {
+                background-color: #ff4200;
+            }
+        }
+
+
+        div#loader_box {
+            z-index: 1000000;
+            background: $dark-grey;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition-duration: 1000ms;
+
+
+            img {
+                width: 250px;
+                -webkit-animation: ld-breath 1s infinite;
+                animation: ld-breath 1s infinite;
+            }
+
+
+            p {
+                color: white;
+                font-size: $m-fs;
+                margin-top: 50px;
+                text-align: center;
+                padding: 10px;
+                border: {
+                    style: solid;
+                    color: white;
+                    width: 1px;
+                    radius: 1px;
+                }
+            }
+        }
+
+        .fade {
+            -webkit-animation: fade 1s;
+            animation: fade 1s;
+        }
+
+        @keyframes fade {
+            0% {
+                visibility: visible;
+                z-index: 1000000;
+                opacity: 1;
+            }
+
+            25% {
+                visibility: visible;
+                z-index: 1000000;
+                opacity: 1;
+            }
+
+            100% {
+                visibility: hidden;
+                z-index: -1;
+                opacity: 0;
+            }
+        }
+
+
+        @-webkit-keyframes fade {
+            0% {
+                visibility: visible;
+                z-index: 1000000;
+                opacity: 1;
+            }
+
+            25% {
+                visibility: visible;
+                z-index: 1000000;
+                opacity: 1;
+            }
+
+            100% {
+                visibility: hidden;
+                z-index: -1;
+                opacity: 0;
+            }
+        }
+
+
+        @keyframes ld-breath {
+            0% {
+                -webkit-transform: scale(0.86);
+                transform: scale(0.86);
+            }
+            50% {
+                -webkit-transform: scale(1.06);
+                transform: scale(1.06);
+            }
+            100% {
+                -webkit-transform: scale(0.86);
+                transform: scale(0.86);
+            }
+        }
+
+        @-webkit-keyframes ld-breath {
+            0% {
+                -webkit-transform: scale(0.86);
+                transform: scale(0.86);
+            }
+            50% {
+                -webkit-transform: scale(1.06);
+                transform: scale(1.06);
+            }
+            100% {
+                -webkit-transform: scale(0.86);
+                transform: scale(0.86);
+            }
+        }
+    }
+}

@@ -1,0 +1,102 @@
+
+User_preview_fields = {"1": "uuid",
+                       "2": "last_name",
+                       "3": "first_name",
+                       "4": "email",
+                       "5": "is_super_user",
+                       "6": "is_staff_user",
+                       "7": "is_active_user",
+                       "8": "is_subscribed_user"}
+
+User_fields_infos = {"is_super_user": {"type": "checkbox",
+                                       "label": "Super administrateur",
+                                       "description": "Un super administrateur n'est soumis à aucune restriction. Il possède toutes les permissions."},
+
+                     "is_staff_user": {"type": "checkbox",
+                                       "label": "Administrateur",
+                                       "description": "Un administrateur peut accéder aux différentes pages de l'interface d'administration. Cependant, cela ne lui donne aucunement le droit de créer, modifier ou supprimer quoi que ce soit."},
+
+                     "is_active_user": {"type": "checkbox",
+                                        "label": "Actif",
+                                        "description": "Un compte utilisateur actif peut permettre de s'authentifier sur le site. Un utilisateur inactif est par exemple un compte utilisateur banni, qui ne pourra donc plus se connecter au site."},
+
+                     "uuid": {"type": "locked",
+                              "label": "UUID",
+                              "description": "C'est un identifiant unique et universel permettant une différenciation stricte entre chacun des noeuds."},
+
+                     "first_name": {"type": "text",
+                                    "label": "Prénom"},
+
+                     "last_name": {"type": "text",
+                                   "label": "NOM"},
+
+                     "email": {"type": "text",
+                               "label": "Adresse email"},
+
+                     "password": {"type": "password",
+                                  "label": "Mot de passe"},
+
+                     "registration_datetime": {"type": "datetime",
+                                               "label": "Date et heure d'inscription"},
+
+                     "session": {"type": "relationship",
+                                 "label": "Session",
+                                 "rel": {
+                                     "unique": True,
+                                     "related_node_model_name": "Session",
+                                     "choices_render": ["session_key"],
+                                 }},
+
+                     "permissions": {"type": "relationship",
+                                     "label": "Permissions",
+                                     "rel": {
+                                         "related_node_model_name": "Permission",
+                                         "choices_render": ["codename"],
+                                     }},
+
+                     "groups": {"type": "relationship",
+                                "label": "Groupes",
+                                "rel": {
+                                    "related_node_model_name": "Group",
+                                    "choices_render": ["name"],
+                                }}
+                     }
+
+Permission_preview_fields = {"1": "uuid",
+                             "2": "codename",
+                             "3": "description"}
+
+Permission_fields_infos = {"uuid": {"type": "locked",
+                                    "label": "UUID",
+                                    "description": "C'est un identifiant unique et universel permettant une différenciation stricte entre chacun des noeuds."},
+                           "codename": {"type": "text",
+                                        "label": "Nom de code"},
+
+                           "description": {"type": "text",
+                                           "label": "Actif"},
+
+                           }
+
+Group_preview_fields = {"1": "uuid",
+                        "2": "name"}
+
+Group_fields_infos = {"uuid": {"type": "locked",
+                                    "label": "UUID",
+                                    "description": "C'est un identifiant unique et universel permettant une différenciation stricte entre chacun des noeuds."},
+                      "name": {"type": "text",
+                               "label": "Nom"},
+
+                      "users": {"type": "relationship",
+                                "label": "Utilisateurs",
+                                "rel": {
+                                    "related_node_model_name": "User",
+                                    "choices_render": ["first_name", "last_name"],
+                                }},
+
+                      "permissions": {"type": "relationship",
+                                      "label": "Permissions",
+                                      "rel": {
+                                          "related_node_model_name": "Permission",
+                                          "choices_render": ["codename"],
+                                      }},
+                     }

@@ -1,0 +1,284 @@
+{% extends "admin/background_pages/base.html" %}
+
+{% load static bulb_static admin_extras compress %}
+
+{% block title %}Gestion{% endblock title %}
+
+{% block head %}
+    {% if DEBUG %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_handling_and_creation_pages.scss" %}"/>
+        {% endcompress %}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    {% elif not DEBUG %}
+        <link rel="stylesheet" href="{% static_bundled_src "handling/bundle_node_creation.css" %}"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    {% endif %}
+{% endblock head %}
+
+{% block administration_part_name %}
+    <i class="material-icons">keyboard_arrow_right</i>
+
+    <a class="nav-link" href="{% url "handling_home" %}">Gestion</a>
+
+    <i class="material-icons">keyboard_arrow_right</i>
+
+    <a class="nav-link" href="{% url "node_model_home" node_model_name=node_model_name %}">{{ node_model_name }}</a>
+
+    <i class="material-icons">keyboard_arrow_right</i>
+
+    <a class="nav-link" href="{% url "node_creation" node_model_name=node_model_name %}">Nouvelle instance</a>
+{% endblock administration_part_name %}
+
+{% block content %}
+    {% if DEBUG %}
+        {% for field_name, field_properties in admin_fields_dict.items %}
+            {% if field_properties.type == "html" %}
+                {% if field_properties.ckeditor %}
+                    <script src="https://cdn.ckeditor.com/4.12.1/full/ckeditor.js"></script>
+
+                    {{ "<!--" }}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {{ "-->" }}
+
+        {% elif not DEBUG %}
+            {% for field_name, field_properties in admin_fields_dict.items %}
+                {% if field_properties.type == "html" %}
+                    {% if field_properties.ckeditor %}
+                        <script src="https://cdn.ckeditor.com/4.12.1/full/ckeditor.js"></script>
+
+                        {{ "<!--" }}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {{ "-->" }}
+
+        {% endif %}}
+
+    <br/>
+    <br/>
+
+    <div id="form-div">
+
+        <form id="creation-form" action="{% url "node_creation" node_model_name=node_model_name %}" method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {% for field_name, field_properties in admin_fields_dict.items %}
+
+                {% if not field_properties.type == "locked" %} {# Don't render locked fields. #}
+
+                    <div class="form-field">
+
+                        {% if field_properties.type == "select" %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+
+                            <select id="{{ field_name }}" name="{{ field_name }}">
+                                {% for choice in field_properties.choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+
+                        {% elif field_properties.type == "checkbox" %}
+                            <div class="checkbox-div">
+                                <label class="checkbox-label" for="{{ field_name }}">{{ field_properties.label }}</label>
+
+                                <div class="onoffswitch">
+                                    <input type="{{ field_properties.type }}" name="{{ field_name }}" class="onoffswitch-checkbox" id="{{ field_name }}">
+                                    <label class="onoffswitch-label" for="{{ field_name }}">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+
+                                <input id="{{ field_name }}-hidden" type="hidden" name="{{ field_name }}" value="off"/>
+                            </div>
+
+                        {% elif field_properties.type == "text" %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                            <input id="{{ field_name }}" type="{{ field_properties.type }}" name="{{ field_name }}"/>
+
+                        {% elif field_properties.type == "textarea" %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                            <textarea id="{{ field_name }}" name="{{ field_name }}"></textarea>
+
+                        {% elif field_properties.type == "date" %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                            <input id="{{ field_name }}" class="date-hidden" type="hidden" name="{{ field_name }}"/>
+
+                            <div class="date-box">
+                                <input id="{{ field_name }}-day" class="date-day date-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                                <p class="date-indicator">/</p>
+
+                                <input id="{{ field_name }}-month" class="date-month date-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                                <p class="date-indicator">/</p>
+
+                                <input id="{{ field_name }}-year" class="date-year date-input" type="text" name="{{ field_name }}" size="3" maxlength="4"/>
+                            </div>
+
+                        {% elif field_properties.type == "time" %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                            <input id="{{ field_name }}" class="time-hidden" type="hidden" name="{{ field_name }}"/>
+
+                            <div class="time-box">
+                                <input id="{{ field_name }}-hour" class="time-hour time-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                                <p class="time-indicator">:</p>
+
+                                <input id="{{ field_name }}-minute" class="time-minute time-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                                <p class="time-indicator">:</p>
+
+                                <input id="{{ field_name }}-second" class="time-second time-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                            </div>
+
+                        {% elif field_properties.type == "datetime" %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                            <input id="{{ field_name }}" class="datetime-hidden" type="hidden" name="{{ field_name }}"/>
+
+                            <div class="datetime-box">
+                                <input id="{{ field_name }}-day" class="datetime-day datetime-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                                <p class="datetime-indicator">/</p>
+
+                                <input id="{{ field_name }}-month" class="datetime-month datetime-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                                <p class="datetime-indicator">/</p>
+
+                                <input id="{{ field_name }}-year" class="datetime-year datetime-input" type="text" name="{{ field_name }}" size="3" maxlength="4"/>
+                                <p class="datetime-indicator">&nbsp;</p>
+
+                                <input id="{{ field_name }}-hour" class="datetime-hour datetime-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                                <p class="datetime-indicator">:</p>
+
+                                <input id="{{ field_name }}-minute" class="datetime-minute datetime-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                                <p class="datetime-indicator">:</p>
+
+                                <input id="{{ field_name }}-second" class="datetime-second datetime-input" type="text" name="{{ field_name }}" size="1" maxlength="2"/>
+                            </div>
+
+                        {% elif field_properties.type == "file" %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                            <input id="{{ field_name }}" type="{{ field_properties.type }}" name="{{ field_name }}"/>
+
+                            <button title="Reset" class="file-reset-button" id="{{ field_name }}-reset-button" type="button"><i class="material-icons">clear</i></button>
+
+                        {% elif field_properties.type == "password" %}
+                            <div class="password-box">
+                                <input name="password-info" type="hidden" value="{{ field_name }}"/>
+
+                                <div>
+                                    <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                                    <input id="{{ field_name }}" type="{{ field_properties.type }}" name="{{ field_name }}"/>
+                                </div>
+
+                                <div>
+                                    <label for="{{ field_name }}-confirmation">Confirmez le {{ field_properties.label|lower }}</label>
+                                    <input id="{{ field_name }}-confirmation" type="{{ field_properties.type }}" name="{{ field_name }}-confirmation"/>
+                                </div>
+                            </div>
+
+                        {% elif field_properties.type == "relationship" %}
+
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+
+                            <select id="{{ field_name }}" class="dual-listbox-rel" multiple>
+                                {% for available_object in available_objects_dict|get:field_name %}
+                                    <option value="{{ available_object.0 }}">
+                                        {% for value in available_object %}
+                                            {% if value != available_object.0 %}
+                                                {{ value }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                        {% elif field_properties.type == "html" %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                            <textarea class="ckeditor-textarea" id="{{ field_name }}" type="text" name="{{ field_name }}">{{ instance|get:field_name }}</textarea>
+
+                            <script>
+                                window.addEventListener('load', function () {
+                                    CKEDITOR.replace({{field_name}}, {
+                                        {% for ckeditor_param_name, ckeditor_param_value in field_properties.ckeditor.params.items %}
+                                            {{ ckeditor_param_name }}: '{{ ckeditor_param_value }}',
+                                        {% endfor %}
+                                        {% if field_properties.ckeditor.stylesSet %}
+                                            stylesSet: '{{ field_properties.ckeditor.stylesSet.name }}',
+                                        {% endif %}
+                                    });
+
+                                    {% if field_properties.ckeditor.stylesSet %}
+                                        CKEDITOR.stylesSet.add(
+                                            "{{ field_properties.ckeditor.stylesSet.name }}",
+                                            [
+                                                {% for style in field_properties.ckeditor.stylesSet.styles %}
+                                                    {
+                                                        name: "{{ style.name }}",
+                                                        element: "{{ style.element }}",
+                                                        styles: {
+                                                            {% for style_name, style_value in style.styles.items %}
+                                                                "{{ style_name }}": "{{ style_value }}",
+                                                            {% endfor %}
+                                                        },
+                                                        attributes: {
+                                                            {% for attribute_name, attribute_value in style.attributes.items %}
+                                                                "{{ attribute_name }}": "{{ attribute_value }}",
+                                                            {% endfor %}
+                                                        },
+                                                    },
+                                                {% endfor %}
+                                            ]
+                                        )
+                                    {% endif %}
+                                })
+                            </script>
+
+                        {% else %}
+                            <label for="{{ field_name }}">{{ field_properties.label }}</label>
+                            <input id="{{ field_name }}" type="{{ field_properties.type }}" name="{{ field_name }}"/>
+
+                        {% endif %}
+
+                        {% if field_properties.description %}
+                            {% if not field_properties.type == "locked" %}
+                                <br/>
+                                <div class="description-box">
+                                    <i class="material-icons">info</i>
+                                    <small>{{ field_properties.description }}</small>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if not field_properties.type == "locked" %}
+                            <br/>
+                            <br/>
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </form>
+    </div>
+
+    <div id="action-buttons-div">
+        <button id="submit-button" onclick="document.getElementById('creation-form').submit()"><i
+                class='material-icons'>save</i></button>
+        <a id="previous-page-button" href="{% url "node_model_home" node_model_name=node_model_name %}"><i class='material-icons'>arrow_back</i></a>
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+    {% if DEBUG %}
+        <script src="{% static "handling/js/checkbox_fields.js" %}"></script>
+        <script src="{% static "handling/js/datetime_fields.js" %}"></script>
+        <script src="{% static "handling/js/file_fields.js" %}"></script>
+        <script src="{% static "handling/js/dual-listbox.js" %}"></script>
+        <script src="{% static "handling/js/description.js" %}"></script>
+
+    {% elif not DEBUG %}
+        <script src="{% static_bundled_src "handling/bundle_node_creation.js" %}"></script>
+
+    {% endif %}
+{% endblock scripts %}

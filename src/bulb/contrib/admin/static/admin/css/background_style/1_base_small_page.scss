@@ -1,0 +1,40 @@
+/* Width test's div (TO DELETE IN PROD) */
+@media #{$small-screen} {
+    div#mq-test {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 50px;
+        width: 50px;
+        background-color: rebeccapurple;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-family: Cuprum, sans-serif;
+        font-size: 28px;
+    }
+
+    div#mq-test::before {
+        content: "S"
+    }
+}
+
+
+
+
+/*
+    ##################################################
+    ################## SMALL SCREENS #################
+    ##################################################
+    (smartphone portait and other small screens)
+*/
+@media #{$small-screen} {
+
+    html {
+
+        body {
+
+        }
+    }
+}
