@@ -181,7 +181,7 @@ first_article.authors.add(john)
 <br/>
 <br/>
 
-- ## Work with relationships
+- ## Work with Relationship instances
 <br/>
 
 > - ### Retrieve relationships elements
@@ -192,7 +192,7 @@ The relationships possesses a **`get()`** method. This method allows us to retri
 - **`direction`** (optional, default="bi") : Must be "from", "to", or "bi". If it is "from", the research will be focused on all the relationships that have as start point the self node_model's instance. If it is "to", the research will be focused on all the relationships that have as end point the self node_model's instance. Finally, if it is "bi", the research will be focused on the relationships of both cases.   
 <br/>
 - **`returned`** (optional, default="node") : Must be "rel", "node" or "both". If it is "rel", the method will return a list that contains relationships as RelationshipInstance (or of one of its children classes) instances. If it is "node", the method will return a list that contains the nodes at the other ends of these relationships as node_models' instances. Finally if it is "both", it will return a list of dictionaries in which ones the "rel" key refers to a relationships and the "node" key to its associated node.   
-                     Example :          
+Example :          
 ```python
 {"rel": <RelationshipInstance object(uuid="3a43238c76ec4d6cb392b138f0871e75")>,
 "node": <Human object(uuid="ec04770e5c8b428d9d94678c3666d312")>}
@@ -258,6 +258,7 @@ first_article.authors.get(returned="both")
 >>> [{'rel': <RelatedAuthorsRelationshipInstance object(uuid="db087a94fda54427bf3ef52de425e301")>, 'node': <User object(first_name="John", last_name="Doe", uuid="20b4ab050cb141868c8cd39dad4d9db2")>}]
 
 ```
+
 <br/>
 <br/>
 
@@ -268,8 +269,73 @@ A Relationship instance possesses native getter, setter and deletter, but these 
 <br/>
 <br/>
 
-- ## Work with relationships objects
+- ## Work with RelationshipInstance instances
 <br/>
+We have just seen how to work with **`Relationship`** instances. As a reminder, the **`Relationship`** class allow us to create relationships models and then create relationships in the database which ones respects these models.
+But you have to know that an other class exists to represent the relationships themselves in the database, it is called **`RelationshipInstance`**.
+For example, if you use the **`get()`** method of the **`Relationship`** instances, you can retrieve both nodes and relationships by settings **returned** parameter on **'both'**.     
+Let's see a demonstration which is based on the example of the  **`get()`** method of the **`Relationship`** instances (above) :
+
+>> <small>node_models.py</small>
+```python
+from bulb.db import node_models
+from bulb.contrib.auth.node_models import User
+import datetime
+
+class RelatedAuthorsRelationship(node_models.Relationship):
+    rel_type = "WROTE"
+    direction = "to"
+    start = "User"
+    target = "self"
+    on_delete = "CASCADE"
+
+
+class Article(node_models.Node):
+    title = node_models.Property(required=True,
+                                 unique=True)
+    content = node_models.Property(required=True)
+    publication_datetime = node_models.Property(default=datetime.datetime.now)
+    authors = RelatedAuthorsRelationship()
+
+first_article = Article.create(title="A great article !",
+                               content="Lorem ipsum...")
+
+john = User.get(email="john@mail.com")
+
+# Add john as author of the first article
+first_article.authors.add(john)
+
+# Retrieve nodes and relationships
+first_article.authors.get(returned="both")
+>>> [{'rel': <RelatedAuthorsRelationshipInstance object(uuid="db087a94fda54427bf3ef52de425e301")>, 'node': <User object(first_name="John", last_name="Doe", uuid="20b4ab050cb141868c8cd39dad4d9db2")>}]
+```
+
+You can see a **`RelatedAuthorsRelationshipInstance`** instance. The **`RelatedAuthorsRelationshipInstance`** class inherits from the **`RelationshipInstance`** class.
+Indeed, **bulb** automatically create children of the **`RelationshipInstance`** class based on your relationships models (classes that inherits from the **`Relationship`** class).
+And if you use the "all in node_models" syntax, the **`RelationshipInstance`** class will be used.
+
+<br/>
+<br/>
+
+> - ### Update relationships' properties
+
+<br/>
+
+Now you have retrieved a **`RelatedAuthorsRelationshipInstance`** instance you can update properties of the relationship that it represents. To do this, **bulb** give you an **`update()`** method. This method works identically like the **`update()`** method of the **`Node`** instances : it takes as first argument the name of the property to update and as second argument, the new value of this property.
+
+>> <small>node_models.py</small>
+```python
+(...)
+import datetime
+
+my_rel_instance.update("creation_datetime", datetime.datetime.now())
+```
+
+<br/>
+
+> - ### Delete relationships
+
+**`RelatedAuthorsRelationshipInstance`** instances possess a **`delete()`** method, which one delete allows us to delete the relationship.
 
 <br/>
 <br/>

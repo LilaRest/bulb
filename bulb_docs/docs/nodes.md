@@ -107,7 +107,7 @@ Person.get()
 
 > - ### Delete nodes
 
-Node models' instances possess a **`delete()`** method, which one delete allow us to delete nodes and all others linked to this nodes with a "CASCADE" relationship.
+Node models' instances possess a **`delete()`** method, which one allows us to delete nodes and all others linked to this nodes with a "CASCADE" relationship.
 
 <br/>
 <br/>
