@@ -22,20 +22,18 @@ class FakeClass:
 class DatabaseNode:
     """
     This class has tools to :
-    - Transform Python objects like lists and dictionaries in a Cypher format : format_labels_to_cypher(),
-      format_properties_to_cypher().
+    - Transform Python objects like lists and dictionaries in a Cypher format : format_labels_to_cypher(), format_properties_to_cypher().
     - Create a node in the database : create()
 
-    :param (optional) current_object_labels_list : a list of all the node's labels. No labels = None. Default = None
+    :param current_object_labels_list (optional, default=None) : a list of all the node's labels. No labels = None. Default = None
 
-    :param (optional) current_object_properties_dict : a dictionary of all the node's properties, where keys are the
-                                                       names of the properties and values their values.
-                                                       No properties = None. Default = None
+    :param current_object_properties_dict (optional, default=None) : a dictionary of all the node's properties, where keys are the
+                                                                     names of the properties and values their values.
+                                                                     No properties = None. Default = None
 
-    :param (optional) related_class_properties_fields_dict: a dictionary of all the node's properties, where keys are
-                                                            the names of the properties and values their Property
-                                                            instance.
-
+    :param related_class_properties_fields_dict (optional, default=None): a dictionary of all the node's properties, where keys are
+                                                                          the names of the properties and values their Property
+                                                                          instance.
     """
 
     def __init__(self,
@@ -131,16 +129,16 @@ class Property:
     """
     This class can be directly instantiate, but could be also overridden to create specific properties model.
 
-    :param (optional) content: The content is the value of a property.
+    :param (optional, default=None) content: The content is the value of a property.
 
-    :param (optional) required: If set on True, and if the content of the property is empty, an error will be raised.
+    :param (optional, default=False) required: If set on True, and if the content of the property is empty, an error will be raised.
 
-    :param (optional) unique: If set on True, and if the content of the property combination key+content is already
-                                in the database, an error will be raised.
+    :param (optional, default=False) unique: If set on True, and if the content of the property combination key+content is already
+                                             in the database, an error will be raised.
 
-    :param (optional) default: A default value that will fill the content if is empty.
+    :param (optional, default=None) default: A default value that will fill the content if is empty.
 
-    :param (optional) sftp: If set on True, and if the value is a file object, it will be stored on the SFTP server.
+    :param (optional, default=False) sftp: If set on True, and if the value is a file object, it will be stored on the SFTP server.
 
     """
 
@@ -154,16 +152,19 @@ class Property:
     @staticmethod
     def _build(node_or_rel_object, recovered_fields_values_dict):
         """
-        This method take a Node object and datas recovered during its instantiation and _build a dictionary that 
+        This method take a Node object and datas recovered during its instantiation and _build a dictionary that
         contains key/content combinations for each property of the object.
+
         :param node_or_rel_object: An instance of the Node class.
-        :param recovered_fields_values_dict: The dictionary of values recovered during the instantiation of the 
+
+        :param recovered_fields_values_dict: The dictionary of values recovered during the instantiation of the
                                              node_model class.
+
         :return: A dictionary that contains key+content combinations for the given object.
                  NB : All property without content nor 'default' parameter, will be filled by 'None'.
         """
         current_object_properties_dict = {}
-        
+
         # All the attributes (representing the properties of the Node) of the current node class.
         class_properties_dict = node_or_rel_object.properties_fields
 
@@ -263,7 +264,9 @@ class Property:
         This method checks and enforces the restrictions (required, unique, etc...) of a field.
 
         :param (required) node_or_rel_object: The related node_model's instance.
+
         :param (required) property_name: The name of the property field to check.
+
         :param (required) recovered_fields_values_dict: The dictionary of values recovered during the instantiation
                                                         of the node_model class.
 
@@ -383,8 +386,9 @@ class BaseNode:
         """
         This method detects and regroups in a dictionary, all property fields of a Node instance. Then, it returns the
         dictionary.
-        :param (optional) additional_fields_dict: An additional dict where the scripts will go to search the property
-                                                   fields.
+
+        :param additional_fields_dict (optional, default=None) : An additional dict where the scripts will go to search the property
+                                                                 fields.
 
         :return: A dictionary of all Node instance's properties.
         """
@@ -410,17 +414,18 @@ class BaseNode:
         """
         This method build a fake instance from a node received from the Neo4j database.
 
-        :param node_or_rel_object: The Neo4j node object.
+        :param node_or_rel_object (required) : The Neo4j node object.
 
-        :param forced_fake_instance_class: A class that will be forced as class of the fake instance. It is used for
-                                           Relationship (or of one of its children class) instances.
+        :param forced_fake_instance_class (optional, default=None) : A class that will be forced as class of the fake instance. It is
+                                                                     used for Relationship (or of one of its children class) instances.
 
-        :param additional_parameters: It must be a dict that define additional parameters which ones will be applied at
-                                      the fake instance. It is used for the RelationshipInstance (or of one of its
-                                      children class) instances.
+        :param additional_parameters (optional, default=None) : It must be a dict that define additional parameters which ones will be
+                                                                applied at the fake instance. It is used for the RelationshipInstance
+                                                                (or of one of its children class) instances.
 
         :return: The fake instance.
         """
+
         fake_instance_class = cls
 
         if forced_fake_instance_class is not None:
@@ -492,7 +497,7 @@ class Node(BaseNode):
         """
         This method handle the construction of a node, it ensures a creation in the database and as a python instance.
 
-        :param received_properties_dict: The dictionary of values recovered during the instantiation of the node_model.
+        :param received_properties_dict (required) : The dictionary of values recovered during the instantiation of the node_model.
         """
         self.labels = self.__class__._get_labels()
         self.properties_fields = self.__class__._get_property_fields()
@@ -515,28 +520,29 @@ class Node(BaseNode):
         """
         This method allow the retrieving of Node (or of one of its children classes) instances.
 
-        :param uuid: The Universal Unique Identifier of a node to get an unique instance.
+        :param uuid (required): The Universal Unique Identifier of a node to get an unique instance.
 
-        :param order_by: Must be the name of the property with which the returned datas will be sorted.
-                         Examples : "datetime", "first_name", etc...
+        :param order_by (optional, default=None) : Must be the name of the property with which the returned datas will be sorted.
+                                                   Examples : "datetime", "first_name", etc...
 
-        :param limit: Must be an integer. This parameter defines the number of returned elements.
+        :param limit (optional, default=None) : Must be an integer. This parameter defines the number of returned elements.
 
-        :param skip: Must be an integer. This parameter defines the number of skipped elements. For example if
-                     self.skip = 3, the 3 first returned elements will be skipped.
+        :param skip (optional, default=None) : Must be an integer. This parameter defines the number of skipped elements. For example
+                                               if self.skip = 3, the 3 first returned elements will be skipped.
 
-        :param desc: Must be a boolean. If it is False the elements will be returned in an increasing order, but it is
-                     True, they will be returned in a descending order.
+        :param desc (optional, default=False) : Must be a boolean. If it is False the elements will be returned in an increasing order,
+                                                but it is True, they will be returned in a descending order.
 
-        :param only: Must be a list of field_names. If this parameter is filled, the return will not be Node instances,
-                     but a dict with "only" the mentioned fields.
+        :param only (optional, default=None) : Must be a list of field_names. If this parameter is filled, the return will not be Node
+                                               instances, but a dict with "only" the mentioned fields.
 
-        :param filter: Must be Q statement. You must use the Q class stored in bulb.db
-                       Example: Q(name__contains="al") | Q(age__year__lte=8)
+        :param filter (optional, default=None) : Must be Q statement. You must use the Q class stored in bulb.db
+                                                 Example: Q(name__contains="al") | Q(age__year__lte=8)
 
-        :param distinct: Must be a boolean. If it is True, the returned list will be only composed with unique elements.
+        :param distinct (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with
+                                                    unique elements.
 
-        :param return_query: Must be a boolean. If true, the method will return the cypher query.
+        :param return_query (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.
 
         :return: If uuid is None, a list will be returned. Else it will be a unique instance.
         """
@@ -666,12 +672,17 @@ class Node(BaseNode):
             return request_statement
 
     @classmethod
-    def get_str(cls, uuid=None, order_by=None, limit=None, skip=None, desc=False, only=None):
+    def get_str(cls, uuid=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
+            return_query=False):
         """
         A get method which returns string serialized instances / instances dict.
+
+        See Node.get() documentation part to learn the role of each parameter.
+
         :return:
         """
-        instances = cls.get(uuid=uuid, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only)
+        instances = cls.get(uuid=uuid, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only, filter=filter,
+                            distinct=distinct, return_query=return_query)
 
         if instances is not None:
             for instance in instances:
@@ -1104,40 +1115,39 @@ class Relationship(BaseNode):
     """
     This class allow using of relationships with node_models.
 
-    :param (required) rel_type: This parameter defines the relationship type. It must be a string.
-                                See : https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types
+    :param rel_type (required) : This parameter defines the relationship type. It must be a string.
+                                 See : https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types
 
-    :param (optional) properties_fields: A dict of properties for "all in node_model" syntax. If the Relationship
-                                     classes are out of the node_model classes, this argument will be None.
+    :param direction (optional, default="from") : Must be "from", "to", or "bi". If it is "from", the relationship will be an arrow that
+                                                  starts from the self node_model's instance to other node_models' instances.
+                                                  If it is "to" it will be the reverse case : the relationship will be an arrow that
+                                                  starts from other node_models' instances to the self node_model's instance.
+                                                  Finally if it is "bi", it will be two relationships that will work by peers, one from
+                                                  and one to the self node_model's instance : a bi-directional relationships will be
+                                                  created.
+                                                  Default value "from".
 
-    :param (required) direction: Must be "from", "to", or "bi". If it is "from", the relationship will be an arrow that
-                                 starts from the self node_model's instance to other node_models' instances.
-                                 If it is "to" it will be the reverse case : the relationship will be an arrow that
-                                 starts from other node_models' instances to the self node_model's instance.
-                                 Finally if it is "bi", it will be two relationships that will work by peers, one from 
-                                 and one to the self node_model's instance : a bi-directional relationships will be 
-                                 created.
-                                 Default value "from".
+    :param properties_fields (optional, default=None) : A dict of properties for "all in node_model" syntax. If the Relationship
+                                                        classes are out of the node_model classes, this argument will be None.
 
-    
-    :param (optional) start: This parameter must be a node_model class, its name or "self".
-                             It applies a start constraint to the relationship.
-                              
-    :param (optional) target: This parameter must be a node_model class, its name or "self".
-                             It applies a target constraint to the relationship.
 
-    :param (optional) auto: This parameter must be a boolean. If it is True, the relationship is allowed to be applied
-                            on one unique node, which one will be the start and the target of the relationship.
-                            The default value is False.
+    :param start (optional, default=None) : This parameter must be a node_model class, its name or "self".
+                                            It applies a start constraint to the relationship.
 
-    :param (optional) on_delete: This parameter must be "PROTECT" or "CASCADE". It defines the behavior of the
-                                 related nodes. If it is "PROTECT", if the self node object of the relationship is
-                                 deleted, nothing happen for nodes related to it (A simple DETACH DELETE command is
-                                 run). In the other hand, if it is "CASCADE", the other nodes will be deleted in the
-                                 same time as the self node object. The default value is "PROTECT".
+    :param target (optional, default=None) : This parameter must be a node_model class, its name or "self".
+                                             It applies a target constraint to the relationship.
 
-    :param (optional) unique: This parameter must be a boolean. If it is True the relationship will be unique.
+    :param auto (optional, default=False) : This parameter must be a boolean. If it is True, the relationship is allowed to be applied
+                                            on one unique node, which one will be the start and the target of the relationship.
+                                            The default value is False.
 
+    :param on_delete (optional, default="PROTECT") : This parameter must be "PROTECT" or "CASCADE". It defines the behavior of the
+                                                     related nodes. If it is "PROTECT", if the self node object of the relationship is
+                                                     deleted, nothing happen for nodes related to it (A simple DETACH DELETE command is
+                                                     run). In the other hand, if it is "CASCADE", the other nodes will be deleted in the
+                                                     same time as the self node object. The default value is "PROTECT".
+
+    :param unique (optional, default=False) : This parameter must be a boolean. If it is True the relationship will be unique.
 
     """
 
@@ -1377,11 +1387,11 @@ class Relationship(BaseNode):
         This method handle the creation of the relationship between the self_instance, contained in the self._from
         attribute, and the other_instance, retrieved as parameter of its method.
 
-        :param instance: A node_model's instance, to which the relationship will target.
+        :param instance (required if the uuid is'nt gived) : A node_model's instance, to which the relationship will target.
 
-        :param uuid: A node_models uuid, to which the relationship will target.
+        :param uuid (required if the instance is'nt gived) : A node_models uuid, to which the relationship will target.
 
-        :param properties: The properties dictionary to fill if the relationship take one or more properties.
+        :param properties (optional, default=None): The properties dictionary to fill if the relationship take one or more properties.
 
         :return: A RelationshipInstance instance, or a dict of two RelationshipInstance instances if self.bi (bidirectional
                  relationship) is True.
@@ -1454,7 +1464,7 @@ class Relationship(BaseNode):
                 if self.target is not None:
                     response = gdbh.r_transaction("""
                     MATCH (n:%s {uuid:'%s'})
-                    RETURN count(n) > 0 as bool                 
+                    RETURN count(n) > 0 as bool
                     """ % (self.target.__name__, uuid))
 
                     if response[0]["bool"] is True:
@@ -1468,7 +1478,7 @@ class Relationship(BaseNode):
                 else:
                     response = gdbh.r_transaction("""
                     MATCH (n: {uuid:'%s'})
-                    RETURN count(n) > 0 as bool, LABELS(n) as labels                 
+                    RETURN count(n) > 0 as bool, LABELS(n) as labels
                     """ % uuid)
 
                     if response[0]["bool"] is True:
@@ -1481,7 +1491,7 @@ class Relationship(BaseNode):
                 if self.start is not None:
                     response = gdbh.r_transaction("""
                     MATCH (n:%s {uuid:'%s'})
-                    RETURN count(n) > 0 as bool                 
+                    RETURN count(n) > 0 as bool
                     """ % (self.start.__name__, uuid))
 
                     if response[0]["bool"] is True:
@@ -1495,7 +1505,7 @@ class Relationship(BaseNode):
                 else:
                     response = gdbh.r_transaction("""
                     MATCH (n: {uuid:'%s'})
-                    RETURN count(n) > 0 as bool, LABELS(n) as labels                 
+                    RETURN count(n) > 0 as bool, LABELS(n) as labels
                     """ % uuid)
 
                     if response[0]["bool"] is True:
@@ -1594,7 +1604,7 @@ class Relationship(BaseNode):
                              (n2:%s {uuid:'%s'})
                        CREATE (n1)-[r_from:%s %s]->(n2),
                               (n1)<-[r_to:%s %s]-(n2)
-                       SET r_to.uuid = '%s' 
+                       SET r_to.uuid = '%s'
                        RETURN r_from, r_to
                        """ % (relationship_start_node.__class__.__name__, relationship_start_node.uuid,
                               relationship_target_node.__class__.__name__, relationship_target_node.uuid,
@@ -1608,51 +1618,54 @@ class Relationship(BaseNode):
     def get(self, direction="bi", returned="node", order_by=None, limit=None,  skip=None, desc=False, distinct=False,
             only=None, filter=None, return_query=False):
         """
-        This method allow the retrieving of node_models' instances' relationships but also of the other node_models' 
+        This method allow the retrieving of node_models' instances' relationships but also of the other node_models'
         instances on the other ends of these relationships.
 
-        :param direction: Must be "from", "to", or "bi". If it is "from", the research will be focused on all the
-                          relationships that have as start point the self node_model's instance. If it is "to", the
-                          research will be focused on all the relationships that have as end point the self node_model's
-                          instance. Finally, if it is "bi", the research will be focused on the relationships of both 
-                          cases.
+        :param direction (optional, default="bi") : Must be "from", "to", or "bi". If it is "from", the research will be focused on
+                                                    all the relationships that have as start point the self node_model's instance. If
+                                                    it is "to", the research will be focused on all the relationships that have as end
+                                                    point the self node_model's instance. Finally, if it is "bi", the research will be
+                                                    focused on the relationships of both cases.
 
-        :param returned: Must be "rel", "node" or "both". If it is "rel", the method will return a list that contains
-                         relationships as RelationshipInstance (or of one of its children classes) instances. If it is
-                         "node", the method will return a list that contains the nodes at the other ends of these
-                         relationships as node_models' instances. Finally if it is "both", it will return a list of 
-                         dictionaries in which ones the "rel" key refers to a relationships and the "node" key to its 
-                         associated node.
-                         Example : {"rel": <RelationshipInstance object(uuid="3a43238c76ec4d6cb392b138f0871e75")>,
-                                    "node": <Human object(uuid="ec04770e5c8b428d9d94678c3666d312")>}
+        :param returned (optional, default="node") : Must be "rel", "node" or "both". If it is "rel", the method will return a list
+                                                     that contains relationships as RelationshipInstance (or of one of its children
+                                                     classes) instances. If it is "node", the method will return a list that contains
+                                                     the nodes at the other ends of these relationships as node_models' instances.
+                                                     Finally if it is "both", it will return a list of dictionaries in which ones the
+                                                     "rel" key refers to a relationships and the "node" key to its associated node.
+                                                     Example : {"rel": <RelationshipInstance object(uuid="3a43238c76ec4d6cb392b138f0871e75")>,
+                                                                "node": <Human object(uuid="ec04770e5c8b428d9d94678c3666d312")>}
 
-        :param order_by: Must be the name of the property with which the returned datas will be sorted. BUT, if
-                         self.returned = "both", two different types of datas will be returned (relationships and nodes).
-                         So to sort them this property must start with "r." (like 'relationships') or "n." (like
-                         'nodes').
-                         Examples : "r.datetime", "n.first_name", etc...
+        :param order_by (optional, default=None) : Must be the name of the property with which the returned datas will be sorted. BUT,
+                                                   if self.returned = "both", two different types of datas will be returned
+                                                   (relationships and nodes).
+                                                   So to sort them this property must start with "r." (like 'relationships') or "n."
+                                                   (like 'nodes').
+                                                   Examples : "r.datetime", "n.first_name", etc...
 
-        :param limit: Must be an integer. This parameter defines the number of returned elements.
+        :param limit (optional, default=None) : Must be an integer. This parameter defines the number of returned elements.
 
-        :param skip: Must be an integer. This parameter defines the number of skipped elements. For example if
-                     self.skip = 3, the 3 first returned elements will be skipped.
+        :param skip (optional, default=None) : Must be an integer. This parameter defines the number of skipped elements. For example
+                                               if self.skip = 3, the 3 first returned elements will be skipped.
 
-        :param desc: Must be a boolean. If it is False the elements will be returned in an increasing order, but it is
-                     True, they will be returned in a descending order.
+        :param desc (optional, default=False) : Must be a boolean. If it is False the elements will be returned in an increasing order,
+                                                but it is True, they will be returned in a descending order.
 
-        :param distinct: Must be a boolean. If it is True, the returned list will be only composed with unique elements.
+        :param distinct (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with
+                                                    unique elements.
 
-        :param only: Must be a list of field_names. If this parameter is filled, the return will not be node_models and
-                     relationships instances, but a dict with "only" the mentioned fields. BUT, if
-                     self.returned = "both", two different types of datas will be returned (relationships and nodes).
-                     So to mention their properties fields, the elements of the list will must start with "r." (like
-                     'relationships') or "n." (like 'nodes').
-                     Examples : "r.datetime", "n.first_name", etc...
+        :param only (optional, default=None) : Must be a list of field_names. If this parameter is filled, the return will not be
+                                               node_models and relationships instances, but a dict with "only" the mentioned fields.
+                                               BUT, if self.returned = "both", two different types of datas will be returned
+                                               (relationships and nodes).
+                                               So to mention their properties fields, the elements of the list will must start with
+                                               "r." (like 'relationships') or "n." (like 'nodes').
+                                               Examples : "r.datetime", "n.first_name", etc...
 
-       :param filter: Must be Q statement. You must use the Q class stored in bulb.db
-                       Example: Q(name__contains="al") | Q(age__year__lte=8)
+        :param filter (optional, default=None) : Must be Q statement. You must use the Q class stored in bulb.db
+                                                 Example: Q(name__contains="al") | Q(age__year__lte=8)
 
-        :param return_query: Must be a boolean. If true, the method will return the cypher query.
+        :param return_query (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.
 
         :return: (see :param returned)
         """
@@ -1793,7 +1806,7 @@ class Relationship(BaseNode):
 
         elif returned == "both":
             with_statement = "WITH r, n"
-            return_statement_list.append("[r, n]")
+            # return_statement_list.append("[r, n]")
 
             if order_by is not None:
                 if order_by[:2] not in ["r.", "n."]:
@@ -1933,8 +1946,6 @@ class Relationship(BaseNode):
 
                                 elif returned == "node" or returned == "both":
                                     for node_model in node_models_list:
-                                        print("name = ", node_object.labels)
-                                        print(node_models_list)
                                         if node_model.__name__ in node_object.labels:
                                             render_nodes_and_relationships(node_model)
                                             related_node_model_class_was_found = True
@@ -1955,6 +1966,7 @@ class Relationship(BaseNode):
 
     def count(self, direction="bi", returned="node", order_by=None, limit=None, skip=None, desc=False,
               distinct=False, only=None, filter=None, **extrafields):
+
         request_statement = self.get(direction=direction, returned=returned, order_by=order_by, limit=limit, skip=skip,
                                     desc=desc, distinct=distinct, only=only, filter=filter, return_query=True,
                                     **extrafields)

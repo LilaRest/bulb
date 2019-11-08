@@ -100,7 +100,7 @@ etc...
 - ## Work with permissions
 <br/>
 
-> - ### Get permissions
+> - ### REtrieve permissions
 The **`Permission`** class' possesses a **`get()`** method. This method has a unique specific parameter, the **codename** of the permission to retrieve, and inherits of all others parameters of the **`Node.get()`** method (See Nodes part). It returns a **`Permission`** instance :
 
 ```python
@@ -117,7 +117,8 @@ Permission.get("can_add_post")
 <br/>
 
 > - ### Update and delete permissions
-Like all the node_models, permissions instances possesses **`update()`** and **`delete()`** methods.
+
+Like all the node_models' instances, permissions instances possess **`update()`** and **`delete()`** methods.
 <br/>
 <br/>
 <br/>

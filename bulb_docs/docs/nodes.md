@@ -54,12 +54,63 @@ Now, let's see how to handle the labels of ours nodes.
 <br/>
 <br/>
 
-- ## Work with node models
+- ## Work with nodes
 <br/>
 
 > - ### Retrieve nodes
 
-All the node models classes possess a **`get()`** method. This method has a unique parameter, the **codename** of the permission to retrieve, and returns a **`Permission`** instance :
+All the node models classes possess a **`get()`** method. This method takes many parameters to able us to do very complex and customizable requests :
+
+- **`uuid`** (required): The Universal Unique Identifier of a node to get an unique instance.   
+<br/>
+- **`order_by`** (optional, default=None) : Must be the name of the property with which the returned datas will be sorted.   
+Examples : "datetime", "first_name", etc...  
+<br/>
+- **`limit`** (optional, default=None) : Must be an integer. This parameter defines the number of returned elements.    
+<br/>
+- **`skip`** (optional, default=None) : Must be an integer. This parameter defines the number of skipped elements. For example if self.skip = 3, the 3 first returned elements will be skipped.     
+<br/>
+- **`desc`** (optional, default=False) : Must be a boolean. If it is False the elements will be returned in an increasing order, but it is True, they will be returned in a descending order.   
+<br/>
+- **`only`** (optional, default=None) : Must be a list of field_names. If this parameter is filled, the return will not be Node instances, but a dict with "only" the mentioned fields.     
+<br/>
+- **`filter`** (optional, default=None) : Must be Q statement. You must use the Q class stored in bulb.db Example: Q(name__contains="al") | Q(age__year__lte=8)     
+<br/>
+- **`distinct`** (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with unique elements.    
+<br/>
+- **`return_query`** (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.   
+<br/>
+Demonstration:      
+
+>> <small>node_models.py</small>
+```python
+from bulb.db import node_models
+
+
+class Person(node_models.Node):
+    name = node_models.Property(required=True)
+
+Person.create(name="John")
+>>> <Person object(uuid="dcd220ab84b5417f8d8e48dd34237e9d")>
+
+
+Person.create(name="Jane")
+>>> <Person object(uuid="e724d344999342438431271ed39c7f92")>
+
+Person.get()
+>>> [<Person object(uuid="dcd220ab84b5417f8d8e48dd34237e9d")>, <Person object(uuid="e724d344999342438431271ed39c7f92")>]
+
+```  
+
+<br/>
+<br/>
+
+> - ### Delete nodes
+
+Node models' instances possess a **`delete()`** method, which one delete allow us to delete nodes and all others linked to this nodes with a "CASCADE" relationship.
+
+<br/>
+<br/>
 
 
 > - ### Make your own getter, setter and deletter
@@ -130,13 +181,18 @@ On the other hand, it is very recommanded to always add the **labels** attribute
 
 - ## Work with labels
 
-    - ### Delete and update labels :
+<br/>
+
+> - ### Delete and update labels :
+
 The deletion and the modification of labels is prohibited in a view to maintaining coherence.  
 But if it's absolutely needed to do what you want to do, you could easily create method that delete and update labels.
 <br/>
 <br/>
 <br/>
-    - ### Retrieve labels :
+
+> - ### Retrieve labels :
+
 You can easily retrieve labels of a node and then use them as you want.  
 Two solutions exist :  
 <br/>
@@ -171,11 +227,9 @@ The property can take 5 parameters :
 - **`default`** (optional) : A default value that will fill the content if it is empty.  
 <br/>
 
-Other particularities of the **`bulb`** properties :
+Note that :
 
-- The name of a property attribute always starts with an underscore (' **_** ').  
-<br/>
-- A property cannot have both **`required`** and **`default`** parameters (with a view to maintaining coherence).  
+A property cannot have both **`required`** and **`default`** parameters (with a view to maintaining coherence).  
 <br/>
 
 
@@ -191,21 +245,21 @@ import datetime
 class Article(node_models.Node):
     labels = "Article"
 
-    _uuid = node_models.Property(key="uuid",
+    uuid = node_models.Property(key="uuid",
                                  default=make_uuid,
                                  unique=True)
 
-    _author = node_models.Property(key='author',
+    author = node_models.Property(key='author',
                                    default="An anonymous author.")
 
-    _title = node_models.Property(key='title',
+    title = node_models.Property(key='title',
                                   required=True,
                                   unique=True)
 
-    _content = node_models.Property(key='content',
+    content = node_models.Property(key='content',
                                     required=True)
 
-    _publication_datetime = node_models.Property(key="publication_datetime",
+    publication_datetime = node_models.Property(key="publication_datetime",
                                                 default=datetime.datetime.now)
 
 
@@ -223,7 +277,9 @@ print(response)
     ent': 'Lorem ipsum dolor sit amet...'}>}]                 
 
 ```  
+
 <br/>
+
 Preview on Neo4j Desktop :
 
 ![properties on node preview](img/properties-on-node-preview.png)  
@@ -233,7 +289,8 @@ Preview on Neo4j Desktop :
 
 - ## Apply properties' restrictions
 <br/>
-For better performances, all properties'restrictions of all your nodes should be applied in the Neo4j database. To apply all the restrictions contained in your project or update them if there are news, you can simply use the **`python manage.py bulb-apply`** command.  
+
+For better performances, all properties restrictions of all your nodes should be applied in the Neo4j database. To apply all the restrictions contained in your project or update them if there are news, you can simply use the **`python manage.py bulb-apply`** command.  
 <br/>
 <br/>
 <br/>
@@ -242,25 +299,51 @@ For better performances, all properties'restrictions of all your nodes should be
 
 - ## Work with properties
 
+<br/>
+
+>- ### Retrieve properties' values
+
 As for the labels, you can easily access to the properties of a node with the syntax **`(object).(property key)`** :
 
-```
-print(a_new_article.author)
+>> <small>node_models.py</small>
+```python
+a_new_article.content
 
-
->>> Mary C
+>>> 'Lorem ipsum dolor sit amet...'
 ```
 
 You could also retrieve all the properties of a node with the **`get_properties()`** method of the Node's instances.
-```
-print(a_new_article.get_properties())
 
+>> <small>node_models.py</small>
+```python
+a_new_article.get_properties()
 
 >>> {'title': 'The earth cry', 'uuid': 'c6b99f2ca0b34a7eaec930ac1173d673',
  'publication_datetime': '2019-04-09 04:36:09.962512', 'author': 'Mary C',
   'content': 'Lorem ipsum dolor sit amet...'}
 ```
 
+<br/>
+
+>- ### Update properties' values
+
+All node_models' instances possess an **`update()`** method, which takes as first argument the name of the property to update and as second argument, the new value of this property.
+
+>> <small>node_models.py</small>
+```python
+from bulb.contrib.auth import User
+
+john = User.get(email="john@mail.")
+
+john.first_name
+>>> 'John'
+
+john.update("first_name", "Jo")
+
+john.first_name
+>>> 'Jo'
+
+```
 
 <br/>
 <br/>
@@ -270,7 +353,7 @@ print(a_new_article.get_properties())
 
 # Methods
 
-**bulb** provides methods (stored in **`bulb.db.signals`**) that perform the basic and frequently actions done.
+**bulb** provides methods (stored in **`bulb.db.utils`**) that perform the basic and frequently actions done.
 
 - The **`make_uuid()`** method returns a Universal Unique Identifier. It is very useful to provide a unique property to identify efficiently node instances.
 

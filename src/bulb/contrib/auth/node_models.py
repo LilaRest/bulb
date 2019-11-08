@@ -18,7 +18,7 @@ class FakeClass:
     pass
 
 
-class GroupPermissionRelationship(node_models.Relationship):
+class GroupPermissionsRelationship(node_models.Relationship):
     rel_type = "CAN"
     direction = "from"
     start = "self"
@@ -28,7 +28,7 @@ class GroupPermissionRelationship(node_models.Relationship):
     unique = False
 
 
-class UserPermissionRelationship(node_models.Relationship):
+class UserPermissionsRelationship(node_models.Relationship):
     rel_type = "CAN"
     direction = "from"
     start = "self"
@@ -71,7 +71,7 @@ class UserPermissionRelationship(node_models.Relationship):
         return None
 
 
-class GroupRelationship(node_models.Relationship):
+class UserGroupsRelationship(node_models.Relationship):
     rel_type = "IS_IN"
     direction = "from"
     start = "self"
@@ -81,7 +81,7 @@ class GroupRelationship(node_models.Relationship):
     unique = False
 
 
-class RelatedUserRelationship(node_models.Relationship):
+class GroupUsersRelationship(node_models.Relationship):
     rel_type = "IS_IN"
     direction = "to"
     start = "User"
@@ -91,7 +91,7 @@ class RelatedUserRelationship(node_models.Relationship):
     unique = False
 
 
-class SessionRelationsip(node_models.Relationship):
+class UserSessionRelationsip(node_models.Relationship):
     rel_type = "IS_SESSION_OF"
     direction = "to"
     start = "Session"
@@ -303,9 +303,9 @@ class Group(node_models.Node):
     name = node_models.Property(unique=True,
                                 required=True)
 
-    permissions = GroupPermissionRelationship()
+    permissions = GroupPermissionsRelationship()
 
-    users = RelatedUserRelationship()
+    users = GroupUsersRelationship()
 
     def __str__(self):
         return f'<Group object(name="{self.name}", uuid="{self.uuid}")>'
@@ -577,11 +577,11 @@ class User(node_models.Node):
 
     registration_datetime = node_models.Property(default=datetime.datetime.now)
 
-    permissions = UserPermissionRelationship()
+    permissions = UserPermissionsRelationship()
 
-    groups = GroupRelationship()
+    groups = UserGroupsRelationship()
 
-    session = SessionRelationsip()
+    session = UserSessionRelationsip()
 
     email_confirmation_key = None
 

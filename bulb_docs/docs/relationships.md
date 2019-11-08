@@ -24,11 +24,11 @@ Furthermore, when you work with a database, personalization of each request is t
 The Relationship instances, possesses some parameters which define their behaviour in the database :
 
 - **`rel_type`** (required) : This parameter defines the relationship type. It must be a string.    
-                              See : [https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types](https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types)  
-<br/>
-- **`properties_fields`** (optional, default=None) : A dict of properties for "all in node_model" syntax. If the Relationship classes are out of the node_model classes, this argument will be None.  
+                              See : [https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types](https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types)   
 <br/>
 - **`direction`** (optional, default="from") : Must be "from", "to", or "bi". If it is "from", the relationship will be an arrow that starts from the self node_model's instance to other node_models' instances. If it is "to" it will be the reverse case : the relationship will be an arrow that starts from other node_models' instances to the self node_model's instance.Finally if it is "bi", it will be two relationships that will work by peers, one from and one to the self node_model's instance : a bi-directional relationships will be created.   
+<br/>
+- **`properties_fields`** (optional, default=None) : A dict of properties for "all in node_model" syntax. If the Relationship classes are out of the node_model classes, this argument will be None.
 <br/>
 - **`start`** (optional, default=None) : This parameter must be a node_model class, its name or "self". It applies a start constraint to the relationship.    
 <br/>                          
@@ -57,7 +57,7 @@ With this syntax, you can define the Relationship as an attribute of a node_mode
 
 >> <small>node_models.py</small>
 ```python
-from bulb.db import gdbh, node_models
+from bulb.db import node_models
 import datetime
 
 
@@ -82,7 +82,7 @@ With this syntax, you can define a Relationship model and reuse it for multiple 
 
 >> <small>node_models.py</small>
 ```python
-from bulb.db import gdbh, node_models
+from bulb.db import node_models
 import datetime
 
 class RelatedAuthorsRelationship(node_models.Relationship):
@@ -149,7 +149,7 @@ Remember that in the previous example we had defined the **`RelatedAuthorsRelati
 
 >> <small>node_models.py</small>
 ```python
-from bulb.db import gdbh, node_models
+from bulb.db import node_models
 from bulb.contrib.auth.node_models import User
 import datetime
 
@@ -181,7 +181,10 @@ first_article.authors.add(john)
 <br/>
 <br/>
 
-- ## Retrieve relationships elements
+- ## Work with relationships
+<br/>
+
+> - ### Retrieve relationships elements
 
 A relationship is composed by two nodes and the relationship that joins them.
 The relationships possesses a **`get()`** method. This method allows us to retrieve one/two node(s) of a relationship and/or the relationship object. As the get() method of the node_models, this one takes many parameters to able us to do very complex and customizable requests :
@@ -214,3 +217,60 @@ The relationships possesses a **`get()`** method. This method allows us to retri
  Example: Q(name__contains="al") | Q(age__year__lte=8)   
  <br/>
 - **`return_query`** (optional, default=False) : Must be a boolean. If true, the method will only return the cypher query.   
+
+Remember that in the previous example we had defined the **`RelatedAuthorsRelationship`** and see this demonstration :
+
+>> <small>node_models.py</small>
+```python
+from bulb.db import node_models
+from bulb.contrib.auth.node_models import User
+import datetime
+
+class RelatedAuthorsRelationship(node_models.Relationship):
+    rel_type = "WROTE"
+    direction = "to"
+    start = "User"
+    target = "self"
+    on_delete = "CASCADE"
+
+
+class Article(node_models.Node):
+    title = node_models.Property(required=True,
+                                 unique=True)
+    content = node_models.Property(required=True)
+    publication_datetime = node_models.Property(default=datetime.datetime.now)
+    authors = RelatedAuthorsRelationship()
+
+first_article = Article.create(title="A great article !",
+                               content="Lorem ipsum...")
+
+john = User.get(email="john@mail.com")
+
+# Add john as author of the first article
+first_article.authors.add(john)
+
+# Retrieve nodes from the other side of the relationship :
+first_article.authors.get()
+>>> [<User object(first_name="John", last_name="Doe", uuid="20b4ab050cb141868c8cd39dad4d9db2")>]
+
+# Also return the relationships :
+first_article.authors.get(returned="both")
+>>> [{'rel': <RelatedAuthorsRelationshipInstance object(uuid="db087a94fda54427bf3ef52de425e301")>, 'node': <User object(first_name="John", last_name="Doe", uuid="20b4ab050cb141868c8cd39dad4d9db2")>}]
+
+```
+<br/>
+<br/>
+
+> - ### Make your own getter, setter and deletter
+
+A Relationship instance possesses native getter, setter and deletter, but these methods could be personalized for each Relationship class. Handle perfectly all the situations is impossible, and try to do this, leads to very heavy and inefficient programs. To make your own node methods, you'll just have to take the native methods and re-implement them with your modifications.
+
+<br/>
+<br/>
+
+- ## Work with relationships objects
+<br/>
+
+<br/>
+<br/>
+<br/>
