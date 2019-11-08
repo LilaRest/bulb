@@ -100,7 +100,7 @@ etc...
 - ## Work with permissions
 <br/>
 
-> - ### REtrieve permissions
+> - ### Retrieve permissions
 The **`Permission`** class' possesses a **`get()`** method. This method has a unique specific parameter, the **codename** of the permission to retrieve, and inherits of all others parameters of the **`Node.get()`** method (See Nodes part). It returns a **`Permission`** instance :
 
 ```python
