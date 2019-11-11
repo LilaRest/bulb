@@ -33,6 +33,7 @@ bulb/contrib/admin/static/admin/css/style/base_page.scss
 bulb/contrib/admin/templates/admin/background_pages/base.html
 bulb/contrib/admin/templates/admin/background_pages/generic_template.html
 bulb/contrib/admin/templates/admin/pages/admin_home.html
+bulb/contrib/admin/templates/admin/pages/login.html
 bulb/contrib/admin/templatetags/__init__.py
 bulb/contrib/admin/templatetags/admin_extras.py
 bulb/contrib/auth/__init__.py
