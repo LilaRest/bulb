@@ -73,12 +73,23 @@ Render on click :
 
 <br/>
 
-- (required) The **"type"** of the field.      
-Can be : **checkbox**, **locked**, **text**, **file**, **date**, **time**, **datetime**, **password**, **select**, **relationship**, **html**.
+- (required) The **"type"** of the field. It can be :
+
+    - **checkbox** (a simple checkbox for True/False fields),
+    - **locked** (a non-editable field),
+    - **text**,
+    - **file**,
+    - **date**,
+    - **time**,
+    - **datetime**,
+    - **password** (a password confirmation field will be automatically added),
+    - **select**,
+    - **relationship**,
+    - **html** (a WYSIWYG editor powered by CkEditor 4.0).
 
 <br/>
 
-- (required if `"type": "relationship"`) The **"rel"** parameter must be filled with a dictionary that contains two keys : **"related_node_model_name"** and **"choices_render"**.
+- (required if `"type": "relationship"`) The **"rel"** key must be filled with a dictionary that contains two keys : **"related_node_model_name"** and **"choices_render"**.
 In the first one, just write the name of the related node_models (the node_models of the other side of the relationship).
 Then, fill the second one with a list of properties' names of the related node_models.
 
@@ -104,7 +115,21 @@ Then, you'll just have to double-click on an available element to select it (you
 
 <br/>
 
-- (required if `"type": "relationship"`) 
+- (required if `"type": "file"`) The **"format"** key can be : **image** (for .png, .jpg, .jpeg and .svg files), **pdf**.
+
+<br/>
+
+- (optional and only if `"type": "html"`) The **"html"** fields are rendered with CkEditor 4.0. So if you want to add your own custom CkEditor's configuration file, just add a **"ckeditor"** key, a **"param"** key, and a **"customConfig"** key with the url where the configuration file is stored ; like this :
+
+```python
+"body_text_1": {"type": "html",
+                "label": "Paragraphe 1",
+                "ckeditor": {
+                            "params": {
+                                      "customConfig": "https://mycdn.com/ckeditor/cke_config.js",
+                            },
+                }},
+```
 
 
 
