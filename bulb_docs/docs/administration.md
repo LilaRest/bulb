@@ -56,16 +56,18 @@ Let's see how you can do this :
 
 1) Firstly, be sure that the administration is correctly deployed, following the steps of the previous part.
 
-2) Secondly, create a template, which one will be the home of your new administration's module. This template must inherit of the administration's base template located in **`bulb/contrib/admin/templates/admin/background_pages/base.html`**. So you have to add this line at the head of your new template :
+2) Secondly, create a Django application for your new administration's module with the command **`python manage.py startapp <your app name>`**.
 
-```Django
+3) Thirdly, create a template in your new application, which one will be the home of your new administration's module. This template must inherit of the administration's base template located in **`bulb/contrib/admin/templates/admin/background_pages/base.html`**. So you have to add this line at the head of your new template :
+
+```django
 {% extends "administration/background_pages/base.html" %}
 ```
 
 But you can find a generic template especially designed to create a new administration's module's template at **`bulb/contrib/admin/templates/admin/background_pages/generic_template.html`**. It will allow you to quickly inherit of the base template :
 
 >> <small>generic_template.html</small>
-```Django
+```django
 {% extends "administration/background_pages/base.html" %}
 
 {% block title %}{% endblock title %}
@@ -81,25 +83,76 @@ But you can find a generic template especially designed to create a new administ
 
 <br/>
 
-Then, fill each block of your new module page :      
-- The **title** block defines the content of the **<title></title>** tags of the page.
+Then, fill each block of your new module page :     
 
-- The **head** block defines the content of the **<head></head>** tags of the page.     
+- The **title** block defines the content of the **`<title></title>`** tags of the page.
+
+<br/>
+
+- The **head** block defines the content of the **`<head></head>`** tags of the page.     
 Note that per default the header contains already these 3 lines :
 
-```Django
+```django
 <title>{% block title %}{% endblock title %}</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width"/>
 ```
 
-- The **administration_part_name** block define this part of
+<br/>
 
-
+- The **administration_part_name** block defines the part of the administration's breadcrumbs trail related to the current page.
 Example inspired from [https://grassemat.info](https://grassemat.info) :
 
+```django
+{% block administration_part_name %}
+    <i class="material-icons">keyboard_arrow_right</i>
+    <a class="nav-link" href="{% url "editorial_home" %}">Rédaction</a>
+{% endblock administration_part_name %}
+```
+
+> _Note that to inherits of the bulb's administration's style, the link's class must be **"nav-link"**._
+
+Render when you're on the administration's home:
+
+![transparent logo bulb](img/breadcrumbs_trail_1.png)
+
+Render when you're on the home of your the new administration's module:
+
+![transparent logo bulb](img/breadcrumbs_trail_2.png)
+
+<br/>
+
+- The **content**  defines the content of the **`<body></body>`** tags of the page.  
+
+<br/>   
+
+- And finally, in the **scripts** block you'll have to put yours **`<script></script>`** tags.    
+Note that a loader script and a polyfill script are contained by default is the base template :
+
+```django
+<script>
+    const loader_box = document.querySelector("div#loader_box");
+
+    // Support no javascript browsers.
+    loader_box.style.display = "flex";
+
+    window.addEventListener("load", function () {
+        loader_box.style.animation = "fade 500ms forwards";
+        window.scroll(0, 0)
+
+    })
+</script>
+
+<script crossorigin="anonymous"src="https://polyfill.io/v3/polyfill.min.js?flags=gated&features=blissfuljs%2Cdefault%2Ces2015%2Ces2016%2Ces2017%2Ces5%2Ces6%2Ces7"></script>
+
+```
+
+<br/>
+
+Have a look to this full example inspired from [https://grassemat.info](https://grassemat.info) :
+
 >> <small>editorial_home.html</small>
-```Django
+```django
 {% extends "administration/background_pages/base.html" %}
 
 {% block title %}Rédaction{% endblock title %}
@@ -168,7 +221,44 @@ Example inspired from [https://grassemat.info](https://grassemat.info) :
 {% endblock scripts %}
 ```
 
-2) Fill the settings' variable **BULB_ADDITIONAL_ADMIN_MODULES** with this syntax :
+<br/>
+
+
+4) Then, create a view in the **views.py** file of your new administration's module. The view must render the previous template.
+
+Example inspired from [https://grassemat.info](https://grassemat.info) :
+
+>> <small>views.py</small>
+```python
+@staff_only()
+@login_required(login_page_url=login_page_url)
+def editorial_home_view(request):
+    if request.user.has_perm("view_article") or request.user.has_perm("view"):
+
+        (...)
+
+        return render(request, "editorial/pages/editorial_home.html", locals())    
+```
+
+<br/>
+
+5) After, you'll have to fill the **urls.py** of your new administration's module, to create an url which will render the home page of this module.
+
+>> <small>urls.py</small>
+```python
+from editorial.views import editorial_home_view
+from django.urls import path, re_path
+
+urlpatterns = [
+    path("", editorial_home_view, name="editorial_home")
+]
+
+```
+
+<br/>
+
+
+6) Finally, you have to fill the settings' variable **BULB_ADDITIONAL_ADMIN_MODULES** with this syntax :
 
 >> <small>settings.py</small>
 ```python
@@ -195,7 +285,7 @@ BULB_ADDITIONAL_ADMIN_MODULES = {
 
 <br/>
 
-Demonstration :
+Example inspired from [https://grassemat.info](https://grassemat.info)
 
 >> <small>settings.py</small>
 ```python
@@ -205,11 +295,13 @@ BULB_ADDITIONAL_ADMIN_MODULES = {
                                         "path_name": "redaction",
                                         "home_view_url_name": "editorial_home",
                                     },
-
-                                    "an_other_admin_app": {
-                                        "printed_name": "An other admin app",
-                                        "path_name": "an_other_admin_app",
-                                        "home_view_url_name": "an_other_admin_app_home"
-                                    }
                                 }
 ```
+
+<br/>
+
+7) Now, for each new page of your administration's module, you'll have to follow the previous steps (except the **6**th step).
+
+<br/>
+<br/>
+<br/>
