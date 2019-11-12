@@ -1,7 +1,7 @@
 ### >> Presentation :
 <br/>
 
-![transparent logo bulb](../img/transparent_logo_bulb.png)
+![transparent logo bulb](../img/bulb_logo.jpg)
 <br/>
 <br/>
 
@@ -56,4 +56,3 @@ For the other cases, check this documentation :)
 <br/>
 <br/>
 <br/>
-

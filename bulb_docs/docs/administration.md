@@ -6,13 +6,11 @@
 ---
 
 # Introducing
-**bulb** provides an administration especially created to interact with neo4j databases.
+**bulb** provides an administration especially created to interact with Neo4j databases and to give us some other functionalities.
 
-<br/>
 <br/>
 
 # Setting up the administration
-<br/>
 
 The bulb's administration isn't automatically set when you implement bulb into your project.
 But you can set it up with only 2 little steps :
@@ -57,6 +55,118 @@ But the administration is highly modular, you can add yours own administrations 
 Let's see how you can do this :
 
 1) Firstly, be sure that the administration is correctly deployed, following the steps of the previous part.
+
+2) Secondly, create a template, which one will be the home of your new administration's module. This template must inherit of the administration's base template located in **`bulb/contrib/admin/templates/admin/background_pages/base.html`**. So you have to add this line at the head of your new template :
+
+```Django
+{% extends "administration/background_pages/base.html" %}
+```
+
+But you can find a generic template especially designed to create a new administration's module's template at **`bulb/contrib/admin/templates/admin/background_pages/generic_template.html`**. It will allow you to quickly inherit of the base template :
+
+>> <small>generic_template.html</small>
+```Django
+{% extends "administration/background_pages/base.html" %}
+
+{% block title %}{% endblock title %}
+
+{% block head %}{% endblock head %}
+
+{% block administration_part_name %}{% endblock administration_part_name %}
+
+{% block content %}{% endblock content %}
+
+{% block scripts %}{% endblock scripts %}
+```
+
+<br/>
+
+Then, fill each block of your new module page :      
+- The **title** block defines the content of the **<title></title>** tags of the page.
+
+- The **head** block defines the content of the **<head></head>** tags of the page.     
+Note that per default the header contains already these 3 lines :
+
+```Django
+<title>{% block title %}{% endblock title %}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width"/>
+```
+
+- The **administration_part_name** block define this part of
+
+
+Example inspired from [https://grassemat.info](https://grassemat.info) :
+
+>> <small>editorial_home.html</small>
+```Django
+{% extends "administration/background_pages/base.html" %}
+
+{% block title %}Rédaction{% endblock title %}
+
+{% block head %}
+    {% if DEBUG %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_class_home_page.scss" %}"/>
+        {% endcompress %}
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    {% elif not DEBUG %}
+        <link rel="stylesheet" href="{% static_bundled_src "handling/bundle_node_class_home.css" %}"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+{% endblock head %}
+
+{% block administration_part_name %}
+    <i class="material-icons">keyboard_arrow_right</i>
+    <a class="nav-link" href="{% url "editorial_home" %}">Rédaction</a>
+{% endblock administration_part_name %}
+
+{% block content %}
+    {% csrf_token %}
+
+    <br/>
+    <br/>
+    <br/>
+
+    <a id="create-instance-button" href="{% url "create_article" %}"><i class="material-icons">add</i></a>
+
+    <table>
+        <thead>
+        <tr>
+            {% for field_number, field_name in preview_fields_dict.items %}
+                <th>{{ field_name }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for uuid, properties in fifteen_last_instances_json.items %}
+            <tr>
+                {% for property_number, property_tuple in properties.items %}
+                    <td {% if property_tuple.1 == True %}
+                        class="true_td"
+                    {% elif property_tuple.1 == False %}
+                        class="false_td"
+                    {% endif %}>
+                        <a href="{% url "edit_article" node_uuid=uuid %}">
+                            {{ property_tuple.1|truncatechars:40 }}
+                        </a>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}
+
+{% block scripts %}
+    <script src="bundle.js"></script>
+{% endblock scripts %}
+```
 
 2) Fill the settings' variable **BULB_ADDITIONAL_ADMIN_MODULES** with this syntax :
 

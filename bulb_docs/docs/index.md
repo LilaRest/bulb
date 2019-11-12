@@ -1,6 +1,6 @@
 # Welcome to the `bulb` documentation !
 <br/>
-![transparent logo bulb](img/transparent_logo_bulb.png)
+![transparent logo bulb](img/bulb_logo.jpg)
 <br/>
 <br/>
 
@@ -28,7 +28,7 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
     - [2. Run a first cypher query](https://bulb.readthedocs.io/en/latest/getting-started/#2-run-a-first-cypher-query)
 <br/>
 <br/>
-      
+
 - [Nodes](https://bulb.readthedocs.io/en/latest/nodes/)
     - [Introducing](https://bulb.readthedocs.io/en/latest/nodes/#introducing)
     - [Node models](https://bulb.readthedocs.io/en/latest/nodes/#node-models)
@@ -44,7 +44,7 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
     - [Methods](https://bulb.readthedocs.io/en/latest/nodes/#methods)
 <br/>
 <br/>
-  
+
 - [Authentication](https://bulb.readthedocs.io/en/latest/authentication/)
     - [Introducing](https://bulb.readthedocs.io/en/latest/authentication/#introducing)
     - [Initialize native permissions](https://bulb.readthedocs.io/en/latest/authentication/#initialize-native-permissions)
@@ -105,22 +105,22 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 ### Project tree :
 <br/>
 
-##### Administration (bulb.contrib.admin) : 
-- _bulb.contrib.admin._**static**/ 
+##### Administration (bulb.contrib.admin) :
+- _bulb.contrib.admin._**static**/
 
-    - _bulb.contrib.admin.static._**admin**/ 
-    
+    - _bulb.contrib.admin.static._**admin**/
+
         - (bulb's administration's staticfiles)
         <br/>
 
-- _bulb.contrib.admin._**templates**/ 
+- _bulb.contrib.admin._**templates**/
 
-    - _bulb.contrib.admin.templates._**admin**/ 
-    
+    - _bulb.contrib.admin.templates._**admin**/
+
         - (bulb's administration's templates)
         <br/>
 
-- _bulb.contrib.admin._**templatetags**/ 
+- _bulb.contrib.admin._**templatetags**/
 
     - **admin_extras.py**
     <br/>
@@ -139,15 +139,15 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 <br/>
 
 
-##### Authentication (bulb.contrib.auth) : 
-- _bulb.contrib.auth._**management**/ 
+##### Authentication (bulb.contrib.auth) :
+- _bulb.contrib.auth._**management**/
 
 	- _bulb.contrib.auth.management._**commands**/
-	
+
 		- **bulb-init.py**
-		
+
 		- **bulb-perms.py**  
-		
+
 		- **createsuperuser.py**
 		<br/>
 
@@ -155,7 +155,7 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 
 	- **auth_extras.py**  
 	<br/>
-  
+
 - **authentication.py**
 
 - **context_processors.py**
@@ -178,18 +178,18 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 <br/>
 
 
-##### Handling (bulb.contrib.handling) : 
-- _bulb.contrib.handling._**static**/ 
+##### Handling (bulb.contrib.handling) :
+- _bulb.contrib.handling._**static**/
 
-    - _bulb.contrib.handling.static._**handling**/ 
-    
+    - _bulb.contrib.handling.static._**handling**/
+
         - (bulb's handler's staticfiles)
         <br/>
 
-- _bulb.contrib.handling._**templates**/ 
+- _bulb.contrib.handling._**templates**/
 
-    - _bulb.contrib.handling.templates._**handling**/ 
-    
+    - _bulb.contrib.handling.templates._**handling**/
+
         - (bulb's handler's templates)
         <br/>
 
@@ -222,10 +222,10 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 - _bulb.contrib.sessions._**management**/
 
 	- _bulb.contrib.sessions.management._**commands**/
-	
+
 		- **clearsession.py** (TODO)  
 		<br/>
-		
+
 - **exceptions.py**
 
 - **middleware.py**
@@ -245,7 +245,7 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 - _bulb.db._**management**/
 
     - _bulb.db.management._**commands**/
-    
+
         - **bulb-apply.py**  
         <br/>
 
@@ -264,10 +264,10 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 
 
 ##### Global resources (bulb.global_resources)
-- _bulb.global_resources._**static**/ 
+- _bulb.global_resources._**static**/
 
-    - _bulb.global_resources.static._**global_resources**/ 
-    
+    - _bulb.global_resources.static._**global_resources**/
+
         - (bulb's global_resources' staticfiles)
 <br/>
 <br/>
@@ -275,30 +275,30 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 
 
 ##### SFTP and CDN (bulb.sftp_and_cdn)
-- _bulb.contrib.sftp_and_cdn._**management**/ 
+- _bulb.contrib.sftp_and_cdn._**management**/
 
-    - _bulb.contrib.sftp_and_cdn.management._**commands**/ 
-    
+    - _bulb.contrib.sftp_and_cdn.management._**commands**/
+
         - **bundlestatic.py**
-        
+
         - **clearstatic.py**
-        
+
         - **handlestatic.py**
-        
+
         - **pushstatic.py**
         <br/>
-        
-- _bulb.contrib.sftp_and_cdn._**webpack_files**/ 
+
+- _bulb.contrib.sftp_and_cdn._**webpack_files**/
 
     - **.babelrc**
-    
+
     - **package.json**
-    
+
     - **package-lock.json**
-    
+
     - **webpack.config.js**
     <br/>
-    
+
 - **cdn_apis.py**
 
 - **exceptions.py**
@@ -310,10 +310,10 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 
 
 ##### Template (bulb.template)
-- _bulb.contrib.template._**templatetags**/ 
+- _bulb.contrib.template._**templatetags**/
 
     - **bulb_static.py**
-  
+
 - **context_processors.py**
 <br/>
 <br/>
@@ -321,17 +321,17 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 
 
 ##### Utils (bulb.utils)
-- _bulb.utils._**static**/ 
+- _bulb.utils._**static**/
 
-    - _bulb.utils.static._**utils**/ 
-    
+    - _bulb.utils.static._**utils**/
+
         - (bulb's utils' staticfiles)
         <br/>
 
-- _bulb.utils._**templates**/ 
+- _bulb.utils._**templates**/
 
-    - _bulb.utils.templates._**utils**/ 
-    
+    - _bulb.utils.templates._**utils**/
+
         - (bulb's utils's templates)
         <br/>
 
@@ -346,4 +346,3 @@ Neo4j integration for Django, and much more tools to deploy consequent websites.
 <br/>
 <br/>
 <br/>
-
