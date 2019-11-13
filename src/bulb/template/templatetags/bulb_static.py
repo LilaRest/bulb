@@ -27,7 +27,7 @@ def static_raw_src(path):
 
         else:
             raise BULBStaticTemplateTagsError(
-                "To use the '{% static_src %}' tag you must define the BULB_SFTP_PULL_URL variable in your 'settings.py' file.")
+                "To use the '{% static_raw_src %}' tag you must define the BULB_SFTP_PULL_URL variable in your 'settings.py' file.")
 
 
 @register.simple_tag()
@@ -44,7 +44,7 @@ def static_bundled_src(path):
 
         else:
             raise BULBStaticTemplateTagsError(
-                "To use the '{% static_src %}' tag you must define the BULB_SFTP_PULL_URL variable in your 'settings.py' file.")
+                "To use the '{% static_bundle_src %}' tag you must define the BULB_SFTP_PULL_URL variable in your 'settings.py' file.")
 
 @register.simple_tag()
 def static_content(path):
