@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 class Command(BaseCommand):
     args = ''
     help = """
-            Clear (remove) the staticfiles folder on the SFTP server and purge the CDN if there is one.
+            Clear (remove) the raw_src or the bundled_src folder on the SFTP server and purge the CDN if there is one.
            """
 
     def add_arguments(self, parser):
