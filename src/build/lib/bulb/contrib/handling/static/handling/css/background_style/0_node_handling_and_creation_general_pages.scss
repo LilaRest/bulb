@@ -1,0 +1,778 @@
+/* Schéma */
+
+    /* Position */
+
+    /* Dimensions */
+
+    /* Style */
+
+    /* For child properties */
+
+
+/*
+    ##################################################
+    ##################### GENERAL ####################
+    ##################################################
+*/
+
+html {
+
+    body {
+        margin-left: 62px;
+
+        div#form-div {
+            /* Position */
+            padding-top: 20px;
+
+            /* Dimensions */
+
+            /* Style */
+
+            /* For child properties */
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            form {
+                /* Position */
+
+                /* Dimensions */
+                width: auto;
+
+                /* Style */
+
+                /* For child properties */
+                display: inline-flex;
+                flex-direction: column;
+
+
+                div.form-field {
+                    /* Position */
+                    position: relative;
+                    margin-bottom: 40px;
+
+                    /* Dimensions */
+
+                    /* Style */
+
+                    /* Animations */
+                    transition-duration: 1000ms;
+
+                    /* For child properties */
+                    display: inline-flex;
+                }
+
+
+                label {
+                    /* Position */
+                    padding: 10px;
+
+                    /* Dimensions */
+
+                    /* Style */
+                    color: $old-white;
+                    background-color: $dark-grey;
+                    border-bottom-left-radius: 4px;
+                    border-top-left-radius: 4px;
+                    text-align: center;
+
+                    /* Animations */
+                    cursor: text;
+
+                    /* For child properties */
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+
+                input, select, textarea {
+                    /* Position */
+                    padding: 10px;
+
+                    /* Dimensions */
+
+                    /* Style */
+                    border: {
+                        top-style: solid;
+                        top-color: $middle-turquoise;
+                        top-width: 1px;
+                        bottom-style: solid;
+                        bottom-color: $middle-turquoise;
+                        bottom-width: 1px;
+                        right-style: solid;
+                        right-color: $middle-turquoise;
+                        right-width: 1px;
+                    }
+                    border-bottom-right-radius: 4px;
+                    border-top-right-radius: 4px;
+                    background-color: white;
+
+                    /* For child properties */
+                }
+
+
+                textarea {
+                    /* Position */
+
+                    /* Dimensions */
+                    height: 200px;
+                    width: 250px;
+
+                    /* Style */
+                    resize: none;
+
+                    /* For child properties */
+                }
+
+
+                div.cke {
+                    border-color: $middle-turquoise;
+                    border-top-right-radius: 4px;
+                    border-bottom-right-radius: 4px;
+                }
+
+
+                input.file-field {
+                    /* Position */
+                    padding: 0;
+
+                    /* Dimensions */
+                    height: 38.4px;
+
+                    /* Style */
+
+                    /* For child properties */
+                }
+
+
+                button.file-reset-button {
+                    outline: none;
+
+                    i {
+                        /* Position */
+                        margin: {
+                            left: 2px;
+                            right: 2px;
+                        }
+                        padding: 5px;
+                        align-self: center;
+
+                        /* Dimensions */
+                        height: 38.4px;
+                        width: 38.4px;
+
+                        /* Style */
+                        color: $old-white;
+                        background-color: $dark-grey;
+                        border-radius: 4px;
+                        font-size: $m-fs;
+
+                        /* Animations */
+                        cursor: not-allowed;
+
+                        /* For child properties */
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                }
+
+
+                label.file-removing-helper-input {
+                    /* Position */
+
+                    /* Dimensions */
+                    height: 38.4px;
+                    width: 38.4px;
+
+                    /* Style */
+                    background-color: $middle-red;
+                    align-self: center;
+
+                    /* Animations */
+                    cursor: pointer;
+
+                    /* For child properties */
+                }
+
+
+                div.file-removing-helper-box {
+                    /* Position */
+
+                    /* Dimensions */
+                    height: 38.4px;
+                    width: 38.4px;
+
+                    /* Style */
+                    align-self: center;
+                    border: {
+                        top-color: $middle-red;
+                        top-width: 1px;
+                        top-style: solid;
+                        bottom-color: $middle-red;
+                        bottom-width: 1px;
+                        bottom-style: solid;
+                        right-color: $middle-red;
+                        right-width: 1px;
+                        right-style: solid;
+                        top-right-radius: 4px;
+                        bottom-right-radius: 4px;
+                    }
+
+                    /* For child properties */
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    input {
+                        /* Animations */
+                        cursor: pointer;
+                    }
+                }
+
+
+                a.show-pdf {
+                    /* Position */
+                    margin: {
+                        left: 2px;
+                        right: 2px;
+                    }
+
+                    /* Dimensions */
+                    height: 38.4px;
+                    width: 38.4px;
+
+                    /* Style */
+                    background-color: $dark-grey;
+                    border-radius: 4px;
+                    color: white;
+
+                    /* For child properties */
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+
+                div.description-box {
+                    /* Position */
+                    width: 38.4px;
+                    height: 38.4px;
+                    padding: 5px;
+                    margin: {
+                        left: 1px;
+                        right: 1px;
+                    }
+
+                    /* Dimensions */
+                    align-self: center;
+
+                    /* Style */
+                    background-color: $dark-grey;
+                    color: white;
+                    border-radius: 5px;
+
+                    /* Animations */
+                    cursor: pointer;
+                    transition-duration: 750ms;
+
+                    /* For child properties */
+                    display: inline-flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+
+
+                    i {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        font-size: $m-fs;
+
+                        /* Animations */
+                        transition-duration: 750ms;
+
+                        /* For child properties */
+                    }
+
+                    small {
+                        /* Position */
+                        position: absolute;
+                        top: 39.4px; left: 0;
+                        /* Dimensions */
+                        width: 0;
+
+                        /* Style */
+                        background-color: #f2f3fa;
+                        border-radius: 5px;
+                        box-sizing: unset;
+
+                        /* Animations */
+                        transition-duration: 750ms;
+
+                        /* For child properties */
+                        overflow: hidden;
+                        white-space: nowrap;
+                    }
+                }
+
+
+                input.file-field + button.file-reset-button,
+                input.file-field + button.file-reset-button + br + label.file-removing-helper-input,
+                input.file-field + button.file-reset-button + br + label.file-removing-helper-input, div.file-removing-helper-box{
+                    align-self: flex-start;
+                }
+
+
+                a.image-preview {
+                    /* Position */
+                    position: relative;
+                    margin-bottom: 341.4px;
+
+                    /* Dimensions */
+
+                    /* Style */
+                    background-color: $dark-grey;
+
+                    /* For child properties */
+
+                    img {
+                        position: absolute;
+                        top: 41.4px;
+                        left: -403.2px;
+                        max-width: 750px;
+                        max-height: 300px;
+                    }
+                }
+
+
+                div.datetime-box, div.date-box, div.time-box {
+                    /* Position */
+                    padding: 3px;
+
+                    /* Dimensions */
+
+                    /* Style */
+                    border-color: $middle-turquoise;
+                    border-width: 0.5px;
+                    border-top-right-radius: 4px;
+                    border-bottom-right-radius: 4px;
+                    border-style: solid;
+                    background-color: white;
+
+                    /* For child properties */
+                    display: inline-block;
+
+                    input {
+                        /* Position */
+                        padding: 0;
+                        margin: 0;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        text-align: center;
+                        font-size: 18px;
+                        border: none;
+                        background-color: white;
+
+                        /* For child properties */
+                        display: inline-block;
+                    }
+
+                    p {
+                        /* Position */
+                        padding: 0;
+                        margin: 0;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        font-size: 18px;
+                        color: gray;
+
+                        /* For child properties */
+                        display: inline-block;
+                    }
+                }
+
+
+                div.password-box {
+                    /* Position */
+
+                    /* Dimensions */
+
+                    /* Style */
+
+                    /* For child properties */
+                    display: flex;
+                    flex-direction: column;
+
+                    div {
+                        /* Position */
+                        position: relative;
+
+                        /* Dimensions */
+
+                        /* Style */
+
+                        /* Animations */
+                        transition-duration: 1000ms;
+
+                        /* For child properties */
+                        display: inline-flex;
+
+
+                        &:first-of-type {
+                            margin-bottom: 40px;
+                        }
+                    }
+                }
+
+
+                label.locked-field {
+                    /* Position */
+                    padding: 0;
+
+                    /* Dimensions */
+
+                    /* Style */
+                    background-color: unset;
+                    border-bottom-left-radius: 0;
+                    border-top-left-radius: 0;
+
+                    /* For child properties */
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: flex-start;
+
+
+                    span {
+                        /* Position */
+                        padding: 10px;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        color: white;
+
+                        /* Animations */
+                        cursor: text;
+
+                        /* For child properties */
+                    }
+
+
+                    span:first-of-type {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        background-color: $dark-grey;
+                        border-bottom-left-radius: 4px;
+                        border-top-left-radius: 4px;
+
+                        /* For child properties */
+                    }
+
+
+                    span:last-of-type {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        background-color: $middle-turquoise;
+                        border-bottom-right-radius: 4px;
+                        border-top-right-radius: 4px;
+
+                        /* For child properties */
+                    }
+
+                    i {
+                        /* Position */
+                        margin: {
+                            left: 2px;
+                            right: 2px;
+                        }
+                        padding: 5px;
+                        align-self: center;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        color: $dark-grey;
+
+                        /* Animations */
+                        cursor: not-allowed;
+
+                        /* For child properties */
+
+                    }
+                }
+
+
+                div.checkbox-div {
+                    /* Position */
+
+                    /* Dimensions */
+
+                    /* Style */
+
+                    /* For child properties */
+                    display: flex;
+                    align-items: center;
+
+
+                    label.checkbox-label {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+
+                        /* For child properties */
+                        display: flex;
+                        align-items: center;
+                    }
+
+
+                    div.onoffswitch {
+                        /* Position */
+                        position: relative;
+
+                        /* Dimensions */
+                        width: 50px;
+
+                        /* Style */
+                        background-color: $middle-turquoise;
+                        border-radius: 100%;
+
+                        /* For child properties */
+                        -webkit-user-select: none;
+                        -moz-user-select: none;
+                        -ms-user-select: none;
+                        display: inline-block;
+
+
+                        input.onoffswitch-checkbox {
+                            /* Position */
+
+                            /* Dimensions */
+
+                            /* Style */
+
+                            /* For child properties */
+                            display: none;
+
+                            &:checked + label.onoffswitch-label span.onoffswitch-inner {
+                                margin-left: 0;
+                            }
+
+                            &:checked + label.onoffswitch-label span.onoffswitch-switch {
+                                right: 0;
+                            }
+                        }
+
+
+                        label.onoffswitch-label {
+                            /* Position */
+                            padding: 0;
+
+                            /* Dimensions */
+                            height: 38.4px;
+
+                            /* Style */
+                            border: 2px solid $dark-grey;
+                            border-radius: 0;
+                            border-top-right-radius: 4px;
+                            border-bottom-right-radius: 4px;
+
+                            /* For child properties */
+                            display: block;
+                            overflow: hidden;
+                            cursor: pointer;
+
+
+                            span.onoffswitch-inner {
+                                /* Position */
+                                margin-left: -100%;
+
+                                /* Dimensions */
+                                width: 200%;
+
+                                /* Style */
+
+                                /* For child properties */
+                                display: block;
+
+                                /* Animations */
+                                transition: margin 0.3s ease-in 0s;
+
+                                &:before, &:after {
+                                    /* Position */
+                                    float: left;
+                                    padding: 0;
+
+                                    /* Dimensions */
+                                    width: 50%;
+                                    height: 38.4px;
+                                    line-height: 20px;
+
+                                    /* Style */
+                                    color: white;
+                                    font-size: 18px;
+                                    font-family: Trebuchet, Arial, sans-serif;
+                                    font-weight: bold;
+                                    box-sizing: border-box;
+
+                                    /* For child properties */
+                                    display: block;
+                                }
+
+                                &:before {
+                                    /* Position */
+                                    padding-left: 40px;
+
+                                    /* Dimensions */
+
+                                    /* Style */
+                                    background-color: $middle-turquoise;
+                                    color: #FFFFFF;
+
+                                    /* For child properties */
+                                    content: "";
+                                }
+
+                                &:after {
+                                    /* Position */
+
+                                    /* Dimensions */
+                                    padding-right: 40px;
+
+                                    /* Style */
+                                    background-color: orangered;
+                                    color: #505050;
+                                    text-align: right;
+
+                                    /* For child properties */
+                                    content: "";
+                                }
+                            }
+
+
+                            span.onoffswitch-switch {
+                                /* Position */
+                                margin: 0;
+                                position: absolute;
+                                top: 0;
+                                bottom: 0;
+                                right: 26px;
+
+                                /* Dimensions */
+                                width: 25px;
+
+                                /* Style */
+                                background: #FFFFFF;
+                                border: 2px solid #505050;
+                                border-radius: 4px;
+
+                                /* For child properties */
+                                display: block;
+
+                                /* Animations */
+                                transition: all 0.3s ease-in 0s;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        div#action-buttons-div {
+            /* Position */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            top: 0;
+
+            /* Dimensions */
+
+            /* Style */
+            width: auto;
+            height: auto;
+            background-color: #2d3436;
+            border: {
+                style: solid;
+                width: 1px;
+                color: #2d3436;;
+            }
+
+            /* For child properties */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+
+
+            input, button, a {
+                /* Position */
+
+                /* Dimensions */
+                height: 60px;
+                width: 60px;
+
+                /* Style */
+                font-size: 52px;
+                text-align: center;
+                color: white;
+                border-top: {
+                    style: solid;
+                    width: 1px;
+                    color: #2d3436;
+                }
+
+                /* Animations */
+                transition-duration: 250ms;
+
+                /* For child properties */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+            button#submit-button {
+                background-color: $middle-green;
+
+                &:hover {
+                    background-color: lighten($middle-green, 20);
+                }
+            }
+
+
+            button#delete-button {
+                background-color: $middle-red;
+
+                &:hover {
+                    background-color: lighten($middle-red, 20);
+                }
+            }
+
+
+            a#previous-page-button {
+                background-color: $dark-grey;
+
+                &:hover {
+                    background-color: lighten($dark-grey, 20);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,985 @@
+/* Schéma */
+
+    /* Position */
+
+    /* Dimensions */
+
+    /* Style */
+
+    /* For child properties */
+
+
+/*
+    ##################################################
+    ##################### GENERAL ####################
+    ##################################################
+*/
+
+html {
+
+    body {
+
+        main#principal-main {
+            /* Position */
+
+            /* Dimensions */
+            padding-top: 100px;
+            padding-bottom: 100px;
+
+            /* Style */
+
+            /* For child properties */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+
+            a#create-instance-button {
+                /* Position */
+                padding: 5px;
+                margin-bottom: 30px;
+
+                /* Dimensions */
+                width: 300px;
+
+                /* Style */
+                color: white;
+                background: $dark-grey;
+                border-radius: 4px;
+                border-style: solid;
+                border-color: $dark-grey;
+                border-width: 1px;
+
+                /* For child properties */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+
+                &:hover {
+                    color: $middle-turquoise;
+                    border-color: $middle-turquoise;
+                    background-color: $old-white;
+                }
+
+
+                i {
+                    font-size: 40px;
+                }
+            }
+
+            td {
+                /* Position */
+
+                /* Dimensions */
+
+                /* Style */
+                border-style: solid;
+                border-width: 1px;
+                border-color: $dark-grey;
+                border-collapse: collapse;
+
+                /* For child properties */
+            }
+
+
+            th {
+                /* Position */
+                padding: 20px;
+
+                /* Dimensions */
+
+                /* Style */
+                background-color: $dark-grey;
+                color: white;
+                border-color: white;
+                border-width: 1px;
+                border-style: solid;
+                border-top-color: $dark-grey;
+                text-align: center;
+
+                /* For child properties */
+
+                &:first-of-type {
+                    border-left-color: $dark-grey;
+                }
+
+                &:last-of-type {
+                    border-right-color: $dark-grey;
+                }
+            }
+
+
+            td.true_td {
+                background-color: lightgreen;
+            }
+
+
+            td.false_td {
+                background-color: lightpink;
+            }
+
+
+            td a {
+                /* Position */
+                padding: 15px;
+
+                /* Dimensions */
+                display: block;
+
+                /* Style */
+                color: black;
+                text-align: center;
+                transition-duration: 50ms;
+
+                /* For child properties */
+            }
+
+
+            td a:hover {
+                color: $middle-turquoise;
+                transform: scale(1.05);
+            }
+
+
+            div#ajax-loading-box {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+
+                p#no-more-message {
+                    /* Position */
+                    margin-top: 38.5px;
+                    padding: 10px;
+
+                    /* Style */
+                    font-size: $s-fs;
+                    color: $dark-grey;
+                }
+
+
+                #loader {
+                    margin-top: 38.5px;
+                    width: 112px;
+                    height: 112px;
+                    transform: scale(0.5);
+                }
+
+                #loader .box1,
+                #loader .box2,
+                #loader .box3 {
+                    border: 16px solid $dark-grey;
+                    box-sizing: border-box;
+                    position: absolute;
+                    display: block;
+                }
+
+                #loader .box1 {
+                    width: 112px;
+                    height: 48px;
+                    margin-top: 64px;
+                    margin-left: 0px;
+                    animation: anime1 4s 0s forwards ease-in-out infinite;
+                }
+
+                #loader .box2 {
+                    width: 48px;
+                    height: 48px;
+                    margin-top: 0px;
+                    margin-left: 0px;
+                    animation: anime2 4s 0s forwards ease-in-out infinite;
+                }
+
+                #loader .box3 {
+                    width: 48px;
+                    height: 48px;
+                    margin-top: 0px;
+                    margin-left: 64px;
+                    animation: anime3 4s 0s forwards ease-in-out infinite;
+                }
+
+                @-moz-keyframes anime1 {
+                    0% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    50% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 112px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    100% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+                }
+
+                @-webkit-keyframes anime1 {
+                    0% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    50% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 112px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    100% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+                }
+
+                @-o-keyframes anime1 {
+                    0% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    50% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 112px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    100% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+                }
+
+                @keyframes anime1 {
+                    0% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    50% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 112px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    100% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+                }
+
+                @-moz-keyframes anime2 {
+                    0% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    50% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    100% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+                }
+
+                @-webkit-keyframes anime2 {
+                    0% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    50% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    100% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+                }
+
+                @-o-keyframes anime2 {
+                    0% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    50% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    100% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+                }
+
+                @keyframes anime2 {
+                    0% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    50% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 0px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    100% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+                }
+
+                @-moz-keyframes anime3 {
+                    0% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 112px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    50% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    100% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+                }
+
+                @-webkit-keyframes anime3 {
+                    0% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 112px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    50% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    100% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+                }
+
+                @-o-keyframes anime3 {
+                    0% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 112px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    50% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    100% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+                }
+
+                @keyframes anime3 {
+                    0% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    12.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    25% {
+                        width: 48px;
+                        height: 112px;
+                        margin-top: 0px;
+                        margin-left: 64px;
+                    }
+
+                    37.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    50% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    62.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    75% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    87.5% {
+                        width: 48px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 64px;
+                    }
+
+                    100% {
+                        width: 112px;
+                        height: 48px;
+                        margin-top: 64px;
+                        margin-left: 0px;
+                    }
+                }
+            }
+        }
+    }
+}

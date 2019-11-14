@@ -1,0 +1,2 @@
+class BULBAdminError(Exception):
+    pass

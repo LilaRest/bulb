@@ -1,0 +1,80 @@
+div#modal-popup-container {
+    z-index: 3000;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+div#modal-popup-background {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+}
+
+div#modal-popup {
+    z-index: 10;
+    padding-top: 5vh;
+    padding-bottom: 5vh;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    height: auto;
+    width: 80vw;
+    max-height: 80vh;
+    background-color: #ececec;
+    border-style: solid;
+    border-radius: 12px;
+    border-color: black;
+    border-width: 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: scroll;
+    line-height: 25px;
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+
+    p#modal-popup-info {
+        margin-top: 20px;
+        width: 100%;
+        padding: 5px;
+        background-color: #e2d3c8;
+        border-style: solid;
+        border-color: red;
+        border-width: 1px;
+        text-align: center
+    }
+
+    a {
+        color: #007493;
+    }
+
+
+    ul {
+        align-self: flex-start;
+        padding-left: 20px;
+        margin-bottom: 20px;
+
+
+        li {
+            list-style: disc;
+        }
+    }
+}
+
