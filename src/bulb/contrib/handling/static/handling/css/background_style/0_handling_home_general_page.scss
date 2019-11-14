@@ -1,0 +1,97 @@
+/* Schéma */
+
+    /* Position */
+
+    /* Dimensions */
+
+    /* Style */
+
+    /* For child properties */
+
+
+/*
+    ##################################################
+    ##################### GENERAL ####################
+    ##################################################
+*/
+
+
+html {
+
+    body {
+
+        main#principal-main {
+            /* Position */
+
+            /* Dimensions */
+
+            /* Style */
+
+            /* For child properties */
+            display: flex;
+            justify-content: center;
+
+
+            div.node-models-list {
+                /* Position */
+                margin-top: 50px;
+
+                /* Dimensions */
+                width: 300px;
+
+                /* Style */
+
+                /* For child properties */
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+
+                h3 {
+                    width: 100%;
+
+                    a {
+                        /* Position */
+
+                        /* Dimensions */
+                        width: 100%;
+                        height: 100%;
+
+                        /* Style */
+                        padding: 15px;
+                        background-color: $dark-grey;
+                        color: $old-white;
+                        font-size: $s-fs;
+                        text-align: center;
+                        border: {
+                            radius: 4px;
+                            color: white;
+                            width: 1px;
+                            style: solid;
+                        }
+
+                        /* For child properties */
+                        display: block;
+
+
+                        &:hover {
+                            /* Position */
+
+                            /* Dimensions */
+
+                            /* Style */
+                            background-color: $old-white;
+                            border: {
+                                color: $middle-turquoise;
+                            }
+                            color: $middle-turquoise;
+
+                            /* For child properties */
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

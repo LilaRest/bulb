@@ -1,0 +1,40 @@
+/* Width test's div (TO DELETE IN PROD) */
+@media #{$medium-screen} {
+    div#mq-test {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 50px;
+        width: 50px;
+        background-color: yellowgreen;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-family: Cuprum, sans-serif;
+        font-size: 28px;
+    }
+
+    div#mq-test::before {
+        content: "M"
+    }
+}
+
+
+
+
+/*
+    ##################################################
+    ################# MEDIUM SCREENS #################
+    ##################################################
+    (smartphone landscape, tablet portrait, and other medium screens)
+*/
+@media #{$medium-screen} {
+
+    html {
+
+        body {
+
+        }
+    }
+}

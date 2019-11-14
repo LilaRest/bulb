@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="fr">
+
+    <head>
+        <title>{% block title %}Grasse Mat'{% endblock title %}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width"/>
+        
+        {% block head %}{% endblock head %}
+    </head>
+
+    <!-- To remove -->
+    <div id="mq-test"></div>
+
+    <body>
+        <div id="loader_box" style="display: none;">
+            <img src="{{ WS.logo }}" alt="Website Logo"/>
+            <p>Administration</p>
+        </div>
+
+        <header id="principal-header">
+            <nav id="website-navigation-box">
+                <ul>
+                    <li><a href="{% url "admin_home" %}">Administration</a></li>
+
+                    <li><a href="{% url "handling_home" %}">Gestion</a></li>
+
+                    {% for module_name, module_infos in BULB_ADDITIONAL_ADMIN_MODULES.items %}
+                        <li><a href="{% url module_infos.home_view_url_name %}">{{ module_infos.printed_name }}</a></li>
+                    {% endfor %}
+
+                    <li>
+                        <form action="{% url "admin_logout" %}" method="post" novalidate>
+                            {% csrf_token %}
+
+                            <input type="hidden" name="next" value="{{ request.path }}"/>
+
+                            <input type="submit" value="Déconnexion"/>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+
+            <h1>Administration {{ WS.name }}</h1>
+
+            <nav id="administration-navigation-box">
+                <a href="{% url "admin_home" %}">Administration</a>
+                {% block administration_part_name %}{% endblock administration_part_name %}
+            </nav>
+        </header>
+
+        <main id="principal-main">{% block content %}No content.{% endblock content %}</main>
+
+        {% if messages %}
+            <ul id="messages-box">
+                {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <script>
+            const loader_box = document.querySelector("div#loader_box");
+
+            // Support no javascript browsers.
+            loader_box.style.display = "flex";
+
+            window.addEventListener("load", function () {
+                loader_box.style.animation = "fade 500ms forwards";
+                window.scroll(0, 0)
+
+            })
+        </script>
+
+        <script crossorigin="anonymous"src="https://polyfill.io/v3/polyfill.min.js?flags=gated&features=blissfuljs%2Cdefault%2Ces2015%2Ces2016%2Ces2017%2Ces5%2Ces6%2Ces7"></script>
+        {% block scripts %}{% endblock scripts %}
+    </body>
+
+</html>

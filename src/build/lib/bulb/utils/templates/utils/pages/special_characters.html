@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+{% load bulb_static static compress %}
+
+<html lang="en">
+
+    <head>
+        <title>Special characters</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width"/>
+        {% if DEBUG %}
+            {% compress css %}
+                <link rel="stylesheet" type="text/x-scss" href="{% static 'utils/css/style/special_characters.scss' %}"/>
+            {% endcompress %}
+
+        {% elif not DEBUG %}
+            <link rel="stylesheet" href="{% static_bundled_src 'utils/bundle_special_characters.css' %}"/>
+
+        {% endif %}
+
+    </head>
+
+    <body>
+        <header>
+            <h1>Special characters :</h1>
+            <p id="info">Click on a character to copy it</p>
+        </header>
+
+        <main>
+            <div>
+                {% for character in special_characters %}
+                <button class="special-characters-button">{{ character }}</button>
+                {% endfor %}
+            </div>
+        </main>
+
+        <p id="message-box"></p>
+
+        {% if DEBUG %}
+            <script src="{% static 'utils/js/special_characters.js' %}"></script>
+
+        {% elif not DEBUG %}
+            <script src="{% static_bundled_src 'utils/bundle_special_characters.js' %}"></script>
+
+        {% endif %}
+    </body>
+
+</html>

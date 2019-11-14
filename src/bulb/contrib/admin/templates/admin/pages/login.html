@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Admin - Login</title>
+        <meta charset="utf-8"/>
+    </head>
+
+    <body>
+        <h1>Connexion:</h1>
+
+        <form method="post" action="{% url "admin_login" %}" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Log in"/>
+        </form>
+    </body>
+</html>

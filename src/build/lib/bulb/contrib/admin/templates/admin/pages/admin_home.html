@@ -1,0 +1,25 @@
+{% extends "admin/background_pages/base.html" %}
+
+{% load bulb_static static compress %}
+
+{% block title %}Administration{% endblock title %}
+
+{% block head %}
+    {% if DEBUG %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static "admin/css/style/admin_home_page.scss" %}"/>
+        {% endcompress %}
+
+    {% elif not DEBUG %}
+        <link rel="stylesheet" href="{% static_bundled_src 'admin/bundle_admin_home.css' %}"/>
+
+    {% endif %}
+{% endblock head %}
+
+{% block administration_part_name %}{% endblock administration_part_name %}
+
+{% block content %}
+
+{% endblock content %}
+
+{% block scripts %}{% endblock scripts %}
