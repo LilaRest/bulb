@@ -28,33 +28,33 @@ Look at this comparison chart, and make the better choice for your needs :
 
 | | [**bulb**](https://github.com/LilaRest/bulb) | [**neomodel**](https://github.com/neo4j-contrib/neomodel) | [**neo4django**](https://github.com/scholrly/neo4django) |
 |:--------------:|:------------:|:--------------:|:------------:|
-| Python 2.X support | ❎ | ✅ | ✅ |
-| Python 3.X support | ✅ | ✅ | ❎ |
-| Last Neo4j versions support | ✅ | ✅ | ❎ |
-| Last Django versions support | ✅ | ✅ | ❎ |
+| Python 2.X support | ❌ | ✅ | ✅ |
+| Python 3.X support | ✅ | ✅ | ❌ |
+| Last Neo4j versions support | ✅ | ✅ | ❌ |
+| Last Django versions support | ✅ | ✅ | ❌ |
 | Ready and easy to use models | ✅ | ✅ | ✅ |
-| Highly customizable models | ✅ | ❎ | ❎ |
+| Highly customizable models | ✅ | ❌ | ❌ |
 | Relationship directly integrated to models | ✅ | ✅ | ✅ |
-| Independant and reusable relationship models | ✅ | ❎ | ❎ |
-| Highly customizable relationship models | ✅ | ❎ | ❎ |
-| Django's sessions support | ✅ | ❎ | ✅ |
-| Django's authentication support | ✅ | ❎ | ✅ |
-| Additional functionalities for authentication | ✅ | ❎ | ❎ |
-| Django's administration support | ✅ | ❎ | ❎ |
-| Highly customizable administration | ✅ | ❎ | ❎ |
-| Neo4j's clusters support | ✅ | ❎ | ❎ |
-| Neo4j's customizable sessions support | ✅ | ❎ | ❎ |
-| Neo4j's causal chaining support | ✅ | ❎ | ❎ |
-| Neo4j's geospacial operations support | ❎ | ✅ | ❎ |
-| Fully CDN integration | ✅ | ❎ | ❎ |
-| Automatic staticfiles compression | ✅ | ❎ | ❎ |
-| Automatic staticfiles compilation | ✅ | ❎ | ❎ |
-| Fully SFTP support for staticfiles | ✅ | ❎ | ❎ |
-| Reinforcement of the password system | ✅ | ❎ | ❎ |
-| SASS/SCSS support | ✅ | ❎ | ❎ |
-| Webpack integration | ✅ | ❎ | ❎ |
-| Polyfill integration | ✅ | ❎ | ❎ |
-| Some front-end tools | ✅ | ❎ | ❎ |
+| Independant and reusable relationship models | ✅ | ❌ | ❌ |
+| Highly customizable relationship models | ✅ | ❌ | ❌ |
+| Django's sessions support | ✅ | ❌ | ✅ |
+| Django's authentication support | ✅ | ❌ | ✅ |
+| Additional functionalities for authentication | ✅ | ❌ | ❌ |
+| Django's administration support | ✅ | ❌ | ❌ |
+| Highly customizable administration | ✅ | ❌ | ❌ |
+| Neo4j's clusters support | ✅ | ❌ | ❌ |
+| Neo4j's customizable sessions support | ✅ | ❌ | ❌ |
+| Neo4j's causal chaining support | ✅ | ❌ | ❌ |
+| Neo4j's geospacial operations support | ❌ | ✅ | ❌ |
+| Fully CDN integration | ✅ | ❌ | ❌ |
+| Automatic staticfiles compression | ✅ | ❌ | ❌ |
+| Automatic staticfiles compilation | ✅ | ❌ | ❌ |
+| Fully SFTP support for staticfiles | ✅ | ❌ | ❌ |
+| Reinforcement of the password system | ✅ | ❌ | ❌ |
+| SASS/SCSS support | ✅ | ❌ | ❌ |
+| Webpack integration | ✅ | ❌ | ❌ |
+| Polyfill integration | ✅ | ❌ | ❌ |
+| Some front-end tools | ✅ | ❌ | ❌ |
 
 To conclude, if you absolutely want exactly same models' structure than Django or if you have to make compatible an already existing project with Neo4j (and if you don't need neither sessions, nor authentication, nor administration), you should use [**neomodel**](https://github.com/neo4j-contrib/neomodel).
 For the other cases, check this documentation :)
@@ -122,7 +122,7 @@ The **bulb package** is very fast to setup. Just **2 steps** are needed to execu
 <br/>
 
 
-## 1. Set the bulb settings to your project 
+## 1. Set the bulb settings to your project
 
 A very simple step, just import the **`set_bulb_settings_on()`** in the settings.py file of your Django project :
 
@@ -152,7 +152,7 @@ Finally, and always in the same file (**just below the method** that we have pre
 
 **`BULB_DATABASE_ID`** is your Neo4j database **id** or **username**. By default the id is defined on 'neo4j'.
 
-**`BULB_DATABASE_PASSWORD`** is your Neo4j database **password**. By default the password is defined on 'neo4j' too. But normally and if you don't have change the password before, during the first run of the Neo4j database, we will ask you to replace the default password by another. 
+**`BULB_DATABASE_PASSWORD`** is your Neo4j database **password**. By default the password is defined on 'neo4j' too. But normally and if you don't have change the password before, during the first run of the Neo4j database, we will ask you to replace the default password by another.
 
 Example :
 
