@@ -124,29 +124,31 @@ class Permission(node_models.Node):
         """
         This method allow the retrieving of Permission (or of one of its children classes) instances.
 
+        :param codename (required if there is no uuid) : The codename of a permission to get an unique permission instance.
 
-        :param uuid: The Universal Unique Identifier of a permission to get an unique permission instance.
+        :param uuid (required if there is no codename) : The Universal Unique Identifier of a node to get an unique instance.
 
-        :param codename: The codename of a permission to get an unique permission instance.
+        :param order_by (optional, default=None) : Must be the name of the property with which the returned datas will be sorted.
+                                                   Examples : "datetime", "first_name", etc...
 
-        :param order_by: Must be the name of the property with which the returned datas will be sorted.
-                         Examples : "datetime", "first_name", etc...
+        :param limit (optional, default=None) : Must be an integer. This parameter defines the number of returned elements.
 
-        :param limit: Must be an integer. This parameter defines the number of returned elements.
+        :param skip (optional, default=None) : Must be an integer. This parameter defines the number of skipped elements. For example
+                                               if self.skip = 3, the 3 first returned elements will be skipped.
 
-        :param skip: Must be an integer. This parameter defines the number of skipped elements. For example if
-                     self.skip = 3, the 3 first returned elements will be skipped.
+        :param desc (optional, default=False) : Must be a boolean. If it is False the elements will be returned in an increasing order,
+                                                but it is True, they will be returned in a descending order.
 
-        :param desc: Must be a boolean. If it is False the elements will be returned in an increasing order, but it is
-                     True, they will be returned in a descending order.
+        :param only (optional, default=None) : Must be a list of field_names. If this parameter is filled, the return will not be Node
+                                               instances, but a dict with "only" the mentioned fields.
 
-        :param only: Must be a list of field_names. If this parameter is filled, the return will not be Permission
-                     instances, but a dict with "only" the mentioned fields.
+        :param filter (optional, default=None) : Must be Q statement. You must use the Q class stored in bulb.db
+                                                 Example: Q(name__contains="al") | Q(age__year__lte=8)
 
-        :param filter: Must be Q statement. You must use the Q class stored in bulb.db
-                       Example: Q(name__contains="al") | Q(age__year__lte=8)
+        :param distinct (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with
+                                                    unique elements.
 
-        :param return_query: Must be a boolean. If true, the method will return the cypher query.
+        :param return_query (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.
 
         :return: If uuid is None, a list will be returned. Else it will be a unique instance.
         """
@@ -318,28 +320,31 @@ class Group(node_models.Node):
         """
         This method allow the retrieving of Group (or of one of its children classes) instances.
 
-        :param uuid: The Universal Unique Identifier of a group to get an unique group instance.
+        :param name (required if there is no uuid) : The name of a group to get an unique group instance.
 
-        :param name: The name of a group to get an unique group instance.
+        :param uuid (required if there is no name) : The Universal Unique Identifier of a node to get an unique instance.
 
-        :param order_by: Must be the name of the property with which the returned datas will be sorted.
-                         Examples : "datetime", "first_name", etc...
+        :param order_by (optional, default=None) : Must be the name of the property with which the returned datas will be sorted.
+                                                   Examples : "datetime", "first_name", etc...
 
-        :param limit: Must be an integer. This parameter defines the number of returned elements.
+        :param limit (optional, default=None) : Must be an integer. This parameter defines the number of returned elements.
 
-        :param skip: Must be an integer. This parameter defines the number of skipped elements. For example if
-                     self.skip = 3, the 3 first returned elements will be skipped.
+        :param skip (optional, default=None) : Must be an integer. This parameter defines the number of skipped elements. For example
+                                               if self.skip = 3, the 3 first returned elements will be skipped.
 
-        :param desc: Must be a boolean. If it is False the elements will be returned in an increasing order, but it is
-                     True, they will be returned in a descending order.
+        :param desc (optional, default=False) : Must be a boolean. If it is False the elements will be returned in an increasing order,
+                                                but it is True, they will be returned in a descending order.
 
-        :param only: Must be a list of field_names. If this parameter is filled, the return will not be Group instances,
-                     but a dict with "only" the mentioned fields.
+        :param only (optional, default=None) : Must be a list of field_names. If this parameter is filled, the return will not be Node
+                                               instances, but a dict with "only" the mentioned fields.
 
-        :param filter: Must be Q statement. You must use the Q class stored in bulb.db
-               Example: Q(name__contains="al") | Q(age__year__lte=8)
+        :param filter (optional, default=None) : Must be Q statement. You must use the Q class stored in bulb.db
+                                                 Example: Q(name__contains="al") | Q(age__year__lte=8)
 
-        :param return_query: Must be a boolean. If true, the method will return the cypher query.
+        :param distinct (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with
+                                                    unique elements.
+
+        :param return_query (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.
 
         :return: If uuid is None, a list will be returned. Else it will be a unique instance.
         """
@@ -652,32 +657,38 @@ class User(node_models.Node):
 
     @classmethod
     def get(cls, uuid=None, email=None, email_confirmation_key=None, order_by=None, limit=None, skip=None, desc=False,
-            only=None, filter=None, return_query=False):
+            only=None, filter=None, distinct=False, return_query=False):
         """
         This method allow the retrieving of User (or of one of its children classes) instances.
 
-        :param uuid: The Universal Unique Identifier of a user to get an unique user instance.
+        :param email (required if there is neither uuid nor email_confirmation_key) : The email of a user to get an unique user instance.
 
-        :param email: The email of a user to get an unique user instance.
+        :param uuid (required if there is neither email nor email_confirmation_key) : The Universal Unique Identifier of a node to get
+                                                                                      an unique instance.
 
-        :param order_by: Must be the name of the property with which the returned datas will be sorted.
-                         Examples : "datetime", "first_name", etc...
+        :param email_confirmation_key (required if there is neither email nor uuid) : The confirmation key for the email validation part.
 
-        :param limit: Must be an integer. This parameter defines the number of returned elements.
+        :param order_by (optional, default=None) : Must be the name of the property with which the returned datas will be sorted.
+                                                   Examples : "datetime", "first_name", etc...
 
-        :param skip: Must be an integer. This parameter defines the number of skipped elements. For example if
-                     self.skip = 3, the 3 first returned elements will be skipped.
+        :param limit (optional, default=None) : Must be an integer. This parameter defines the number of returned elements.
 
-        :param desc: Must be a boolean. If it is False the elements will be returned in an increasing order, but it is
-                     True, they will be returned in a descending order.
+        :param skip (optional, default=None) : Must be an integer. This parameter defines the number of skipped elements. For example
+                                               if self.skip = 3, the 3 first returned elements will be skipped.
 
-        :param only: Must be a list of field_names. If this parameter is filled, the return will not be User instances,
-                     but a dict with "only" the mentioned fields.
+        :param desc (optional, default=False) : Must be a boolean. If it is False the elements will be returned in an increasing order,
+                                                but it is True, they will be returned in a descending order.
 
-        :param filter: Must be Q statement. You must use the Q class stored in bulb.db
-               Example: Q(name__contains="al") | Q(age__year__lte=8)
+        :param only (optional, default=None) : Must be a list of field_names. If this parameter is filled, the return will not be Node
+                                               instances, but a dict with "only" the mentioned fields.
 
-        :param return_query: Must be a boolean. If true, the method will return the cypher query.
+        :param filter (optional, default=None) : Must be Q statement. You must use the Q class stored in bulb.db
+                                                 Example: Q(name__contains="al") | Q(age__year__lte=8)
+
+        :param distinct (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with
+                                                    unique elements.
+
+        :param return_query (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.
 
         :return: If uuid is None, a list will be returned. Else it will be a unique instance.
         """
@@ -707,7 +718,14 @@ class User(node_models.Node):
 
         # Build the where statement.
         if filter is not None:
-            where_statement = "WHERE " + filter
+            # where_statement = "WHERE " + filter #removed to fix
+
+            if not filter[0] != "n":
+                where_statement = "WHERE " + filter
+
+            else:
+                where_statement = filter
+
             where_statement = where_statement.replace("n.", "u.")
 
         # Build the with_statement.
@@ -719,7 +737,11 @@ class User(node_models.Node):
 
         # Build return_statement statements.
         if not only:
-            return_statement = "RETURN (u)"
+            if not distinct:
+                return_statement = "RETURN (u)"
+
+            else:
+                return_statement = "RETURN DISTINCT (u)"
 
         else:
             only_statement_list = []
@@ -729,7 +751,11 @@ class User(node_models.Node):
 
             only_statement = ", ".join(only_statement_list)
 
-            return_statement = f"RETURN {only_statement}"
+            if not distinct:
+                return_statement = f"RETURN {only_statement}"
+
+            else:
+                return_statement = f"RETURN DISTINCT {only_statement}"
 
         # Build limit_statement.
         if limit is not None:
@@ -777,6 +803,7 @@ class User(node_models.Node):
                       return_statement)
 
         if return_query is False:
+
             response = gdbh.r_transaction(request_statement)
 
             if response:
@@ -799,7 +826,7 @@ class User(node_models.Node):
 
             else:
                 if uuid is not None or email is not None or email_confirmation_key is not None:
-                    if settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE:
+                    if settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE: # TODO : This line is maybe useless, check it.
                         AnonymousUser_node_model = get_anonymoususer_node_model()
                         return AnonymousUser_node_model()
 
@@ -809,13 +836,26 @@ class User(node_models.Node):
             return request_statement
 
     @classmethod
-    def count(cls, uuid=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, **extrafields):
-        request_statement = cls.get(uuid=uuid, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only,
-                                    filter=filter, return_query=True, **extrafields)
-        request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(u)"
+    def count(cls, uuid=None, email=None,  email_confirmation_key=None, order_by=None, limit=None, skip=None, desc=False, only=None,
+    filter=None, distinct=False, **extrafields):
+        request_statement = cls.get(uuid=None, email=None,  email_confirmation_key=None, order_by=None, limit=None, skip=None,
+                                    desc=False, only=None, filter=None, distinct=False, return_query=True, **extrafields)
+
+        request_count_statement = None
+
+        if not distinct:
+            request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(u)"
+
+        else:
+            request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(DISTINCT u)"
+
         response = gdbh.r_transaction(request_count_statement)
 
-        return response[0]["COUNT(u)"]
+        if not distinct:
+            return response[0]["COUNT(u)"]
+
+        else:
+            return response[0]["COUNT(DISTINCT u)"]
 
     def set_password(self, new_password):
         self.update("password", _hash_password(new_password))
