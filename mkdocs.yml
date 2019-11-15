@@ -1,4 +1,7 @@
 site_name: bulb
+
+docs_dir: 'bulb_docs/'
+
 nav:
   - bulb:
     - Presentation: presentation.md
@@ -17,7 +20,9 @@ nav:
     - Settings: settings.md
     - Conventions: conventions.md
     - License : license.md
+
 theme: readthedocs
+
 markdown_extensions:
   - toc:
       permalink: True
