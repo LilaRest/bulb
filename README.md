@@ -8,7 +8,7 @@
 # Presentation :
 <br/>
 
-![transparent logo bulb](docs/img/transparent_logo_bulb.png)
+![cropped_and_compressed_logo](https://bulb.readthedocs.io/en/latest/img/cropped_and_compressed_logo.jpg)
 <br/>
 <br/>
 
