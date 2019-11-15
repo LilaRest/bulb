@@ -119,7 +119,7 @@ class Permission(node_models.Node):
         return hash(self.codename) + hash(self.description)
 
     @classmethod
-    def get(cls, uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None,
+    def get(cls, uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False
             return_query=False):
         """
         This method allow the retrieving of Permission (or of one of its children classes) instances.
@@ -175,7 +175,12 @@ class Permission(node_models.Node):
 
         # Build the where statement.
         if filter is not None:
-            where_statement = "WHERE " + filter
+            if not filter[0] != "n":
+                where_statement = "WHERE " + filter
+
+            else:
+                where_statement = filter
+
             where_statement = where_statement.replace("n.", "p.")
 
         # Build the with_statement.
@@ -187,7 +192,11 @@ class Permission(node_models.Node):
 
         # Build return_statement statements.
         if not only:
-            return_statement = "RETURN (p)"
+            if not distinct:
+                return_statement = "RETURN (p)"
+
+            else:
+                return_statement = "RETURN DISTINCT (p)"
 
         else:
             only_statement_list = []
@@ -197,7 +206,11 @@ class Permission(node_models.Node):
 
             only_statement = ", ".join(only_statement_list)
 
-            return_statement = f"RETURN {only_statement}"
+            if not distinct:
+                return_statement = f"RETURN {only_statement}"
+
+            else:
+                return_statement = f"RETURN DISTINCT {only_statement}"
 
         # Build limit_statement.
         if limit is not None:
@@ -270,13 +283,26 @@ class Permission(node_models.Node):
             return request_statement
 
     @classmethod
-    def count(cls, uuid=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, **extrafields):
-        request_statement = cls.get(uuid=uuid, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only,
-                                    filter=filter, return_query=True, **extrafields)
-        request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(p)"
+    def count(cls, uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
+              **extrafields):
+        request_statement = cls.get(uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None,
+                                    distinct=False, return_query=True, **extrafields)
+
+        request_count_statement = None
+
+        if not distinct:
+            request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(p)"
+
+        else:
+            request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(DISTINCT p)"
+
         response = gdbh.r_transaction(request_count_statement)
 
-        return response[0]["COUNT(p)"]
+        if not distinct:
+            return response[0]["COUNT(p)"]
+
+        else:
+            return response[0]["COUNT(DISTINCT p)"]
 
 
 def get_permission_node_model():
@@ -316,7 +342,8 @@ class Group(node_models.Node):
         return f'<Group object(name="{self.name}", uuid="{self.uuid}")>'
 
     @classmethod
-    def get(cls, uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, return_query=False):
+    def get(cls, uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
+            return_query=False):
         """
         This method allow the retrieving of Group (or of one of its children classes) instances.
 
@@ -371,7 +398,12 @@ class Group(node_models.Node):
 
         # Build the where statement.
         if filter is not None:
-            where_statement = "WHERE " + filter
+            if not filter[0] != "n":
+                where_statement = "WHERE " + filter
+
+            else:
+                where_statement = filter
+
             where_statement = where_statement.replace("n.", "g.")
 
         # Build the with_statement.
@@ -383,7 +415,11 @@ class Group(node_models.Node):
 
         # Build return_statement statements.
         if not only:
-            return_statement = "RETURN (g)"
+            if not distinct:
+                return_statement = "RETURN (g)"
+
+            else:
+                return_statement = "RETURN DISTINCT (g)"
 
         else:
             only_statement_list = []
@@ -393,7 +429,11 @@ class Group(node_models.Node):
 
             only_statement = ", ".join(only_statement_list)
 
-            return_statement = f"RETURN {only_statement}"
+            if not distinct:
+                return_statement = f"RETURN {only_statement}"
+
+            else:
+                return_statement = f"RETURN DISTINCT {only_statement}"
 
         # Build limit_statement.
         if limit is not None:
@@ -466,13 +506,25 @@ class Group(node_models.Node):
             return request_statement
 
     @classmethod
-    def count(cls, uuid=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, **extrafields):
-        request_statement = cls.get(uuid=uuid, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only,
-                                    filter=filter, return_query=True, **extrafields)
-        request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(g)"
+    def count(cls, uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
+              **extrafields):
+        request_statement = cls.get(uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None,
+                                    distinct=False, return_query=True, **extrafields)
+        request_count_statement = None
+
+        if not distinct:
+            request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(g)"
+
+        else:
+            request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(DISTINCT g)"
+
         response = gdbh.r_transaction(request_count_statement)
 
-        return response[0]["COUNT(g)"]
+        if not distinct:
+            return response[0]["COUNT(g)"]
+
+        else:
+            return response[0]["COUNT(DISTINCT g)"]
 
 
 def get_group_node_model():
