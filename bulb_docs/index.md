@@ -1,7 +1,6 @@
 # Welcome to the `bulb` documentation !
 <br/>
-![transparent logo bulb](img/bulb_logo.jpg)
-<br/>
+![cropped and compressed logo](../img/cropped_and_compressed_logo.jpg)<br/>
 <br/>
 
 ---
