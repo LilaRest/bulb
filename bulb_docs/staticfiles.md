@@ -23,6 +23,7 @@ In the following parts you'll have to make difference between **source files** a
 <br/>
 
 - The **content staticfiles** are all the files (images, pdf) introduced dynamically by the users of the website (profile picture, posted/shared pdf, etc...). A static showcase website, it will not have any **content files**.
+
 <br/>
 <br/>
 
@@ -124,7 +125,70 @@ In the previous points we have seen :
 - And finally the `python manage.py clearstatic` command, which clear (remove) all the old source staticfiles on the SFTP server and purge the CDN.
 
 **bulb** provides a all-in-one command, which one run these four commands : `python manage.py handlestatic`
-Just run this command to clear the old source staticfiles and collect, bundle, compress and push the new ones.
+The only thing that you have to configure is the **BULB_SFTP_SRC_STATICFILES_MODE** settings' variable which can take three values :
+<br/>   
+
+- **"raw"** : The 'staticfiles' folder will be pushed on the sftp.      
+<br/>        
+
+- **"bundled"** : The "bundled_staticfiles" folder will be created from the 'staticfiles' folder and will be pushed on the sftp.    
+<br/>   
+
+- **"both"** : Both 'staticfiles' and 'bundled_staticfiles' folders will be pushed on the sftp.     
+<br/>
+
+Note that per default the **BULB_SFTP_SRC_STATICFILES_MODE** settings' variable is set on **"bundled"**.
+
+So, just run this command to clear the old source staticfiles and collect, bundle, compress and push the new ones.
+
+<br/>
+<br/>
+
+# Webpack polyfill integration
+
+The webpack polyfill is the easiest way to implement polyfills for the entire website. Just set the **BULB_SRC_BUNDLES_USE_WEBPACK_POLYFILL** settings' variable on **True** and all your scripts will be compatible for all browsers of all versions.
+
+But to obtain a more powerful website, it is recommended to **don't use the webpack polyfill** because:
+<br/>
+
+- The webpack polyfill is directly implemented into your bundle scripts, this means that if one of your scripts doesn't need all polyfills , they will still be loaded.     
+<br/>
+
+- The webpack polyfill don't have any regard on the browser used to load a page. This means that if your page is open on a modern browser which doesn't need any polyfills, they will still be loaded.
+<br/>
+
+The best solution is to use [polyfill.io](polyfill.io) which one will load all the required polyfills for each different context.
+
+A good configuration of polyfill.io is :
+
+```html
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?flags=gated&features=blissfuljs%2Cdefault%2Ces2015%2Ces2016%2Ces2017%2Ces5%2Ces6%2Ces7"></script>
+```
+
+(Just implement this script tag as the first script tag of each page which could need some polyfills.)
+
+<br/>
+<br/>
+
+# CDN integration
+For this moment, **bulb** only provides support for CDN from [cdn77.com](cdn77.com)     
+Feel free to contribute to the **bulb** project to make it compatible for other CDN providers.
+
+<br/>
+
+## CDN77
+
+To integrate CDN77 to your project with **bulb**, just set the **BULB_USE_CDN77** settings' variable on **True** fill these three  others settings' variables with your cdn77 informations :
+
+```python
+BULB_CDN77_LOGIN = "your@email.com"
+
+BULB_CDN77_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxx"
+
+BULB_CDN77_RESOURCE_ID = "xxxxxx"  # See : https://client.cdn77.com/support/api/version/2.0/cdn-resource#List
+```
+
+Now, the CDN will be automatically purged when files are deleted or modified on the SFTP server.
 
 <br/>
 <br/>
@@ -155,11 +219,14 @@ Example :
 With **bulb** a **bulb_static** module was added with two new template tags :
 <br/>
 
-- "**static_bundled_src**" : used to retrieve bundled source files from your SFTP server,
+- "**static_bundled_src**" : used to retrieve bundled source files from your SFTP server,   
 <br/>
 
 - And "**static_raw_src**" : used to retrieve raw source files from your SFTP server.
-<br/>
+<br/>   
+
+Note that if **DEBUG = True** the staticfiles from the "staticfiles" and "bundled_staticfiles" folders will be used.
+In the other hand, if **DEBUG = False** the staticfiles from the SFTP / CDN will be used.
 
 Example :
 
@@ -182,8 +249,66 @@ Example :
 
 (...)
 ```
+
 <br/>
 <br/>
+
+# Compress, store and use content files
+As a reminder, content files are all the files introduced dynamically by the users of the website (profile picture, posted/shared pdf, etc...). A static showcase website, it will not have any **content files**.
+
+When your SFTP server is configured and also your CDN if you use one, you can easily use content files into your project. Just follow these steps :     
+<br/>
+
+1) Create a node model with one or many SFTP property(ies).
+
+Example :
+
+>> <small>node_models.py</small>
+```python
+from bulb.db import node_models
+
+class Member(node_models.Node):
+    username = node_models.Property(required=True)
+    profile_picture = node_models.Property(sftp=True)
+```
+<br/>
+
+2) Create a template with a form and a file field, and link it to a view.       
+<br/>
+
+3) Then, in the view, retrieve the file object in the **request.FILES** dict, and create the node model instance, giving this object as value of the sftp property.   
+**bulb** will automatically compress and store the file on the SFTP server and set as concerned property value, the url through which the file can be accessed.   
+<br/>
+
+Example :
+
+>> <small>views.py</small>
+```python
+from (...).node_models import Member
+
+def registration_view(request):
+    if request.POST or request.FILES:
+        admin_request_post = dict(request.POST)
+        admin_request_files = dict(request.FILES)
+        admin_request = {**admin_request_post, **admin_request_files}
+
+        Member.create(username=admin_request["username"],
+                     profile_picture=admin_request["profile_picture"])
+
+        (...)
+```
+
+4) Finally, just retrieve an instance of the related node_model and access to the file's url using the same way than all other properties.
+
+```Python
+instance.profile_picture
+>>> <url>
+```
+
+<br/>
+<br/>
+
+
 
 
 <br/>
