@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: bulb-core
-Version: 0.0.72
+Version: 0.0.75
 Summary: Neo4j integration for Django, and much more tools for deployment of consequent websites...
 Home-page: https://github.com/LilaRest/bulb
 Author: Lila Rest
