@@ -119,7 +119,7 @@ class Permission(node_models.Node):
         return hash(self.codename) + hash(self.description)
 
     @classmethod
-    def get(cls, uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False
+    def get(cls, uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
             return_query=False):
         """
         This method allow the retrieving of Permission (or of one of its children classes) instances.
