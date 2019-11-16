@@ -6,8 +6,8 @@
 ---
 
 # Introduction
-**bulb** provides functions wich are easy to use, but it can also let the user works with the advanced Neo4j concepts handled under the hood.
-These concepts are used in a Neo4j cluster organisation but are also useful for the performance of your database interactions.  
+**bulb** provides functions wich are easy to use, but it can also let the user works with the advanced Neo4j's concepts handled under the hood.
+These concepts are used in a Neo4j's cluster organisation but are also useful for the performance of your database's interactions.  
 <br/>
 <br/>
 <br/>
@@ -15,7 +15,7 @@ These concepts are used in a Neo4j cluster organisation but are also useful for 
 ---
 
 # Databases
-In a cluster organisation, your server program will have to be connected with many database servers. To create multiple and different connections, you will have to set up multiple instances of the **`Database`** class imported from **`bulb.db.base`**. As explained in all this documentation, these instances will be used to interact with each database.  
+In a cluster organisation, your server's program will have to be connected with many database's servers. To create multiple and different connections, you'll have to set up multiple instances of the **`Database`** class imported from **`bulb.db.base`**. As explained in all this documentation, these instances will be used to interact with each database.  
 Let's see how to set up a database connection :
 
 1) Import the **`Database`** class from **`bulb.db.base`**.  
@@ -40,7 +40,7 @@ Let's see how to set up a database connection :
     - 5 : TRUST_DEFAULT = TRUST_ALL_CERTIFICATES  
 <br>
 
-These parameters define the transactions modalities (after the establishment of the initial connection. Explanations [here](https://neo4j.com/docs/api/python-driver/current/driver.html#max-connection-lifetime).  
+These parameters define the transactions' modalities (after the establishment of the initial connection. Explanations [here](https://neo4j.com/docs/api/python-driver/current/driver.html#max-connection-lifetime).  
 
 - **`max_connection_lifetime`** (optional)  
 <br>
@@ -53,7 +53,7 @@ These parameters define the transactions modalities (after the establishment of 
 - **`max_retry_time`** (optional)  
 <br/>
 
-3) You can use this database instance to interact with the configured database.
+3) You can use this **`Database`**'s instance to interact with the configured database.
 <br/>
 <br/>
 <br/>
@@ -68,13 +68,13 @@ Let's see how to set up manually a session :
 
 2) Instantiate **`Session`** class to create a session. This class takes 3 parameters :  
 
-- **`database_instance`** (required) : You can fill it with your personalized database instance if you have one, else you can just fill it with the native **gdbh** instance imported from **`bulb.db.base`**.  
+- **`database_instance`** (required) : You can fill it with your personalized **`Database`**'s instance if you have one, otherwise you can just fill it with the native **gdbh** instance imported from **`bulb.db.base`**.  
 <br/>
 - **`type`** (optional) : This parameter defines the access mode of the session. It can be filled with 'WRITE' or 'READ' (See more below in the **Access mode** part.)  
 <br>
 - **`bookmarks`** : The bookmark received by the session (See more below in the Bookmarks part).  
 
-3) Use **with** statement to start a session environment in your program. So, you could define transactions in this environment.
+3) Use **with** statement to start a session environment in your program. Only then you'll be able to define transactions in this environment.
 
 <br/>
 Demonstration:
@@ -95,7 +95,7 @@ with my_session as session:
 ---
 
 # Transactions
-Transactions are sent to a Neo4j database to interact with it. As explained earlier in the documentation, transaction can be handled automatically with the **`w_transaction()`** and **`r_transaction`** of the native database instance, named **`gdbh`**. But you can also write your own transactions.
+Transactions are sent to a Neo4j database to interact with it. As explained earlier in the documentation, transactions can be handled automatically with the **`w_transaction()`** and **`r_transaction`** of the native database instance, named **`gdbh`**. But you can also write your own transactions.
 Let's see how to set up manually a transaction :
 
 1) Import the **`Transaction`** class from **`bulb.db.base`**.  
@@ -104,7 +104,7 @@ Let's see how to set up manually a transaction :
 
 - **`session`** (required): An instance of the above Session class.  
 <br/>
-- **`type`** (required): The type of the transaction ('WRITE' or 'READ'). This type, if filled, override the type of session where the transaction is contained. Explanations [here](https://neo4j.com/docs/driver-manual/1.7/sessions-transactions/#driver-transactions-access-mode).  
+- **`type`** (required): The type of the transaction ('WRITE' or 'READ'). This type, if filled, overrides the type of session where the transaction is contained. Explanations [here](https://neo4j.com/docs/driver-manual/1.7/sessions-transactions/#driver-transactions-access-mode).  
  <br/>                           
 - **`cypher_query`** (required): The cypher query to send to the Neo4j database.  
 
@@ -131,7 +131,7 @@ with my_session as session:
 ---
 
 # Increase syntax
-We've just shown how to set up manually transactions and sessions, but we could yet increase the syntax quality of the examples.
+We've just shown how to set up manual transactions and sessions, still, we can increase the syntax quality of the examples.
 
 Demonstration :
 
@@ -150,12 +150,12 @@ with Session(database_instance=gdbh) as session:
 ---
 
 # Access mode
-A Neo4j cluster can be split to let a role to each database server. This role is either "READING" or "WRITING". This separation guarantees more performance and more stability in your database configuration.  
+A Neo4j cluster can be split into several role, one for each database server. This role is either "READING" or "WRITING". This separation guarantees more performance and more stability in your database configuration.  
 See more : [Neo4j Access Mode](https://neo4j.com/docs/driver-manual/1.7/sessions-transactions/#driver-transactions-access-mode)  
-So, the requests sent to the databases servers will have to be also oriented towards a writing database or a reading database. Here is the biggest interest to handle oneself its sessions and transactions to the Neo4j database.  
+So, the requests sent to the database servers will have to be oriented towards a writing database or a reading database. Here is the biggest interest to handle on yourself the sessions and transactions to the Neo4j database.  
 <br/>
 You can define the access mode of a session : you'll have, during its instantiation, to define its **type** parameter on '**WRITE**' or '**READ**'.  
-You can do the same thing with transactions, but note that if a transaction type is defined, it will override the type (if defined too) of the session in which it is contained.
+You can do the same thing with transactions, but note that if a transaction type is defined, it'll override the type (if defined too) of the session in which it is contained.
 See it [here](https://neo4j.com/docs/api/python-driver/current/transactions.html#access-modes).
 <br/>
 <br/>
@@ -164,7 +164,7 @@ See it [here](https://neo4j.com/docs/api/python-driver/current/transactions.html
 ---
 
 # Bookmarks
-For more program coherence, Neo4j provides **causal chaining** with the usage of **bookmarks**. The principle is to check with a serie of bookmarks, if the requiered previous sessions have been carried out. You can learn more about it [here](https://neo4j.com/docs/driver-manual/1.7/sessions-transactions/#driver-transactions-causal-chaining).  
+For more consistency, Neo4j provides **causal chaining** with the usage of **bookmarks**. The principle is to check from a serie of bookmarks, if the requiered previous sessions have been carried out. You can learn more about it [here](https://neo4j.com/docs/driver-manual/1.7/sessions-transactions/#driver-transactions-causal-chaining).  
 <br/>
 Demonstration :
 
