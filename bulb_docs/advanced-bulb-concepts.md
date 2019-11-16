@@ -5,8 +5,8 @@
 
 ---
 
-# Introducing
-**bulb** provides easy to use functions, but it can also let the user works with the advanced Neo4j concepts handled under the hood.
+# Introduction
+**bulb** provides functions wich are easy to use, but it can also let the user works with the advanced Neo4j concepts handled under the hood.
 These concepts are used in a Neo4j cluster organisation but are also useful for the performance of your database interactions.  
 <br/>
 <br/>
