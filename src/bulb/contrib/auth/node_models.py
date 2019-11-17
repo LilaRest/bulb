@@ -120,7 +120,7 @@ class Permission(node_models.Node):
 
     @classmethod
     def get(cls, uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
-            return_query=False):
+            handmade=None, return_query=False):
         """
         This method allow the retrieving of Permission (or of one of its children classes) instances.
 
@@ -148,145 +148,169 @@ class Permission(node_models.Node):
         :param distinct (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with
                                                     unique elements.
 
+        :param handmade: If this param is filled, no other must be filled. With 'handmade', you can insert your own get query and
+                         the function will transform the objects returned by the database into Python instance of this class. WARNING :
+                         Please consider using the gdbh.r_transaction() method (imported from bulb.db) if your request no returns full
+                         Neo4j objects but a list of properties.
+                         Examples :
+                         ❌ : MATCH (p) RETURN p.first_name, p.last_name
+                         ✅ : MATCH (p) RETURN p
+
+                         In addition, note that the RETURN must absolutely be named 'p' like "permission".
+
         :param return_query (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.
 
         :return: If uuid is None, a list will be returned. Else it will be a unique instance.
         """
-        where_statement = ""
-        property_statement = ""
-        order_by_statement = ""
-        limit_statement = ""
-        skip_statement = ""
-        desc_statement = ""
 
-        # Build the property_statement.
-        if uuid is not None and codename is not None:
-            property_statement = "{uuid:'%s', codename:'%s'}" % (uuid, codename)
+        if handmade is None:
 
-        elif uuid is not None:
-            property_statement = "{uuid:'%s'}" % uuid
+            where_statement = ""
+            property_statement = ""
+            order_by_statement = ""
+            limit_statement = ""
+            skip_statement = ""
+            desc_statement = ""
 
-        elif codename is not None:
-            property_statement = "{codename:'%s'}" % codename
+            # Build the property_statement.
+            if uuid is not None and codename is not None:
+                property_statement = "{uuid:'%s', codename:'%s'}" % (uuid, codename)
 
-        # Build the match_statement.
-        cyher_labels = node_models.DatabaseNode.format_labels_to_cypher(cls._get_labels())
-        match_statement = f"MATCH (p:{cyher_labels} {property_statement})"
+            elif uuid is not None:
+                property_statement = "{uuid:'%s'}" % uuid
 
-        # Build the where statement.
-        if filter is not None:
-            if not filter[0] != "n":
-                where_statement = "WHERE " + filter
+            elif codename is not None:
+                property_statement = "{codename:'%s'}" % codename
 
-            else:
-                where_statement = filter
+            # Build the match_statement.
+            cyher_labels = node_models.DatabaseNode.format_labels_to_cypher(cls._get_labels())
+            match_statement = f"MATCH (p:{cyher_labels} {property_statement})"
 
-            where_statement = where_statement.replace("n.", "p.")
-
-        # Build the with_statement.
-        with_statement = "WITH p"
-
-        # Build order_by statements.
-        if order_by is not None:
-            order_by_statement = f"ORDER BY p.{order_by}"
-
-        # Build return_statement statements.
-        if not only:
-            if not distinct:
-                return_statement = "RETURN (p)"
-
-            else:
-                return_statement = "RETURN DISTINCT (p)"
-
-        else:
-            only_statement_list = []
-
-            for element in only:
-                only_statement_list.append(f"p.{element}")
-
-            only_statement = ", ".join(only_statement_list)
-
-            if not distinct:
-                return_statement = f"RETURN {only_statement}"
-
-            else:
-                return_statement = f"RETURN DISTINCT {only_statement}"
-
-        # Build limit_statement.
-        if limit is not None:
-            if not isinstance(limit, str) and not isinstance(limit, int):
-                raise BULBGetPermissionError(
-                    f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
-
-            else:
-                limit_statement = f"LIMIT {limit}"
-
-        # Build skip_statement and add its required variable.
-        if skip is not None:
-            if not isinstance(skip, str) and not isinstance(skip, int):
-                raise BULBGetPermissionError(
-                    f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
-
-            else:
-                skip_statement = f"SKIP {skip}"
-
-        # Build desc_statement.
-        if not isinstance(desc, bool):
-            raise BULBGetPermissionError(
-                f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
-
-        else:
-            if desc is True:
-                desc_statement = "DESC"
-
-        request_statement = """
-            %s
-            %s
-            %s
-            %s
-            %s
-            %s
-            %s
-            %s
-            """ % (match_statement,
-                   where_statement,
-                   with_statement,
-                   order_by_statement,
-                   desc_statement,
-                   skip_statement,
-                   limit_statement,
-                   return_statement)
-
-        if return_query is False:
-            response = gdbh.r_transaction(request_statement)
-
-            if response:
-                if only is None:
-                    fake_instances_list = []
-
-                    for permission_object in response:
-                        fake_instances_list.append(cls.build_fake_instance(permission_object["p"],
-                                                                           forced_fake_instance_class=cls))
-
-                    if uuid is not None or codename is not None:
-                        return fake_instances_list[0]
-                    else:
-                        return fake_instances_list
+            # Build the where statement.
+            if filter is not None:
+                if not filter[0] != "n":
+                    where_statement = "WHERE " + filter
 
                 else:
-                    return response
+                    where_statement = filter
+
+                where_statement = where_statement.replace("n.", "p.")
+
+            # Build the with_statement.
+            with_statement = "WITH p"
+
+            # Build order_by statements.
+            if order_by is not None:
+                order_by_statement = f"ORDER BY p.{order_by}"
+
+            # Build return_statement statements.
+            if not only:
+                if not distinct:
+                    return_statement = "RETURN (p)"
+
+                else:
+                    return_statement = "RETURN DISTINCT (p)"
 
             else:
-                return None
+                only_statement_list = []
+
+                for element in only:
+                    only_statement_list.append(f"p.{element}")
+
+                only_statement = ", ".join(only_statement_list)
+
+                if not distinct:
+                    return_statement = f"RETURN {only_statement}"
+
+                else:
+                    return_statement = f"RETURN DISTINCT {only_statement}"
+
+            # Build limit_statement.
+            if limit is not None:
+                if not isinstance(limit, str) and not isinstance(limit, int):
+                    raise BULBGetPermissionError(
+                        f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
+
+                else:
+                    limit_statement = f"LIMIT {limit}"
+
+            # Build skip_statement and add its required variable.
+            if skip is not None:
+                if not isinstance(skip, str) and not isinstance(skip, int):
+                    raise BULBGetPermissionError(
+                        f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
+
+                else:
+                    skip_statement = f"SKIP {skip}"
+
+            # Build desc_statement.
+            if not isinstance(desc, bool):
+                raise BULBGetPermissionError(
+                    f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
+
+            else:
+                if desc is True:
+                    desc_statement = "DESC"
+
+            request_statement = """
+                %s
+                %s
+                %s
+                %s
+                %s
+                %s
+                %s
+                %s
+                """ % (match_statement,
+                       where_statement,
+                       with_statement,
+                       order_by_statement,
+                       desc_statement,
+                       skip_statement,
+                       limit_statement,
+                       return_statement)
+
+            if return_query is False:
+                response = gdbh.r_transaction(request_statement)
+
+                if response:
+                    if only is None:
+                        fake_instances_list = []
+
+                        for permission_object in response:
+                            fake_instances_list.append(cls.build_fake_instance(permission_object["p"],
+                                                                               forced_fake_instance_class=cls))
+
+                        if uuid is not None or codename is not None:
+                            return fake_instances_list[0]
+                        else:
+                            return fake_instances_list
+
+                    else:
+                        return response
+
+                else:
+                    return None
+
+            else:
+                return request_statement
 
         else:
-            return request_statement
+            response = gdbh.r_transaction(handmade)
+
+            fake_instances_list = []
+
+            for node_object in response:
+                fake_instances_list.append(cls.build_fake_instance(node_object["p"],
+                                                                   forced_fake_instance_class=cls))
+
+            return fake_instances_list
 
     @classmethod
     def count(cls, uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
-              **extrafields):
+              handmade=None, **extrafields):
         request_statement = cls.get(uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None,
-                                    distinct=False, return_query=True, **extrafields)
+                                    distinct=False, handmade=None, return_query=True, **extrafields)
 
         request_count_statement = None
 
@@ -343,7 +367,7 @@ class Group(node_models.Node):
 
     @classmethod
     def get(cls, uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
-            return_query=False):
+            handmade=None, return_query=False):
         """
         This method allow the retrieving of Group (or of one of its children classes) instances.
 
@@ -371,145 +395,169 @@ class Group(node_models.Node):
         :param distinct (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with
                                                     unique elements.
 
+        :param handmade: If this param is filled, no other must be filled. With 'handmade', you can insert your own get query and
+                         the function will transform the objects returned by the database into Python instance of this class. WARNING :
+                         Please consider using the gdbh.r_transaction() method (imported from bulb.db) if your request no returns full
+                         Neo4j objects but a list of properties.
+                         Examples :
+                         ❌ : MATCH (g) RETURN g.first_name, g.last_name
+                         ✅ : MATCH (g) RETURN g
+
+                         In addition, note that the RETURN must absolutely be named 'g' like "group".
+
         :param return_query (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.
 
         :return: If uuid is None, a list will be returned. Else it will be a unique instance.
         """
-        where_statement = ""
-        property_statement = ""
-        order_by_statement = ""
-        limit_statement = ""
-        skip_statement = ""
-        desc_statement = ""
 
-        # Build the property_statement.
-        if uuid is not None and name is not None:
-            property_statement = "{uuid:'%s', name:'%s'}" % (uuid, name)
+        if handmade is None:
 
-        elif uuid is not None:
-            property_statement = "{uuid:'%s'}" % uuid
+            where_statement = ""
+            property_statement = ""
+            order_by_statement = ""
+            limit_statement = ""
+            skip_statement = ""
+            desc_statement = ""
 
-        elif name is not None:
-            property_statement = "{name:'%s'}" % name
+            # Build the property_statement.
+            if uuid is not None and name is not None:
+                property_statement = "{uuid:'%s', name:'%s'}" % (uuid, name)
 
-        # Build the match_statement.
-        cyher_labels = node_models.DatabaseNode.format_labels_to_cypher(cls._get_labels())
-        match_statement = f"MATCH (g:{cyher_labels} {property_statement})"
+            elif uuid is not None:
+                property_statement = "{uuid:'%s'}" % uuid
 
-        # Build the where statement.
-        if filter is not None:
-            if not filter[0] != "n":
-                where_statement = "WHERE " + filter
+            elif name is not None:
+                property_statement = "{name:'%s'}" % name
 
-            else:
-                where_statement = filter
+            # Build the match_statement.
+            cyher_labels = node_models.DatabaseNode.format_labels_to_cypher(cls._get_labels())
+            match_statement = f"MATCH (g:{cyher_labels} {property_statement})"
 
-            where_statement = where_statement.replace("n.", "g.")
-
-        # Build the with_statement.
-        with_statement = "WITH g"
-
-        # Build order_by statements.
-        if order_by is not None:
-            order_by_statement = f"ORDER BY g.{order_by}"
-
-        # Build return_statement statements.
-        if not only:
-            if not distinct:
-                return_statement = "RETURN (g)"
-
-            else:
-                return_statement = "RETURN DISTINCT (g)"
-
-        else:
-            only_statement_list = []
-
-            for element in only:
-                only_statement_list.append(f"g.{element}")
-
-            only_statement = ", ".join(only_statement_list)
-
-            if not distinct:
-                return_statement = f"RETURN {only_statement}"
-
-            else:
-                return_statement = f"RETURN DISTINCT {only_statement}"
-
-        # Build limit_statement.
-        if limit is not None:
-            if not isinstance(limit, str) and not isinstance(limit, int):
-                raise BULBGetGroupError(
-                    f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
-
-            else:
-                limit_statement = f"LIMIT {limit}"
-
-        # Build skip_statement and add its required variable.
-        if skip is not None:
-            if not isinstance(skip, str) and not isinstance(skip, int):
-                raise BULBGetGroupError(
-                    f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
-
-            else:
-                skip_statement = f"SKIP {skip}"
-
-        # Build desc_statement.
-        if not isinstance(desc, bool):
-            raise BULBGetGroupError(
-                f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
-
-        else:
-            if desc is True:
-                desc_statement = "DESC"
-
-        request_statement = """
-            %s
-            %s
-            %s
-            %s
-            %s
-            %s
-            %s
-            %s
-            """ % (match_statement,
-                   where_statement,
-                   with_statement,
-                   order_by_statement,
-                   desc_statement,
-                   skip_statement,
-                   limit_statement,
-                   return_statement)
-
-        if return_query is False:
-            response = gdbh.r_transaction(request_statement)
-
-            if response:
-                if only is None:
-                    fake_instances_list = []
-
-                    for group_object in response:
-                        fake_instances_list.append(cls.build_fake_instance(group_object["g"],
-                                                                           forced_fake_instance_class=cls))
-
-                    if uuid is not None or name is not None:
-                        return fake_instances_list[0]
-                    else:
-                        return fake_instances_list
+            # Build the where statement.
+            if filter is not None:
+                if not filter[0] != "n":
+                    where_statement = "WHERE " + filter
 
                 else:
-                    return response
+                    where_statement = filter
+
+                where_statement = where_statement.replace("n.", "g.")
+
+            # Build the with_statement.
+            with_statement = "WITH g"
+
+            # Build order_by statements.
+            if order_by is not None:
+                order_by_statement = f"ORDER BY g.{order_by}"
+
+            # Build return_statement statements.
+            if not only:
+                if not distinct:
+                    return_statement = "RETURN (g)"
+
+                else:
+                    return_statement = "RETURN DISTINCT (g)"
 
             else:
-                return None
+                only_statement_list = []
+
+                for element in only:
+                    only_statement_list.append(f"g.{element}")
+
+                only_statement = ", ".join(only_statement_list)
+
+                if not distinct:
+                    return_statement = f"RETURN {only_statement}"
+
+                else:
+                    return_statement = f"RETURN DISTINCT {only_statement}"
+
+            # Build limit_statement.
+            if limit is not None:
+                if not isinstance(limit, str) and not isinstance(limit, int):
+                    raise BULBGetGroupError(
+                        f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
+
+                else:
+                    limit_statement = f"LIMIT {limit}"
+
+            # Build skip_statement and add its required variable.
+            if skip is not None:
+                if not isinstance(skip, str) and not isinstance(skip, int):
+                    raise BULBGetGroupError(
+                        f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
+
+                else:
+                    skip_statement = f"SKIP {skip}"
+
+            # Build desc_statement.
+            if not isinstance(desc, bool):
+                raise BULBGetGroupError(
+                    f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
+
+            else:
+                if desc is True:
+                    desc_statement = "DESC"
+
+            request_statement = """
+                %s
+                %s
+                %s
+                %s
+                %s
+                %s
+                %s
+                %s
+                """ % (match_statement,
+                       where_statement,
+                       with_statement,
+                       order_by_statement,
+                       desc_statement,
+                       skip_statement,
+                       limit_statement,
+                       return_statement)
+
+            if return_query is False:
+                response = gdbh.r_transaction(request_statement)
+
+                if response:
+                    if only is None:
+                        fake_instances_list = []
+
+                        for group_object in response:
+                            fake_instances_list.append(cls.build_fake_instance(group_object["g"],
+                                                                               forced_fake_instance_class=cls))
+
+                        if uuid is not None or name is not None:
+                            return fake_instances_list[0]
+                        else:
+                            return fake_instances_list
+
+                    else:
+                        return response
+
+                else:
+                    return None
+
+            else:
+                return request_statement
 
         else:
-            return request_statement
+            response = gdbh.r_transaction(handmade)
+
+            fake_instances_list = []
+
+            for node_object in response:
+                fake_instances_list.append(cls.build_fake_instance(node_object["g"],
+                                                                   forced_fake_instance_class=cls))
+
+            return fake_instances_list
 
     @classmethod
     def count(cls, uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
-              **extrafields):
+              handmade=None, **extrafields):
         request_statement = cls.get(uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None,
-                                    distinct=False, return_query=True, **extrafields)
+                                    handmade=None, distinct=False, return_query=True, **extrafields)
         request_count_statement = None
 
         if not distinct:
@@ -708,8 +756,8 @@ class User(node_models.Node):
             return new_super_user
 
     @classmethod
-    def get(cls, uuid=None, email=None, email_confirmation_key=None, order_by=None, limit=None, skip=None, desc=False,
-            only=None, filter=None, distinct=False, return_query=False):
+    def get(cls, uuid=None, email=None, email_confirmation_key=None, order_by=None, limit=None, skip=None, desc=False, only=None,
+            filter=None, distinct=False, handmade=None, return_query=False):
         """
         This method allow the retrieving of User (or of one of its children classes) instances.
 
@@ -740,158 +788,183 @@ class User(node_models.Node):
         :param distinct (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with
                                                     unique elements.
 
+        :param handmade: If this param is filled, no other must be filled. With 'handmade', you can insert your own get query and
+                         the function will transform the objects returned by the database into Python instance of this class. WARNING :
+                         Please consider using the gdbh.r_transaction() method (imported from bulb.db) if your request no returns full
+                         Neo4j objects but a list of properties.
+                         Examples :
+                         ❌ : MATCH (u) RETURN u.first_name, u.last_name
+                         ✅ : MATCH (u) RETURN u
+
+                         In addition, note that the RETURN must absolutely be named 'u' like "user".
+
         :param return_query (optional, default=False) : Must be a boolean. If true, the method will return the cypher query.
 
         :return: If uuid is None, a list will be returned. Else it will be a unique instance.
         """
-        where_statement = ""
-        property_statement = ""
-        order_by_statement = ""
-        limit_statement = ""
-        skip_statement = ""
-        desc_statement = ""
 
-        # Build the property_statement.
-        if uuid is not None and email is not None:
-            property_statement = "{uuid:'%s', email:'%s'}" % (uuid, email)
+        if handmade is None:
+            where_statement = ""
+            property_statement = ""
+            order_by_statement = ""
+            limit_statement = ""
+            skip_statement = ""
+            desc_statement = ""
 
-        elif uuid is not None:
-            property_statement = "{uuid:'%s'}" % uuid
+            # Build the property_statement.
+            if uuid is not None and email is not None:
+                property_statement = "{uuid:'%s', email:'%s'}" % (uuid, email)
 
-        elif email is not None:
-            property_statement = "{email:'%s'}" % email
+            elif uuid is not None:
+                property_statement = "{uuid:'%s'}" % uuid
 
-        elif email_confirmation_key is not None:
-            property_statement = "{email_confirmation_key:'%s'}" % email_confirmation_key
+            elif email is not None:
+                property_statement = "{email:'%s'}" % email
 
-        # Build the match_statement.
-        cyher_labels = node_models.DatabaseNode.format_labels_to_cypher(cls._get_labels())
-        match_statement = f"MATCH (u:{cyher_labels} {property_statement})"
+            elif email_confirmation_key is not None:
+                property_statement = "{email_confirmation_key:'%s'}" % email_confirmation_key
 
-        # Build the where statement.
-        if filter is not None:
-            # where_statement = "WHERE " + filter #removed to fix
+            # Build the match_statement.
+            cyher_labels = node_models.DatabaseNode.format_labels_to_cypher(cls._get_labels())
+            match_statement = f"MATCH (u:{cyher_labels} {property_statement})"
 
-            if not filter[0] != "n":
-                where_statement = "WHERE " + filter
+            # Build the where statement.
+            if filter is not None:
+                # where_statement = "WHERE " + filter #removed to fix
 
-            else:
-                where_statement = filter
+                if not filter[0] != "n":
+                    where_statement = "WHERE " + filter
 
-            where_statement = where_statement.replace("n.", "u.")
+                else:
+                    where_statement = filter
 
-        # Build the with_statement.
-        with_statement = "WITH u"
+                where_statement = where_statement.replace("n.", "u.")
 
-        # Build order_by statements.
-        if order_by is not None:
-            order_by_statement = f"ORDER BY u.{order_by}"
+            # Build the with_statement.
+            with_statement = "WITH u"
 
-        # Build return_statement statements.
-        if not only:
-            if not distinct:
-                return_statement = "RETURN (u)"
+            # Build order_by statements.
+            if order_by is not None:
+                order_by_statement = f"ORDER BY u.{order_by}"
 
-            else:
-                return_statement = "RETURN DISTINCT (u)"
+            # Build return_statement statements.
+            if not only:
+                if not distinct:
+                    return_statement = "RETURN (u)"
 
-        else:
-            only_statement_list = []
-
-            for element in only:
-                only_statement_list.append(f"u.{element}")
-
-            only_statement = ", ".join(only_statement_list)
-
-            if not distinct:
-                return_statement = f"RETURN {only_statement}"
+                else:
+                    return_statement = "RETURN DISTINCT (u)"
 
             else:
-                return_statement = f"RETURN DISTINCT {only_statement}"
+                only_statement_list = []
 
-        # Build limit_statement.
-        if limit is not None:
-            if not isinstance(limit, str) and not isinstance(limit, int):
+                for element in only:
+                    only_statement_list.append(f"u.{element}")
+
+                only_statement = ", ".join(only_statement_list)
+
+                if not distinct:
+                    return_statement = f"RETURN {only_statement}"
+
+                else:
+                    return_statement = f"RETURN DISTINCT {only_statement}"
+
+            # Build limit_statement.
+            if limit is not None:
+                if not isinstance(limit, str) and not isinstance(limit, int):
+                    raise BULBGetUserError(
+                        f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
+
+                else:
+                    limit_statement = f"LIMIT {limit}"
+
+            # Build skip_statement and add its required variable.
+            if skip is not None:
+                if not isinstance(skip, str) and not isinstance(skip, int):
+                    raise BULBGetUserError(
+                        f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
+
+                else:
+                    skip_statement = f"SKIP {skip}"
+
+            # Build desc_statement.
+            if not isinstance(desc, bool):
                 raise BULBGetUserError(
-                    f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
+                    f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
             else:
-                limit_statement = f"LIMIT {limit}"
+                if desc is True:
+                    desc_statement = "DESC"
 
-        # Build skip_statement and add its required variable.
-        if skip is not None:
-            if not isinstance(skip, str) and not isinstance(skip, int):
-                raise BULBGetUserError(
-                    f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
+            request_statement = """
+                   %s
+                   %s
+                   %s
+                   %s
+                   %s
+                   %s
+                   %s
+                   %s
+                   """ % (match_statement,
+                          where_statement,
+                          with_statement,
+                          order_by_statement,
+                          desc_statement,
+                          skip_statement,
+                          limit_statement,
+                          return_statement)
 
-            else:
-                skip_statement = f"SKIP {skip}"
+            if return_query is False:
 
-        # Build desc_statement.
-        if not isinstance(desc, bool):
-            raise BULBGetUserError(
-                f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
+                response = gdbh.r_transaction(request_statement)
 
-        else:
-            if desc is True:
-                desc_statement = "DESC"
+                if response:
+                    if only is None:
 
-        request_statement = """
-               %s
-               %s
-               %s
-               %s
-               %s
-               %s
-               %s
-               %s
-               """ % (match_statement,
-                      where_statement,
-                      with_statement,
-                      order_by_statement,
-                      desc_statement,
-                      skip_statement,
-                      limit_statement,
-                      return_statement)
+                        fake_instances_list = []
 
-        if return_query is False:
+                        for user_object in response:
+                            fake_instances_list.append(cls.build_fake_instance(user_object["u"],
+                                                                               forced_fake_instance_class=cls))
 
-            response = gdbh.r_transaction(request_statement)
+                        if uuid is not None or email is not None or email_confirmation_key is not None:
+                            return fake_instances_list[0]
 
-            if response:
-                if only is None:
-
-                    fake_instances_list = []
-
-                    for user_object in response:
-                        fake_instances_list.append(cls.build_fake_instance(user_object["u"],
-                                                                           forced_fake_instance_class=cls))
-
-                    if uuid is not None or email is not None or email_confirmation_key is not None:
-                        return fake_instances_list[0]
+                        else:
+                            return fake_instances_list
 
                     else:
-                        return fake_instances_list
+                        return response
 
                 else:
-                    return response
+                    if uuid is not None or email is not None or email_confirmation_key is not None:
+                        if settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE: # TODO : This line is maybe useless, check it.
+                            AnonymousUser_node_model = get_anonymoususer_node_model()
+                            return AnonymousUser_node_model()
 
+                    else:
+                        return None
             else:
-                if uuid is not None or email is not None or email_confirmation_key is not None:
-                    if settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE: # TODO : This line is maybe useless, check it.
-                        AnonymousUser_node_model = get_anonymoususer_node_model()
-                        return AnonymousUser_node_model()
+                return request_statement
 
-                else:
-                    return None
         else:
-            return request_statement
+            response = gdbh.r_transaction(handmade)
+
+            fake_instances_list = []
+
+            for node_object in response:
+                fake_instances_list.append(cls.build_fake_instance(node_object["u"],
+                                                                   forced_fake_instance_class=cls))
+
+            return fake_instances_list
+
 
     @classmethod
     def count(cls, uuid=None, email=None,  email_confirmation_key=None, order_by=None, limit=None, skip=None, desc=False, only=None,
-    filter=None, distinct=False, **extrafields):
+              filter=None, distinct=False, handmade=None, **extrafields):
         request_statement = cls.get(uuid=None, email=None,  email_confirmation_key=None, order_by=None, limit=None, skip=None,
-                                    desc=False, only=None, filter=None, distinct=False, return_query=True, **extrafields)
+                                    desc=False, only=None, filter=None, distinct=False, handmade=None, return_query=True,
+                                     **extrafields)
 
         request_count_statement = None
 
