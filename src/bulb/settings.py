@@ -131,6 +131,16 @@ def set_bulb_settings_on(root_settings):
     else:
         INSTALLED_APPS.insert(0, 'bulb.contrib.handling')
 
+    # Add the bulb contrib.statistics module.
+    try:
+        INSTALLED_APPS = root_settings['INSTALLED_APPS']
+
+    except KeyError:
+        root_settings['INSTALLED_APPS'] = ['bulb.contrib.statistics', ]
+
+    else:
+        INSTALLED_APPS.insert(0, 'bulb.contrib.statistics')
+
     # Add the bulb template module.
     try:
         INSTALLED_APPS = root_settings['INSTALLED_APPS']
@@ -425,15 +435,15 @@ def set_bulb_settings_on(root_settings):
         Just set this variable on True and all your scripts will be compatible for all browsers of all versions.
 
         But to obtain a more powerful website, it is recommended to don't use the webpack polyfill because:
-        - The webpack polyfill is directly implemented into your bundle scripts, this means that if one of your scripts doesn't 
+        - The webpack polyfill is directly implemented into your bundle scripts, this means that if one of your scripts doesn't
           need all polyfills , they will still be loaded.
-        - The webpack polyfill don't have any regard on the browser used to load a page. This means that if your page is open 
+        - The webpack polyfill don't have any regard on the browser used to load a page. This means that if your page is open
           on a modern browser which doesn't need any polyfills, they will still be loaded.
 
-        Best solution : Use 'polyfill.io' which one will load a the polyfills required in each different context. 
+        Best solution : Use 'polyfill.io' which one will load a the polyfills required in each different context.
         See : (TODO: Add the related documentation).
 
-        A good configuration of polyfill.io : 
+        A good configuration of polyfill.io :
             <script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?flags=gated&features=blissfuljs%2Cdefault%2Ces2015%2Ces2016%2Ces2017%2Ces5%2Ces6%2Ces7"></script>
         (Implement this script tag as the first script tag of each page which could need some polyfills.)
     """
@@ -479,5 +489,3 @@ def set_bulb_settings_on(root_settings):
 
     if root_settings['BULB_SFTP_HOST'] is not None:
         root_settings['STATIC_URL'] = "https://" + root_settings['BULB_SFTP_HOST'] + "/"
-
-

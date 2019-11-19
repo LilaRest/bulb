@@ -1,0 +1,31 @@
+{% extends "admin/background_pages/base.html" %}
+
+{% load bulb_static static compress %}
+
+{% block title %}Gestion{% endblock title %}
+
+{% block head %}
+    {% if DEBUG %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static "statistics/css/style/statistics_page.scss" %}"/>
+        {% endcompress %}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    {% elif not DEBUG %}
+        <link rel="stylesheet" href="{% static_bundled_src "statistics/bundle_statistics_page.css" %}"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    {% endif %}
+{% endblock head %}
+
+{% block administration_part_name %}
+    <i class="material-icons">keyboard_arrow_right</i>
+
+    <a class="nav-link" href="{% url "statistics" %}">Statistics</a>
+{% endblock administration_part_name %}
+
+{% block content %}
+    <p>STATISTICS</p>
+{% endblock content %}
+
+{% block scripts %}{% endblock scripts %}
