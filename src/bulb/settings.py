@@ -131,6 +131,7 @@ def set_bulb_settings_on(root_settings):
     else:
         INSTALLED_APPS.insert(0, 'bulb.contrib.handling')
 
+<<<<<<< HEAD
     # Add the bulb contrib.releases module.
     try:
         INSTALLED_APPS = root_settings['INSTALLED_APPS']
@@ -140,6 +141,16 @@ def set_bulb_settings_on(root_settings):
 
     else:
         INSTALLED_APPS.insert(0, 'bulb.contrib.releases')
+
+    # Add the bulb contrib.logs module.
+    try:
+        INSTALLED_APPS = root_settings['INSTALLED_APPS']
+
+    except KeyError:
+        root_settings['INSTALLED_APPS'] = ['bulb.contrib.logs', ]
+
+    else:
+        INSTALLED_APPS.insert(0, 'bulb.contrib.logs')
 
     # Add the bulb template module.
     try:

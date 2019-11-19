@@ -33,6 +33,8 @@
                     {% endfor %}
 
                     <li><a href="{% url "releases" %}">Releases</a></li>
+                    
+                    <li><a href="{% url "logs" %}">Logs</a></li>
 
                     <li>
                         <form action="{% url "admin_logout" %}" method="post" novalidate>
