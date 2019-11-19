@@ -309,8 +309,8 @@ class Permission(node_models.Node):
     @classmethod
     def count(cls, uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
               handmade=None, **extrafields):
-        request_statement = cls.get(uuid=None, codename=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None,
-                                    distinct=False, handmade=None, return_query=True, **extrafields)
+        request_statement = cls.get(uuid=uuid, codename=codename, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only,
+                                    filter=filter, handmade=handmade, return_query=True, **extrafields)
 
         request_count_statement = None
 
@@ -556,8 +556,8 @@ class Group(node_models.Node):
     @classmethod
     def count(cls, uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False,
               handmade=None, **extrafields):
-        request_statement = cls.get(uuid=None, name=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None,
-                                    handmade=None, distinct=False, return_query=True, **extrafields)
+        request_statement = cls.get(uuid=uuid, name=name, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only,
+                                    filter=filter, handmade=handmade, return_query=True, **extrafields)
         request_count_statement = None
 
         if not distinct:
@@ -962,8 +962,8 @@ class User(node_models.Node):
     @classmethod
     def count(cls, uuid=None, email=None,  email_confirmation_key=None, order_by=None, limit=None, skip=None, desc=False, only=None,
               filter=None, distinct=False, handmade=None, **extrafields):
-        request_statement = cls.get(uuid=None, email=None,  email_confirmation_key=None, order_by=None, limit=None, skip=None,
-                                    desc=False, only=None, filter=None, distinct=False, handmade=None, return_query=True,
+        request_statement = cls.get(uuid=uuid, email=email,  email_confirmation_key=email_confirmation_key, order_by=order_by,
+                                    limit=limit, skip=skip, desc=desc, only=only, filter=filter, handmade=handmade, return_query=True,
                                      **extrafields)
 
         request_count_statement = None
