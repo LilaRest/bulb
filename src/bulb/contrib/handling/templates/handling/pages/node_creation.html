@@ -45,19 +45,19 @@
         {% endfor %}
         {{ "-->" }}
 
-        {% elif not DEBUG %}
-            {% for field_name, field_properties in admin_fields_dict.items %}
-                {% if field_properties.type == "html" %}
-                    {% if field_properties.ckeditor %}
-                        <script src="https://cdn.ckeditor.com/4.12.1/full/ckeditor.js"></script>
+    {% elif not DEBUG %}
+        {% for field_name, field_properties in admin_fields_dict.items %}
+            {% if field_properties.type == "html" %}
+                {% if field_properties.ckeditor %}
+                    <script src="https://cdn.ckeditor.com/4.12.1/full/ckeditor.js"></script>
 
-                        {{ "<!--" }}
-                    {% endif %}
+                    {{ "<!--" }}
                 {% endif %}
-            {% endfor %}
-            {{ "-->" }}
+            {% endif %}
+        {% endfor %}
+        {{ "-->" }}
 
-        {% endif %}}
+    {% endif %}
 
     <br/>
     <br/>

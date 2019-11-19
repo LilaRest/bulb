@@ -67,7 +67,7 @@ window.addEventListener("load", function () {
                         // Create the cell content.
                         const cell_link = document.createElement("a");
                         cell_link.setAttribute("href", window.location.pathname + "/" + instance.uuid);
-                        cell_link.innerText = value;
+                        cell_link.innerText = value.substring(0, 40);
 
                         // Add the link to the cell.
                         cell.appendChild(cell_link)
@@ -123,7 +123,7 @@ window.addEventListener("load", function () {
                         // Create the cell content.
                         const cell_link = document.createElement("a");
                         cell_link.setAttribute("href", window.location.pathname + "/" + instance.uuid);
-                        cell_link.innerText = value;
+                        cell_link.innerText = value.substring(0, 40);
 
                         // Add the link to the cell.
                         cell.appendChild(cell_link)
