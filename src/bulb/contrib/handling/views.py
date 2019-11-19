@@ -2,6 +2,7 @@ from bulb.contrib.handling.exceptions import BULBAdminError
 from bulb.contrib.auth.decorators import login_required, staff_only
 from bulb.utils import get_files_paths_list, get_all_node_models
 from bulb.contrib.auth.node_models import User
+from bulb.db import gdbh
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, StreamingHttpResponse
@@ -134,9 +135,6 @@ def node_model_home_view(request, node_model_name):
     # Check 'view' permission.
     if request.user.has_perm("view_" + node_model_name.lower()) or request.user.has_perm("view"):
 
-        twenty_last_instances = []
-        twenty_last_instances_json = {}
-
         all_node_models = get_all_node_models()
         node_model = None
 
@@ -150,30 +148,81 @@ def node_model_home_view(request, node_model_name):
 
             if preview_fields_dict:
 
-                twenty_last_instances = node_model.get(only=preview_fields_dict.values(), limit=20)
+                # Define the order_by value.
+                order_by = None
+                if "order_by" in preview_fields_dict.keys():
+                    order_by = preview_fields_dict["order_by"]
+                    del preview_fields_dict["order_by"]
 
-                if twenty_last_instances:
-                    # Get the instance_prefix to explore the database response.
-                    instance_prefix = list(twenty_last_instances[0].keys())[0][0]
+                else:
+                    order_by = preview_fields_dict["1"]
 
-                    for instance in twenty_last_instances:
-                        twenty_last_instances_json[instance[f"{instance_prefix}.uuid"]] = {}
+                # Define the desc value.
+                desc = ""
+                if "desc" in preview_fields_dict.keys():
+                    if preview_fields_dict["desc"] is True:
+                        desc = "DESC"
+                    del preview_fields_dict["desc"]
 
-                        for instance_property_key, instance_property_value in instance.items():
-                            for admin_preview_field_key, admin_preview_field_value in preview_fields_dict.items():
-                                if instance_property_key == instance_prefix + "." + admin_preview_field_value:
-                                    twenty_last_instances_json[instance[f"{instance_prefix}.uuid"]][admin_preview_field_key] = (instance_property_key, instance_property_value)
+                # Define return statement.
+                return_statement = "RETURN DISTINCT n.uuid AS uuid,"
 
-                        twenty_last_instances_json[instance[f"{instance_prefix}.uuid"]] = dict(OrderedDict(sorted(
-                            twenty_last_instances_json[instance[f"{instance_prefix}.uuid"]].items(), key=lambda t: t[0])))
+                for key, value in preview_fields_dict.items():
+                    return_statement = return_statement + f" n.{value},"
 
+                return_statement = return_statement[:-1]
+
+                # Load more request.
                 if request.is_ajax():
                     loaded_instances = request.POST.get("loaded_instances")
 
-                    new_instances = node_model.get_str(skip=loaded_instances, limit=20, only=preview_fields_dict.values())
+                    new_instances = gdbh.r_transaction(f"""
+                                                   MATCH (n:{node_model_name})
+
+                                                   WITH n
+                                                   ORDER BY n.{order_by}
+                                                   {desc}
+                                                   SKIP {loaded_instances}
+                                                   LIMIT 20
+                                                   {return_statement}
+                                                    """)
+                    if new_instances:
+                        # String serialize all the reiceived objects.
+                        for instance in new_instances:
+                            for property_key, property_value in instance.items():
+                                instance[property_key] = str(property_value)
+
                     return JsonResponse(json.dumps(new_instances), safe=False)
 
-                return render(request, "handling/pages/node_class_home.html", locals())
+                # Initial request (when the page is loading).
+                else:
+                    number_of_instances = 0
+
+                    twenty_last_instances = gdbh.r_transaction(f"""
+                                                   MATCH (n:{node_model_name})
+
+                                                   WITH n
+                                                   ORDER BY n.{order_by}
+                                                   {desc}
+                                                   LIMIT 20
+                                                   {return_statement}
+                                                    """)
+
+                    if twenty_last_instances:
+                        # String serialize all the reiceived objects.
+                        for instance in twenty_last_instances:
+                            for property_key, property_value in instance.items():
+                                instance[property_key] = str(property_value)
+
+                        # Find the number of instances.
+                        number_of_instances = gdbh.r_transaction(f"""
+                                                       MATCH (n:{node_model_name})
+                                                       RETURN COUNT(DISTINCT n)
+                                                       """)[0]["COUNT(DISTINCT n)"]
+
+
+
+                    return render(request, "handling/pages/node_class_home.html", locals())
 
             else:
                 twenty_last_instances = node_model.get()
@@ -189,6 +238,130 @@ def node_model_home_view(request, node_model_name):
 
     else:
         return redirect(settings.BULB_HOME_PAGE_URL)
+
+
+@staff_only()
+@login_required(login_page_url=login_page_url)
+def node_model_home_search_view(request, node_model_name):
+
+    if request.is_ajax():
+
+        # Check 'view' permission.
+        if request.user.has_perm("view_" + node_model_name.lower()) or request.user.has_perm("view"):
+
+                preview_fields_dict = get_admin_preview_fields(node_model_name)
+
+                # First search.
+                if request.POST.get('value') and not request.POST.get("loaded_instances"):
+                    value_to_search = request.POST.get('value')
+
+                    # Define the order_by value.
+                    order_by = None
+                    if "order_by" in preview_fields_dict.keys():
+                        order_by = preview_fields_dict["order_by"]
+                        del preview_fields_dict["order_by"]
+
+                    else:
+                        order_by = preview_fields_dict["1"]
+
+                    # Define the desc value.
+                    desc = ""
+                    if "desc" in preview_fields_dict.keys():
+                        if preview_fields_dict["desc"] is True:
+                            desc = "DESC"
+                        del preview_fields_dict["desc"]
+
+                    # Define the where and return statements.
+                    where_statement = "WHERE"
+                    return_statement = "RETURN DISTINCT n.uuid AS uuid,"
+
+                    for key, value in preview_fields_dict.items():
+                        where_statement = where_statement + f" n.{value} =~ '(?i)(.*){value_to_search}(.*)' OR"
+                        return_statement = return_statement + f" n.{value},"
+
+                    where_statement = where_statement[:-3]
+                    return_statement = return_statement[:-1]
+
+                    response = gdbh.r_transaction(f"""
+                                                   MATCH (n:{node_model_name})
+                                                   {where_statement}
+
+                                                   WITH n
+                                                   ORDER BY n.{order_by}
+                                                   {desc}
+                                                   LIMIT 20
+                                                   {return_statement}
+                                                    """)
+
+                    if response:
+                        response.append({"count": gdbh.r_transaction(f"""
+                                                       MATCH (n:{node_model_name})
+                                                       {where_statement}
+
+                                                       RETURN COUNT(DISTINCT n)
+                                                        """)[0]["COUNT(DISTINCT n)"]})
+
+                        # String serialize all the reiceived objects.
+                        for received_object in response:
+                            for property_key, property_value in received_object.items():
+                                received_object[property_key] = str(property_value)
+
+                    return JsonResponse(response, safe=False)
+
+                # More.
+                if request.POST.get('value') and request.POST.get('loaded_instances'):
+
+                    value_to_search = request.POST.get('value')
+                    loaded_instances = request.POST.get("loaded_instances")
+
+                    # Define the order_by value.
+                    order_by = None
+                    if "order_by" in preview_fields_dict.keys():
+                        order_by = preview_fields_dict["order_by"]
+                        del preview_fields_dict["order_by"]
+
+                    else:
+                        order_by = preview_fields_dict["1"]
+
+                    # Define the desc value.
+                    desc = ""
+                    if "desc" in preview_fields_dict.keys():
+                        if preview_fields_dict["desc"] == True:
+                            desc = "DESC"
+                        del preview_fields_dict["desc"]
+
+                    # Define the where and return statements.
+                    where_statement = "WHERE"
+                    return_statement = "RETURN DISTINCT n.uuid AS uuid,"
+
+                    for key, value in preview_fields_dict.items():
+                        where_statement = where_statement + f" n.{value} =~ '(?i)(.*){value_to_search}(.*)' OR"
+                        return_statement = return_statement + f"n.{value},"
+
+                    where_statement = where_statement[:-3]
+                    return_statement = return_statement[:-1]
+
+                    new_instances = gdbh.r_transaction(f"""
+                                                       MATCH (n:{node_model_name})
+                                                       {where_statement}
+
+                                                       WITH n
+                                                       ORDER BY n.{order_by}
+                                                       {desc}
+                                                       SKIP {loaded_instances}
+                                                       LIMIT 20
+                                                       {return_statement}
+                                                        """)
+
+                    # String serialize all the reiceived objects.
+                    for received_object in new_instances:
+                        for property_key, property_value in received_object.items():
+                            received_object[property_key] = str(property_value)
+
+                    return JsonResponse(new_instances, safe=False)
+
+        else:
+            return redirect(settings.BULB_HOME_PAGE_URL)
 
 
 def handle_edition(request, admin_fields_dict, node_model_name, instance, all_objects_dict):
@@ -1440,6 +1613,7 @@ def handle_creation(request_POST, request_FILES, admin_fields_dict, node_model, 
                 del properties[password_field_name]
                 # add_message(request, ERROR,
                 #             "Le mot de passe et sa confirmation ne correspondent pas. Le mot de passe n'a donc pas été défini.")
+            raise BULBAdminError("The password and its confirmation do no match. So the password was not modified.")
 
         for property_name, property_value in properties.items():
             try:

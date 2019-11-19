@@ -1064,8 +1064,8 @@ class Node(BaseNode):
     @classmethod
     def count(cls, uuid=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False, handmade=None,
               **extrafields):
-        request_statement = cls.get(uuid=uuid, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only,
-                                    filter=filter, return_query=True, **extrafields)
+        request_statement = cls.get(uuid=uuid, order_by=order_by, limit=limit, skip=skip, desc=desc, only=only, filter=filter,
+                                    handmade=handmade, return_query=True, **extrafields)
         request_count_statement = None
 
         if not distinct:

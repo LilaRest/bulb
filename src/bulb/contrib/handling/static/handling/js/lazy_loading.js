@@ -9,8 +9,9 @@ window.addEventListener("load", function () {
     function insertNewInstances(instances_json) {
         const instances = JSON.parse(instances_json);
 
-        if (instances !== null) {
+        if (instances.length !== 0) {
             loaded_instances += instances.length;
+
             const instances_prefix = Object.keys(instances[0])[0][0];
 
             const instances_tbody = document.querySelector("table tbody");
@@ -41,6 +42,7 @@ window.addEventListener("load", function () {
 
             loader.setAttribute("hidden", "hidden");
         }
+
         else {
             loader.setAttribute("hidden", "hidden");
             no_more_message.removeAttribute("hidden")
@@ -52,18 +54,23 @@ window.addEventListener("load", function () {
     }
 
     function load_on_scroll () {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        // Prevent search bar's scroll loading collision.
+        const search_bar = document.querySelector("input#search-bar");
+        if (search_bar.value === "") {
 
-            // Prevent mutliple bottom scroll event.
-            window.removeEventListener("scroll", load_on_scroll);
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
 
-            const data = new FormData();
-            data.append("loaded_instances", loaded_instances);
+                // Prevent mutliple bottom scroll event.
+                window.removeEventListener("scroll", load_on_scroll);
 
-            loader.removeAttribute("hidden");
-            no_more_message.setAttribute("hidden", "hidden");
+                const data = new FormData();
+                data.append("loaded_instances", loaded_instances);
 
-            AJAXRequest("POST", window.location, insertNewInstances, true, data);
+                loader.removeAttribute("hidden");
+                no_more_message.setAttribute("hidden", "hidden");
+
+                AJAXRequest("POST", window.location, insertNewInstances, true, data);
+            }
         }
     }
 
@@ -74,4 +81,3 @@ window.addEventListener("load", function () {
         load_on_scroll()
     }
 });
-

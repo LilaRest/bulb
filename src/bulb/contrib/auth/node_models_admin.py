@@ -1,12 +1,13 @@
 
-User_preview_fields = {"1": "uuid",
-                       "2": "last_name",
-                       "3": "first_name",
-                       "4": "email",
-                       "5": "is_super_user",
-                       "6": "is_staff_user",
-                       "7": "is_active_user",
-                       "8": "is_subscribed_user"}
+User_preview_fields = {"1": "last_name",
+                       "2": "first_name",
+                       "3": "email",
+                       "4": "is_super_user",
+                       "5": "is_staff_user",
+                       "6": "is_active_user",
+                       "7": "is_subscribed_user",
+                       "order_by": "last_name",
+                       "desc": True}
 
 User_fields_infos = {"is_super_user": {"type": "checkbox",
                                        "label": "Super administrateur",
@@ -62,9 +63,10 @@ User_fields_infos = {"is_super_user": {"type": "checkbox",
                                 }}
                      }
 
-Permission_preview_fields = {"1": "uuid",
-                             "2": "codename",
-                             "3": "description"}
+Permission_preview_fields = {"1": "codename",
+                             "2": "description",
+                             "order_by": "codename",
+                             "desc": True}
 
 Permission_fields_infos = {"uuid": {"type": "locked",
                                     "label": "UUID",
@@ -77,8 +79,9 @@ Permission_fields_infos = {"uuid": {"type": "locked",
 
                            }
 
-Group_preview_fields = {"1": "uuid",
-                        "2": "name"}
+Group_preview_fields = {"1": "name",
+                        "order_by": "codename",
+                        "desc": True}
 
 Group_fields_infos = {"uuid": {"type": "locked",
                                     "label": "UUID",

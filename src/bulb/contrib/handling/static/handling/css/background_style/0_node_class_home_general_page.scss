@@ -69,6 +69,83 @@ html {
                 }
             }
 
+
+            div#search-bar-box {
+                /* Position */
+
+                /* Dimensions */
+                width: 80%;
+                margin-bottom: 40px;
+
+                /* Style */
+
+                /* For child properties */
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+
+
+                i {
+                    /* Position */
+                    padding: 10px;
+
+                    /* Dimensions */
+
+                    /* Style */
+                    border: {
+                        color: black;
+                        top-left-radius: 3px;
+                        bottom-left-radius: 3px;
+                        style: solid;
+                        width: 1px;
+
+                    }
+                    background: black;
+                    color: white;
+
+                    /* For child properties */
+                    display: flex;
+                    //justify-content: center;
+                    align-items: center;
+
+                }
+
+
+                input#search-bar {
+                    /* Position */
+                    padding: 10px;
+
+                    /* Dimensions */
+                    width: calc(100% - 68px);
+                    max-width: 800px;
+
+                    /* Style */
+                    border: {
+                        color: black;
+                        style: solid;
+                        width: 1px;
+                        top-right-radius: 3px;
+                        bottom-right-radius: 3px;
+                    }
+
+                    /* For child properties */
+                }
+
+                p.search-results-message, p.no-results-message {
+                    /* Position */
+                    margin-top: 20px;
+
+                    /* Dimensions */
+                    width: calc(100%);
+                    max-width: 800px;
+
+                    /* Style */
+
+                    /* For child properties */
+                }
+            }
+
+
             td {
                 /* Position */
 

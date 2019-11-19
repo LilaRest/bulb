@@ -49,6 +49,35 @@
             {{ "-->" }}
 
     {% elif not DEBUG %}
+
+    <div id="search-bar-container">
+        <div id="search-bar-box">
+            <i class="material-icons">search</i>
+            <input id="search-bar" name="search-bar" type="search"
+                   placeholder="Search something...">
+        </div>
+
+        <div id="search-by-tags">
+            {% for tag in tags %}
+                {% for value in tag.values %}
+                    <p class="tag">{{ value }}</p>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <div id="search-bar-loader" class="bookshelf_wrapper" hidden="hidden">
+            <ul class="books_list">
+                <li class="book_item first"></li>
+                <li class="book_item second"></li>
+                <li class="book_item third"></li>
+                <li class="book_item fourth"></li>
+                <li class="book_item fifth"></li>
+                <li class="book_item sixth"></li>
+            </ul>
+            <div class="shelf"></div>
+        </div>
+    </div>
+
         {% for field_name, field_properties in admin_fields_dict.items %}
                     {% if field_properties.type == "html" %}
                         {% if field_properties.ckeditor %}

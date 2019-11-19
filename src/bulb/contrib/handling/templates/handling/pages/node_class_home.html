@@ -27,7 +27,7 @@
 
     <i class="material-icons">keyboard_arrow_right</i>
 
-    <a class="nav-link" href="{% url "node_model_home" node_model_name=node_model_name %}">{{ node_model_name }}</a>
+    <a class="nav-link" href="{% url "node_model_home" node_model_name=node_model_name %}">{{ node_model_name }} ({{ number_of_instances }})</a>
 {% endblock administration_part_name %}
 
 {% block content %}
@@ -39,32 +39,47 @@
 
     <a id="create-instance-button" href="{% url "node_creation" node_model_name=node_model_name %}"><i class="material-icons">add</i></a>
 
+    <div id="search-bar-box">
+        <i class="material-icons">search</i>
+        <input id="search-bar" name="search-bar" type="search"
+               placeholder="Search something...">
+    </div>
+
     <table>
         <thead>
             <tr>
+                <th>UUID</th>
                 {% for field_number, field_name in preview_fields_dict.items %}
                     <th>{{ field_name }}</th>
                 {% endfor %}
             </tr>
         </thead>
 
-        <tbody>
-            {% for uuid, properties in twenty_last_instances_json.items %}
+        <tbody id="initial-tbody">
+            {% for instance in twenty_last_instances %}
                 <tr>
-                    {% for property_number, property_tuple in properties.items %}
-                            <td {% if property_tuple.1 == True %}
+                    <td>
+                        <a href="{% url "node_handling" node_model_name=node_model_name node_uuid=instance.uuid %}">{{ instance.uuid }}</a>
+                    </td>
+
+                    {% for key, value in instance.items %}
+                        {% if key != "uuid" %}
+                            <td{% if value == "True" %}
                                     class="true_td"
-                                {% elif property_tuple.1 == False  %}
+                                {% elif value == "False"  %}
                                     class="false_td"
                                 {% endif %}>
-                                <a href="{% url "node_handling" node_model_name=node_model_name node_uuid=uuid %}">
-                                    {{ property_tuple.1|truncatechars:40 }}
+
+                                <a href="{% url "node_handling" node_model_name=node_model_name node_uuid=instance.uuid %}">
+                                    {{ value|truncatechars:40 }}
                                 </a>
                             </td>
+                        {% endif %}
                     {% endfor %}
-                </tr>
+                <tr/>
             {% endfor %}
         </tbody>
+        <tbody id="search-tbody"></tbody>
     </table>
 
     <div id="ajax-loading-box">
@@ -82,6 +97,7 @@
 {% block scripts %}
     {% if DEBUG %}
         <script type="module" src="{% static "handling/js/lazy_loading.js" %}"></script>
+        <script type="module" src="{% static "handling/js/search_bar.js" %}"></script>
 
     {% elif not DEBUG %}
         <script src = "{% static_bundled_src 'handling/bundle_node_class_home.js' %}" ></script>
