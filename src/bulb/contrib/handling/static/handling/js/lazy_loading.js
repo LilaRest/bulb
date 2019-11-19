@@ -17,7 +17,6 @@ window.addEventListener("load", function () {
             const instances_tbody = document.querySelector("table tbody");
 
             for (const instance of instances) {
-                const instance_uuid = instance[instances_prefix + ".uuid"];
 
                 // Reproduce the instance and insert it.
                 const instance_tr = document.createElement("tr");
@@ -32,7 +31,7 @@ window.addEventListener("load", function () {
                         instance_td.classList.add("false_td")
                     }
 
-                    instance_td.innerHTML = `<a href="${window.location + '/' + instance_uuid}">${property_value}</a>`;
+                    instance_td.innerHTML = `<a href="${window.location + '/' + instance["uuid"]}">${property_value.substring(0, 40)}</a>`;
                     instance_tr.appendChild(instance_td);
                 }
 

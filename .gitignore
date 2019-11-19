@@ -5,3 +5,7 @@ node_modules
 archives
 testing_project
 requirements.txt
+src/build
+src/bulb_core.egg-info
+src/dist
+__pycache__
