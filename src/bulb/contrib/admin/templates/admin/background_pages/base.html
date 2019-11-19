@@ -26,11 +26,13 @@
                 <ul>
                     <li><a href="{% url "admin_home" %}">Administration</a></li>
 
-                    <li><a href="{% url "handling_home" %}">Gestion</a></li>
+                    <li><a href="{% url "handling_home" %}">Handling</a></li>
 
                     {% for module_name, module_infos in BULB_ADDITIONAL_ADMIN_MODULES.items %}
                         <li><a href="{% url module_infos.home_view_url_name %}">{{ module_infos.printed_name }}</a></li>
                     {% endfor %}
+
+                    <li><a href="{% url "releases" %}">Releases</a></li>
 
                     <li>
                         <form action="{% url "admin_logout" %}" method="post" novalidate>
@@ -38,7 +40,7 @@
 
                             <input type="hidden" name="next" value="{{ request.path }}"/>
 
-                            <input type="submit" value="Déconnexion"/>
+                            <input type="submit" value="Log out"/>
                         </form>
                     </li>
                 </ul>

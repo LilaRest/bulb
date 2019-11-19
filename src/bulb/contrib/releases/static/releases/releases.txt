@@ -1,0 +1,7 @@
+0.0.78 | Administration : ["Creation of a new administration's module named 'Releases', which lists the last bulb's releases"]
+
+0.0.77 | Administration > Handling : ["Add search bars", "Add instances counters", "Add instances sorting", "Fix some display bugs"]
+
+0.0.76 | Node & Authentication : ["Create the 'handmade' parameter for the 'get()' methods of the Node class, and of User, Permission and Group node models"]
+
+0.0.75 | Authentication : ["Add 'distinct' parameter support for the 'get()' and 'count()' methods of the native bulb's User, Permission and Group node models"]
