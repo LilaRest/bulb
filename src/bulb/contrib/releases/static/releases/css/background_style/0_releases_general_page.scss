@@ -1,0 +1,201 @@
+/* Schéma */
+
+    /* Position */
+
+    /* Dimensions */
+
+    /* Style */
+
+    /* For child properties */
+
+
+/*
+    ##################################################
+    ##################### GENERAL ####################
+    ##################################################
+*/
+
+
+html {
+
+    body {
+
+        main#principal-main {
+            /* Position */
+
+            /* Dimensions */
+
+            /* Style */
+
+            /* For child properties */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            h2 {
+                /* Position */
+                padding: 30px;
+
+                /* Dimensions */
+                width: 800px;
+
+                /* Style */
+                font-size: $xl-fs;
+                font-family: $subtitle-font;
+                color: $old-white;
+                background-color: $dark-grey;
+                text-align: center;
+                border-top: {
+                    width: 1px;
+                    color: $old-white;
+                    style: solid;
+                }
+
+                /* For child properties */
+            }
+
+            div#logo-div {
+                /* Position */
+
+                /* Dimensions */
+                width: 100%;
+
+                /* Style */
+                background-color: white;
+                box-shadow: 0 1px 10px 0px $dark-grey;
+
+                /* For child properties */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+
+                img {
+                    /* Position */
+                    margin-top: 20px;
+                    margin-bottom: 30px;
+
+                    /* Dimensions */
+                    width: 250px;
+
+                    /* Style */
+
+                    /* For child properties */
+                }
+            }
+
+
+            div#releases {
+                /* Position */
+                padding: 60px;
+
+                /* Dimensions */
+                width: 800px;
+
+                /* Style */
+                font-family: $text-font;
+                background-color: $dark-grey;
+
+                /* For child properties */
+
+
+                div.release {
+                    /* Position */
+                    margin-bottom: 30px;
+
+                    /* Dimensions */
+
+                    /* Style */
+
+                    /* For child properties */
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+
+
+                    p.version {
+                        /* Position */
+                        padding: 5px;
+
+                        /* Dimensions */
+                        width: 80%;
+
+                        /* Style */
+                        background-color: $old-white;
+                        color: $dark-grey;
+                        border: {
+                            style: solid;
+                            radius: 2px;
+                            width: 1px;
+                            color: $middle-orange;
+                        }
+                        // font-weight: bold;
+                        font-size: $m-fs;
+
+                        /* For child properties */
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                    }
+
+
+                    div.description {
+                        /* Position */
+                        margin-top: 24px;
+                        align-self: flex-start;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        color: white;
+                        // text-align: center;
+
+                        /* For child properties */
+
+
+                        p.part-title {
+                            /* Position */
+                            padding: 8px;
+                            margin-bottom: 10px;
+                            margin-top: 10px;
+
+                            /* Dimensions */
+
+                            /* Style */
+                            background-color: $middle-turquoise;
+                            border-radius: 2px;
+                            font-size: $s-fs;
+
+                            /* For child properties */
+                            display: inline-block;
+                        }
+
+
+                        ul.part-content {
+                            /* Position */
+                            margin-left: 40px;
+                            margin-bottom: 20px;
+
+                            /* Dimensions */
+
+                            /* Style */
+                            list-style: circle;
+                            font-size: 1.05rem;
+
+                            /* For child properties */
+
+
+                            li {
+                                padding: 4px;
+                                line-height: 25px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

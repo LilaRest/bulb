@@ -9,6 +9,7 @@ urlpatterns = [
     path("logout/", admin_logout_view, name="admin_logout"),
     path("login/", admin_login_view, name="admin_login"),
     path("handling/", include("bulb.contrib.handling.urls")),
+    path("releases/", include("bulb.contrib.releases.urls")),
 ]
 
 for module_name, module_infos in BULB_ADDITIONAL_ADMIN_MODULES.items():
