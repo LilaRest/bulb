@@ -5,9 +5,9 @@
 
 ---
 
-# Introducing
+# Introduction
 **bulb** provides a full Django authentication, compatible with the Neo4j databases.  
-So, like in the native Django package, there is node classes : **`User`**, **`Group`** and **`Permission`**.  
+Like in the native Django package we find the three node classes : **`User`**, **`Group`** and **`Permission`**.  
 Let's see more about that.  
 <br/>
 <br/>
@@ -16,7 +16,7 @@ Let's see more about that.
 ---
 
 # Initialize native permissions
-For each node models and like in the native Django authentication, it is recommended to create 4 permissions for each new node models class :
+For each node models and like in the native Django authentication, it's recommended to create 4 permissions for each new node models class :
 
 - "**create_**(class name)",  
 
@@ -27,8 +27,8 @@ For each node models and like in the native Django authentication, it is recomme
 - "**delete_**(class name)".  
 <br/>
 
-**bulb** provides the **`bulb-init`** command to quickly create in the database, all the native permissions for the **`User`**, **`Group`** and **`Permission`** classes.  
-So, you'll just have to run : **```python manage.py bulb-init```** in your terminal.  
+**bulb** provides the **`bulb-init`** command to quickly create in the database all the native permissions for the **`User`**, **`Group`** and **`Permission`** classes.  
+Then, you'll just have to run : **```python manage.py bulb-init```** in your terminal.  
 <br/>
 <br/>
 <br/>
@@ -37,9 +37,9 @@ So, you'll just have to run : **```python manage.py bulb-init```** in your termi
 
 # Initialize all other permissions
 
-We have just seen how to apply all the **bulb** native permissions, so it would be nice if we could do this with all other node models classes developed in a Django project.  
+We've just seen how to apply all the **bulb** native permissions, so it would be nice if we could do this with the other node models classes developed in a Django project.  
 **bulb** provides the **`bulb-perms`** command to quickly do that.  
-So, you'll just have to run : **```python manage.py bulb-perms```** in your terminal and the CRUD permissions will be created for all your own node models (but not for the natives, which ones are created with the above **`bulb-init`** command).
+You only have to run : **```python manage.py bulb-perms```** in your terminal and the CRUD permissions will be created for all of your node models (but not for the natives, which ones are created with the above **`bulb-init`** command).
 
 
 <br/>
@@ -53,18 +53,18 @@ So, you'll just have to run : **```python manage.py bulb-perms```** in your term
 
  - ## Create permissions
 
-Like in the native Django authentication, permissions are instances of a class named **`Permission`**.
+Like in the native Django authentication, permissions are instances of a class called **`Permission`**.
 We can find this class into the **`bulb.contrib.auth.node_models`** file.  
 A Permission instance has 2 parameters :
 
-- **`codename`** (required and unique) : like in the Django native authentication, the **codename** serves to identify the permissions between them. The **codename** has a **unicity** constraint and is **required**.
+- **`codename`** (required and unique) : like in the Django native authentication, the **codename** is used to identify the permissions between them. The **codename** has a **unicity** constraint and is **required**.
 <br/>
 <br/>
-- **`description`** (required and unique) : like in the Django native authentication, the **description** is a text, generally not too long, that describes the permission.
+- **`description`** (required and unique) : like in the Django native authentication, the **description** is a text, generally not too long, which describes the permission.
 <br/>
 <br/>
 
-So you can easily create a Permission node, by using the **`create()`** method of the **`Permission`** class :
+Therefore you can easily create a Permission node, by using the **`create()`** method of the **`Permission`** class :
 
 ```python
 from bulb.contrib.auth.node_models import Permission
@@ -74,12 +74,12 @@ Permission.create(codename="create_post",
                   description="The user can create a post into the site.")
 ```
 
-> **Note** that you will have to name parameters with this method.  
+> **Note** that you'll have to name parameters with this method.  
 Example : **`User.create(first_name="John", ...)`** and not **`User.create("John", ...)`**.
 
 
 
-> **Note 2** that the permission codename should always contain a CRUD element ("create", "view", "update", "delete") +  a cible (optional) + the concerned node models name or the concerned entity name, in lowercase.  
+> **Note 2** that the permission codename should always contain a CRUD element ("create", "view", "update", "delete") +  a cible (optional) + the concerned node models' name or the concerned entity's name, in lowercases.  
 <br/>
 
 Some examples :
@@ -101,7 +101,7 @@ etc...
 <br/>
 
 > - ### Retrieve permissions
-The **`Permission`** class' possesses a **`get()`** method. This method has a unique specific parameter, the **codename** of the permission to retrieve, and inherits of all others parameters of the **`Node.get()`** method (See Nodes part). It returns a **`Permission`** instance :
+The **`Permission`** class possesses a **`get()`** method. This method has a single specific parameter, the **codename** of the permission to retrieve, and inherits every other parameters of the **`Node.get()`** method (See Nodes part). It returns a **`Permission`** instance :
 
 ```python
 from bulb.contrib.auth.node_models import Permission
@@ -118,7 +118,7 @@ Permission.get("can_add_post")
 
 > - ### Update and delete permissions
 
-Like all the node_models' instances, permissions instances possess **`update()`** and **`delete()`** methods.
+As every node_models' instances, permissions' instances possess **`update()`** and **`delete()`** methods.
 <br/>
 <br/>
 <br/>
@@ -131,16 +131,16 @@ Like all the node_models' instances, permissions instances possess **`update()`*
 
  - ## Create groups
 
-Like in the native Django authentication, groups are instances of a class named **`Group`**.  
+Like in the native Django authentication, groups are instances of a class called **`Group`**.  
 We can find this class into the **`bulb.contrib.auth.node_models`** file.  
 A Group instance has 2 parameters :
 
-- **`uuid`** (do not fill) : Each group has an Universal Unique Identifier. This parameter must not be filled in during the Group instantiation because it is automatically filled in.  
+- **`uuid`** (do not fill) : Each group has an Universal Unique Identifier. This parameter must not be filled in during the Group instantiation because it's automatically filled in.  
 <br/>
 - **`name`** (required and unique) : like in the Django native authentication, the **name** parameter is the name of the group.  
 <br/>
 
-So you can easily create a Group node, by using the **`create()`** method of the **`Group`** class :
+Therefore you can easily create a Group node, by using the **`create()`** method of the **`Group`** class :
 
 ```python
 from bulb.contrib.auth.node_models import Group
@@ -149,7 +149,7 @@ from bulb.contrib.auth.node_models import Group
 Group.create(name="SuperUser")
 ```  
 
-> Note that you will have to name parameters with this method.  
+> Note that you'll have to name parameters with this method.  
 Example : **`User.create(first_name="John", ...)`** and not **`User.create("John", ...)`**.
 
 <br/>
@@ -160,7 +160,7 @@ Example : **`User.create(first_name="John", ...)`** and not **`User.create("John
 
 > - ### Get groups
 
-The **`Group`** class possesses a **`get()`** method. This method has a unique parameter, the **name** of the group to retrieve, and returns a **`Group`** instance :
+The **`Group`** class possesses a **`get()`** method. This method has a single parameter, the **name** of the group to retrieve, and returns a **`Group`** instance :
 
 ```python
 from bulb.contrib.auth.node_models import Group
@@ -176,14 +176,14 @@ Group.get("Moderator")
 <br/>
 
 > - ### Update and delete groups
-Like all the node_models, groups instances possesses **`update()`** and **`delete()`** methods.
+As all the node_models, groups' instances possess **`update()`** and **`delete()`** methods.
 
 <br/>
 <br/>
 
 > - ### Access groups' users
 
-The **`Group`** instances possess a **`users`** property, which one allows us to access at the group-users relationship :
+The **`Group`** instances possess a **`users`** property, which allows us to access the group-users relationship :
 ```python
 from bulb.contrib.auth.node_models import Group
 
@@ -201,7 +201,7 @@ _See the part "Relationships" of this documentation to learn all what you can do
 
 > - ### Access groups' permissions
 
-The **`Group`** instances possess a **`permissions`** property, which one allows us to access at the group-permissions relationship :
+The **`Group`** instances possess a **`permissions`** property, which allows us to access the group-permissions relationship :
 ```python
 from bulb.contrib.auth.node_models import Group
 
@@ -212,7 +212,7 @@ editors_group.permissions
 
 >>> <GroupPermissionsRelationship object(uuid="<bulb.db.node_models.Property object at 0x7f046f642e48>")>
 ```
-_See the part "Relationships" of this documentation to learn all what you can do with this Relationship object._
+_See the part "Relationships" of this documentation to learn everything about what you can do with this Relationship object._
 <br/>
 <br/>
 <br/>
@@ -224,7 +224,7 @@ _See the part "Relationships" of this documentation to learn all what you can do
 
  - ## Create users
 
-Like in the native Django authentication, users are instances of a class named **`User`**.
+Like in the native Django authentication, users are instances of a class called **`User`**.
 We can find this class into the **`bulb.contrib.auth.node_models`** file.  
 A User instance has 8 parameters :  
 
