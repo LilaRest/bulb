@@ -11,13 +11,13 @@
 
         {% block head %}{% endblock head %}
     </head>
-
-    <!-- To remove -->
-    <div id="mq-test"></div>
+    
+    {# Screen size helper for development #}
+    {# <div id="mq-test"></div> #}
 
     <body>
         <div id="loader_box" style="display: none;">
-            <img src="{{ WS.logo }}" alt="Website Logo"/>
+            <img src="{{ WS.logo }}" alt="Website's Logo"/>
             <p>Administration</p>
         </div>
 
@@ -26,7 +26,7 @@
                 <ul>
                     <li><a href="{% url "admin_home" %}">Administration</a></li>
 
-                    <li><a href="{% url "handling_home" %}">Gestion</a></li>
+                    <li><a href="{% url "handling_home" %}">Handling</a></li>
 
                     {% for module_name, module_infos in BULB_ADDITIONAL_ADMIN_MODULES.items %}
                         <li><a href="{% url module_infos.home_view_url_name %}">{{ module_infos.printed_name }}</a></li>
@@ -40,13 +40,13 @@
 
                             <input type="hidden" name="next" value="{{ request.path }}"/>
 
-                            <input type="submit" value="Déconnexion"/>
+                            <input type="submit" value="Log out"/>
                         </form>
                     </li>
                 </ul>
             </nav>
 
-            <h1>Administration {{ WS.name }}</h1>
+            <h1>{{ WS.name }}{% if WS.name|last != "s"%}'s{% else %}'{% endif %} administration</h1>
 
             <nav id="administration-navigation-box">
                 <a href="{% url "admin_home" %}">Administration</a>

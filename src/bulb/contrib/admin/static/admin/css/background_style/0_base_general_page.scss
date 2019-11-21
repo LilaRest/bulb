@@ -1,23 +1,23 @@
-/* Width test's div (TO DELETE IN PROD) */
-div#mq-test {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 50px;
-    width: 50px;
-    background-color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-family: Cuprum, sans-serif;
-    font-size: 28px;
-    z-index: 9999;
-}
-
-div#mq-test::before {
-    content: "G"
-}
+// /* Screen size helper for development (To COMMENT IN PROD) */
+// div#mq-test {
+//     position: fixed;
+//     top: 0;
+//     right: 0;
+//     height: 50px;
+//     width: 50px;
+//     background-color: black;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     color: white;
+//     font-family: Cuprum, sans-serif;
+//     font-size: 28px;
+//     z-index: 9999;
+// }
+//
+// div#mq-test::before {
+//     content: "G"
+// }
 
         /* Position */
 
