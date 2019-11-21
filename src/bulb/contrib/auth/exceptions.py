@@ -1,51 +1,29 @@
-class BULBPermissionDoesNotExist(Exception):
+from bulb.core.exceptions import BULBException, BULBWarning
+
+
+#################
+# ERROR CLASSES #
+#################
+
+#  BULBException --> BULBAuthError
+class BULBAuthError(BULBException):
     pass
 
 
-class BULBGroupDoesNotExist(Exception):
+#  BULBException --> BULBAuthError --> BULBLoginError
+class BULBLoginError(BULBAuthError):
     pass
 
 
-class BULBUserWarning(Warning):  # Useful
+###################
+# WARNING CLASSES #
+###################
+
+#  BULBException --> BULBAuthWarning
+class BULBAuthWarning(BULBWarning):
     pass
 
 
-class BULBAnonymousUserWarning(Warning):  # Useful
+#  BULBException --> BULBAuthWarning --> BULBAuthNodeModelsWarning
+class BULBAuthNodeModelsWarning(BULBAuthWarning):
     pass
-
-
-class BULBPermissionWarning(Warning):  # Useful
-    pass
-
-
-class BULBGroupWarning(Warning):  # Useful
-    pass
-
-
-class BULBUserPropertyWarning(Warning):
-    pass
-
-
-class BULBPermissionPropertyWarning(Warning):
-    pass
-
-
-class BULBGroupPropertyWarning(Warning):
-    pass
-
-
-class BULBGetUserError(Exception):
-    pass
-
-
-class BULBGetGroupError(Exception):
-    pass
-
-
-class BULBGetPermissionError(Exception):
-    pass
-
-
-class BULBLoginError(Exception):
-    pass
-

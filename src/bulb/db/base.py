@@ -217,7 +217,7 @@ class Transaction:
                     lambda tx, cypher_query: tx.run(cypher_query), self.cypher_query)
                 return self.active_transaction.data()
         else:
-            raise BULBTransactionConflictError('A transaction is already running...')
+            raise BULBTransactionError('A transaction is already running...')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.active_transaction = None
@@ -225,7 +225,7 @@ class Transaction:
     @staticmethod
     def check_and_set_transaction_type(transaction_type):
         if transaction_type not in ['WRITE', 'READ']:
-            raise BULBTransactionTypeError(
+            raise BULBTransactionError(
                 f"The current transaction's 'type' must be defined on 'WRITE',  'READ' or None, not '{transaction_type}'")
         else:
             return transaction_type

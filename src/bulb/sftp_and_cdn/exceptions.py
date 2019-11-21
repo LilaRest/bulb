@@ -1,6 +1,15 @@
-class BULBStaticfilesError(Exception):
+from bulb.core.exceptions import BULBException, BULBWarning
+
+
+#################
+# ERROR CLASSES #
+#################
+
+#  BULBException --> BULBStaticfilesError
+class BULBStaticfilesError(BULBException):
     pass
 
 
-class BULBHostSSHKeyError(Exception):
+#  BULBException --> BULBSftpError
+class BULBSftpError(BULBException):
     pass

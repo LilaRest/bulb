@@ -1,92 +1,89 @@
+from bulb.core.exceptions import BULBException, BULBWarning
 
-# Base bulb error
-class bulbError(BaseException):
+
+#################
+# ERROR CLASSES #
+#################
+
+#  BULBException--> BULBDatabaseError
+class BULBDatabaseError(BULBException):
     pass
 
 
-#  Base bulb error --> Client error
-class BULBClientError(bulbError):
+#  BULBException --> BULBDatabaseError --> BULBBaseNodeAndRelationshipError
+class BULBBaseNodeAndRelationshipError(BULBDatabaseError):
     pass
 
 
-#  Base bulb error --> Client error --> Node error
-class BULBNodeError(BULBClientError):
-    pass
-
-class BULBNodeWarning(Warning):
-    pass
-
-#  Base bulb error --> Client error --> Node error --> Node initialization error --> labels
-class BULBNodeLabelsInitializationError(BULBNodeError):
+#  BULBException --> BULBDatabaseError --> BULBBaseNodeAndRelationshipError --> BULBFakeInstanceError
+class BULBFakeInstanceError(BULBBaseNodeAndRelationshipError):
     pass
 
 
-# Base bulb error --> Client error --> Connection error
-class BULBConnectionError(BULBClientError):
+#  BULBException --> BULBDatabaseError --> BULBNodeError
+class BULBNodeError(BULBDatabaseError):
     pass
 
 
-# Base bulb error --> Client error --> Connection warning
-class BULBConnectionWarning(BULBClientError, Warning):
+#  BULBException --> BULBDatabaseError --> BULBNodeError --> BULBLabelsError
+class BULBLabelsError(BULBNodeError):
     pass
 
 
-# Base bulb error --> Client error --> Transaction error
-class BULBTransactionError(BULBClientError):
+#  BULBException --> BULBDatabaseError --> BULBPropertyError
+class BULBPropertyError(BULBDatabaseError):
     pass
 
 
-# Base bulb error --> Client error --> Transaction error --> Transaction type error
-class BULBTransactionTypeError(BULBTransactionError):
+#  BULBException --> BULBDatabaseError --> BULBPropertyError --> BULBRequiredConstraintError
+class BULBRequiredConstraintError(BULBPropertyError):
     pass
 
 
-# Base bulb error --> Client error --> Transaction error --> Transaction conflict error
-class BULBTransactionConflictError(BULBTransactionError):
+#  BULBException --> BULBDatabaseError --> BULBPropertyError --> BULBUniqueConstraintError
+class BULBUniqueConstraintError(BULBPropertyError):
     pass
 
 
-# Base bulb error --> Client error --> Session error
-class BULBSessionError(BULBClientError):
+#  BULBException --> BULBDatabaseError --> BULBRelationshipError
+class BULBRelationshipError(BULBDatabaseError):
     pass
 
 
-#  Base bulb error --> Database error
-class BULBDatabaseError(bulbError):
+#  BULBException --> BULBDatabaseError --> BULBTransactionError
+class BULBTransactionError(BULBDatabaseError):
     pass
 
 
-#  Base bulb error --> Database error --> field error
-class BULBFieldError(BULBDatabaseError):
+#  BULBException --> BULBDatabaseError --> BULBSessionError
+class BULBSessionError(BULBDatabaseError):
     pass
 
 
-#  Base bulb error --> Database error --> field error --> required constraint error
-class BULBRequiredConstraintError(BULBFieldError):
+#  BULBException --> BULBDatabaseError --> BULBConnectionError
+class BULBConnectionError(BULBDatabaseError):
     pass
 
 
-#  Base bulb error --> Database error --> unique constraint error
-class BULBUniqueConstraintError(BULBFieldError):
+###################
+# WARNING CLASSES #
+###################
+
+#  BULBWarning --> BULBDatabaseWarning
+class BULBDatabaseWarning(BULBWarning):
     pass
 
 
-#  Base bulb error --> Database error --> attribute error
-class BULBAttributeError(BULBFieldError):
+#  BULBWarning --> BULBDatabaseWarning --> BULBNodeWarning
+class BULBNodeWarning(BULBDatabaseWarning):
     pass
 
 
-class BULBFileError(Exception):
+#  BULBWarning --> BULBDatabaseWarning --> BULBRelationshipInstanceWarning
+class BULBRelationshipInstanceWarning(BULBDatabaseWarning):
     pass
 
 
-class BULBRelationshipError(Exception):  # verified
-    pass
-
-
-class BULBRelationshipInstanceWarning(Warning):  # verified
-    pass
-
-
-class BULBBaseNodeAndRelationshipError(Exception):  # verified
+#  BULBWarning --> BULBDatabaseWarning --> BULBConnectionWarning
+class BULBConnectionWarning(BULBDatabaseWarning):
     pass

@@ -18,7 +18,7 @@ class SFTP:
         keydata = settings.BULB_SFTP_HOST_SSH_KEY
 
         if keydata is None:
-            raise BULBHostSSHKeyError("To establish an SFTP connection you have to provide the SSH key of the server. Please put it in the BULB_SFTP_HOST_SSH_KEY variable in 'settings.py'.")
+            raise BULBSftpError("To establish an SFTP connection you have to provide the SSH key of the server. Please put it in the BULB_SFTP_HOST_SSH_KEY variable in 'settings.py'.")
 
         else:
             key = paramiko.RSAKey(data=decodebytes(keydata))

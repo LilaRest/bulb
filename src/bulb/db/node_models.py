@@ -191,7 +191,7 @@ class Property:
                                         current_object_properties_dict[key] = value
 
                                     else:
-                                        raise BULBFileError(
+                                        raise BULBPropertyError(
                                             f"The property '{key}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
 
                                 else:
@@ -352,7 +352,7 @@ class Property:
         finally:
             # Checks if a property is not be at the same time 'required' and with a 'default' value :
             if self.required and self.default is not None:
-                raise BULBAttributeError(
+                raise BULBPropertyError(
                     'A property must not have "required=True" and a "default" value.')
 
 
@@ -460,7 +460,7 @@ class BaseNode:
                     setattr(fake_instance, name, value)
 
             else:
-                raise BULBBaseNodeAndRelationshipError(
+                raise BULBFakeInstanceError(
                     "The 'additional_parameters' argument of the build_fake_instance() method, must be a dict.")
 
         return fake_instance
@@ -754,7 +754,7 @@ class Node(BaseNode):
 
                 except:
                     warnings.warn(
-                        f"WARNING : You have define BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
+                        f"WARNING : You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
                         BULBNodeWarning)
 
             # File handling (with SFTP storage).
@@ -801,7 +801,7 @@ class Node(BaseNode):
                                                 pass
 
                     else:
-                        raise BULBFileError(f"The property '{property_name}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
+                        raise BULBPropertyError(f"The property '{property_name}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
 
                 else:
 
@@ -2093,7 +2093,7 @@ class RelationshipInstance:
                                property_name, None))
 
                     else:
-                        raise BULBFileError(
+                        raise BULBPropertyError(
                             f"The property '{property_name}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
 
                 else:

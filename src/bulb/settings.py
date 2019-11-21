@@ -151,6 +151,16 @@ def set_bulb_settings_on(root_settings):
     else:
         INSTALLED_APPS.insert(0, 'bulb.template')
 
+    # Add the bulb core module.
+    try:
+        INSTALLED_APPS = root_settings['INSTALLED_APPS']
+
+    except KeyError:
+        root_settings['INSTALLED_APPS'] = ['bulb.core', ]
+
+    else:
+        INSTALLED_APPS.insert(0, 'bulb.core')
+
     # Add the bulb utils module.
     try:
         INSTALLED_APPS = root_settings['INSTALLED_APPS']
