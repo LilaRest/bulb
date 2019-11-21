@@ -44,8 +44,7 @@ Finally, still in the same file (**just below the method** we've set previously)
 
 **`BULB_DATABASE_ID`** is your Neo4j database **id** or **username**. By default the id is defined on 'neo4j'.
 
-**`BULB_DATABASE_PASSWORD`** is your Neo4j database **password**. By default the password is defined on 'neo4j' too. Usually, especially if you haven't changed the password during the first run og the Neo4j database, you'll be asked to replace the default password with one of your own. 
-VIEEEEUX : But normally and if you don't have change the password before, during the first run of the Neo4j database, we will ask you to replace the default password by another. 
+**`BULB_DATABASE_PASSWORD`** is your Neo4j database **password**. By default the password is defined on 'neo4j' too. If you haven't changed the password before,  you'll be asked to replace the default password with one of your own during the first run on the Neo4j database.
 
 Example :
 
