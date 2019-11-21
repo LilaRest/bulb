@@ -1,5 +1,6 @@
 from bulb.contrib.auth.hashers import _hash_password
 from bulb.contrib.auth.exceptions import *
+from bulb.db.exceptions import BULBNodeError
 from bulb.db.utils import make_uuid
 from bulb.db import node_models
 from bulb.db.base import gdbh
@@ -228,7 +229,7 @@ class Permission(node_models.Node):
             # Build limit_statement.
             if limit is not None:
                 if not isinstance(limit, str) and not isinstance(limit, int):
-                    raise BULBGetPermissionError(
+                    raise BULBNodeError(
                         f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
                 else:
@@ -237,7 +238,7 @@ class Permission(node_models.Node):
             # Build skip_statement and add its required variable.
             if skip is not None:
                 if not isinstance(skip, str) and not isinstance(skip, int):
-                    raise BULBGetPermissionError(
+                    raise BULBNodeError(
                         f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
                 else:
@@ -245,7 +246,7 @@ class Permission(node_models.Node):
 
             # Build desc_statement.
             if not isinstance(desc, bool):
-                raise BULBGetPermissionError(
+                raise BULBNodeError(
                     f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
             else:
@@ -343,7 +344,7 @@ def get_permission_node_model():
         except AttributeError:
             warnings.warn(
                 f"You have defined BULB_PERMISSION_NODE_MODEL_FILE = '{settings.BULB_PERMISSION_NODE_MODEL_FILE}' but no Permission node model was found in it. So the native Permission node model will be used.",
-                BULBPermissionWarning)
+                BULBAuthNodeModelsWarning)
 
         else:
             return overloaded_permission
@@ -475,7 +476,7 @@ class Group(node_models.Node):
             # Build limit_statement.
             if limit is not None:
                 if not isinstance(limit, str) and not isinstance(limit, int):
-                    raise BULBGetGroupError(
+                    raise BULBNodeError(
                         f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
                 else:
@@ -484,7 +485,7 @@ class Group(node_models.Node):
             # Build skip_statement and add its required variable.
             if skip is not None:
                 if not isinstance(skip, str) and not isinstance(skip, int):
-                    raise BULBGetGroupError(
+                    raise BULBNodeError(
                         f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
                 else:
@@ -492,7 +493,7 @@ class Group(node_models.Node):
 
             # Build desc_statement.
             if not isinstance(desc, bool):
-                raise BULBGetGroupError(
+                raise BULBNodeError(
                     f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
             else:
@@ -589,7 +590,7 @@ def get_group_node_model():
         except AttributeError:
             warnings.warn(
                 f"You have defined BULB_GROUP_NODE_MODEL_FILE = '{settings.BULB_GROUP_NODE_MODEL_FILE}' but no Group node model was found in it. So the native Group node model will be used.",
-                BULBGroupWarning)
+                BULBAuthNodeModelsWarning)
 
         else:
             return overloaded_group
@@ -656,7 +657,7 @@ def get_anonymoususer_node_model():
         except AttributeError:
             warnings.warn(
                 f"You have defined BULB_ANONYMOUSUSER_NODE_MODEL_FILE = '{settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE}' but no AnonymousUser node model was found in it. So the native AnonymousUser node model will be used.",
-                BULBAnonymousUserWarning)
+                BULBAuthNodeModelsWarning)
         else:
             return overloaded_anonymoususer
         return AnonymousUser
@@ -872,7 +873,7 @@ class User(node_models.Node):
             # Build limit_statement.
             if limit is not None:
                 if not isinstance(limit, str) and not isinstance(limit, int):
-                    raise BULBGetUserError(
+                    raise BULBNodeError(
                         f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
                 else:
@@ -881,7 +882,7 @@ class User(node_models.Node):
             # Build skip_statement and add its required variable.
             if skip is not None:
                 if not isinstance(skip, str) and not isinstance(skip, int):
-                    raise BULBGetUserError(
+                    raise BULBNodeError(
                         f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
                 else:
@@ -889,7 +890,7 @@ class User(node_models.Node):
 
             # Build desc_statement.
             if not isinstance(desc, bool):
-                raise BULBGetUserError(
+                raise BULBNodeError(
                     f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
             else:
@@ -1016,7 +1017,7 @@ def get_user_node_model():
         except AttributeError:
             warnings.warn(
                 f"You have defined BULB_USER_NODE_MODEL_FILE = '{settings.BULB_USER_NODE_MODEL_FILE}' but no User node model was found in it. So the native User node model will be used.",
-                BULBUserWarning)
+                BULBAuthNodeModelsWarning)
 
         else:
             return overloaded_user

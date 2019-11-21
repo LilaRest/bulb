@@ -1,17 +1,27 @@
-from bulb.db.exceptions import BULBNodeError
+from bulb.core.exceptions import BULBException, BULBWarning
 
 
-class BULBSessionError(Exception):
+#################
+# ERROR CLASSES #
+#################
+
+#  BULBException --> BULBSessionError
+class BULBSessionError(BULBException):
+    pass
+
+#  BULBException --> BULBSessionError --> BULBSessionDoesNotExist
+class BULBSessionDoesNotExist(BULBSessionError):
+    pass
+
+#  BULBException --> BULBSessionError --> BULBSessionDoesNotHaveData
+class BULBSessionDoesNotHaveData(BULBSessionError):
     pass
 
 
-class BULBSessionWarning(Warning):
-    pass
+###################
+# WARNING CLASSES #
+###################
 
-
-class BULBSessionDoesNotExist(BULBNodeError):
-    pass
-
-
-class BULBSessionDoesNotHaveData(BULBNodeError):
+#  BULBWarning --> BULBSessionWarning
+class BULBSessionWarning(BULBWarning):
     pass
