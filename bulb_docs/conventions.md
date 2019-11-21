@@ -1,17 +1,17 @@
 ### >> Conventions :  
 <br/>
 
-1. **The getter methods** that should return node, the returned value must always be :
-    - Either an instance of the node corresponding class (Example : the **`get()`** method of the **`bulb.contrib.auth.node_models.User()`** node model), 
-    - Or JSONified datas of the node (No example).  
+1. The values returned by **the getter methods** must be :
+    - Either an instance of the node's corresponding class (Example : the **`get()`** method of the **`bulb.contrib.auth.node_models.User()`** node model), 
+    - Or JSONified datas of the node/instance (No example).  
     <br/>
     
-    If there are multiple nodes, they will be stored in a list or a set (Example : the **`get_only_user_permissions()`** method of the **`bulb.contrib.auth.node_models.User()`** node model).
+    If there are multiple nodes, they'll be stored in a list or in a set (Example : the **`get_only_user_permissions()`** method of the **`bulb.contrib.auth.node_models.User()`** node model).
 <br/>
 <br/>
 <br/>
 
-2. **Permissions** should always have a codename composed by a CRUD element ("create", "view", "update", "delete") + (optional) a target + the concerned node models name or the concerned entity name, in lowercase.  
+2. **Permissions** should always have a codename composed of a CRUD element ("create", "view", "update", "delete") + (optional) a target + the concerned node models' name or the concerned entity's name, in lowercase.  
                    <br/>
                    Some examples :
                    
