@@ -144,9 +144,11 @@ class Database:
             return False
 
         else:
-            warnings.warn("""WARNING : Yours database informations are not valid, the connection has been establish
-            with the default authentification informations (uri = 'bolt://localhost:7687', id = 'neo4j', password = 'neo4j'.""",
-                          BULBConnectionWarning)
+            bulb_logger.warning(
+                'BULBConnectionWarning("WARNING : Yours database informations are not valid, the connection has been establish with the default authentification informations (uri = \'bolt://localhost:7687\', id = \'neo4j\', password = \'neo4j\'."')
+            warnings.warn(
+                "Yours database informations are not valid, the connection has been establishwith the default authentification informations (uri = 'bolt://localhost:7687', id = 'neo4j', password = 'neo4j'.",
+                BULBConnectionWarning)
             return True
 
     def close_connection(self):

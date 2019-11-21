@@ -349,6 +349,8 @@ def get_permission_node_model():
             overloaded_permission = overloaded_permission_module.Permission
 
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBAuthNodeModelsWarning("You have defined BULB_PERMISSION_NODE_MODEL_FILE = \'{settings.BULB_PERMISSION_NODE_MODEL_FILE}\' but no Permission node model was found in it. So the native Permission node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_PERMISSION_NODE_MODEL_FILE = '{settings.BULB_PERMISSION_NODE_MODEL_FILE}' but no Permission node model was found in it. So the native Permission node model will be used.",
                 BULBAuthNodeModelsWarning)
@@ -601,6 +603,8 @@ def get_group_node_model():
             overloaded_group = overloaded_group_module.Group
 
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBAuthNodeModelsWarning("You have defined BULB_GROUP_NODE_MODEL_FILE = \'{settings.BULB_GROUP_NODE_MODEL_FILE}\' but no Group node model was found in it. So the native Group node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_GROUP_NODE_MODEL_FILE = '{settings.BULB_GROUP_NODE_MODEL_FILE}' but no Group node model was found in it. So the native Group node model will be used.",
                 BULBAuthNodeModelsWarning)
@@ -673,6 +677,8 @@ def get_anonymoususer_node_model():
         try:
             overloaded_anonymoususer = overloaded_anonymoususer_module.AnonymousUser
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBAuthNodeModelsWarning("You have defined BULB_ANONYMOUSUSER_NODE_MODEL_FILE = \'{settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE}\' but no AnonymousUser node model was found in it. So the native AnonymousUser node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_ANONYMOUSUSER_NODE_MODEL_FILE = '{settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE}' but no AnonymousUser node model was found in it. So the native AnonymousUser node model will be used.",
                 BULBAuthNodeModelsWarning)
@@ -1041,6 +1047,8 @@ def get_user_node_model():
             overloaded_user = overloaded_user_module.User
 
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBAuthNodeModelsWarning("You have defined BULB_USER_NODE_MODEL_FILE = \'{settings.BULB_USER_NODE_MODEL_FILE}\' but no User node model was found in it. So the native User node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_USER_NODE_MODEL_FILE = '{settings.BULB_USER_NODE_MODEL_FILE}' but no User node model was found in it. So the native User node model will be used.",
                 BULBAuthNodeModelsWarning)

@@ -753,8 +753,10 @@ class Node(BaseNodeAndRelationship):
         class_name = self.__class__.__name__
 
         if not settings.BULB_CREATE_PROPERTY_IF_NOT_FOUND and property_name not in self.__dict__.keys():
+            bulb_logger.warning(
+                f'BULBNodeWarning("You are trying to update the property \'{property_name}\' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.")')
             warnings.warn(
-                f"WARNING : You try to update the property '{property_name}' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.",
+                f"You are trying to update the property '{property_name}' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.",
                 BULBNodeWarning)
 
         else:
@@ -774,8 +776,10 @@ class Node(BaseNodeAndRelationship):
                         setattr(self, property_name, None)
 
                 except:
+                    bulb_logger.warning(
+                        f'BULBNodeWarning("You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j\'s \'apoc\' plugin is not installed. So no new property was created.")')
                     warnings.warn(
-                        f"WARNING : You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
+                        f"You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
                         BULBNodeWarning)
 
             # File handling (with SFTP storage).
@@ -2137,8 +2141,10 @@ class RelationshipInstance:
         properties_fields = self.related_relationship.__dict__["properties_fields"]
 
         if not settings.BULB_CREATE_PROPERTY_IF_NOT_FOUND and property_name not in properties_fields.keys():
+            bulb_logger.warning(
+                f'BULBRelationshipInstanceWarning("You are trying to update the property \'{property_name}\' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.")')
             warnings.warn(
-                f"WARNING : You try to update the property '{property_name}' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.",
+                f"You are trying to update the property '{property_name}' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.",
                 BULBRelationshipInstanceWarning)
 
         else:
@@ -2157,8 +2163,10 @@ class RelationshipInstance:
                            property_name, None))
 
                 except:
+                    bulb_logger.warning(
+                        f'BULBNodeWarning("You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j\'s \'apoc\' plugin is not installed. So no new property was created.")')
                     warnings.warn(
-                        f"WARNING : You have define BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
+                        f"You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
                         BULBNodeWarning)
 
             # File handling (with SFTP storage)

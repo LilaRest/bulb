@@ -296,6 +296,8 @@ def get_session_node_model():
             overloaded_session = overloaded_session_module.Session
 
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBSessionWarning("You have defined BULB_SESSION_NODE_MODEL_FILE = \'{settings.BULB_SESSION_NODE_MODEL_FILE}\' but no Session node model was found in it. So the native Session node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_SESSION_NODE_MODEL_FILE = '{settings.BULB_SESSION_NODE_MODEL_FILE}' but no Session node model was found in it. So the native Session node model will be used.",
                 BULBSessionWarning)

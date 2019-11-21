@@ -563,6 +563,8 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
                 if request.user.has_perm("delete_" + node_model_name.lower()) or request.user.has_perm("delete"):
 
                     instance.delete()
+                    bulb_logger.activity(
+                        f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | delete | {node_model_name} | {instance.uuid}")
                     # add_message(request, SUCCESS, "L'instance a bien été supprimée.")
 
                     # if node_model_name:
@@ -1553,6 +1555,9 @@ def node_handling_view(request, node_model_name, node_uuid):
 
                         if response.successful():
                             if not response.get():
+                                if not dict(request.POST)["action"][0] == "delete":
+                                    bulb_logger.activity(
+                                        f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | edit | {node_model_name} | {instance.uuid}")
                                 yield "<center><i style='font-size: 150px;' class='material-icons valid-icons'>check_circle</i><br/><br/><p>Successful</p></center>"
                                 time.sleep(2)
                                 break
@@ -1587,10 +1592,10 @@ def node_handling_view(request, node_model_name, node_uuid):
         return redirect("node_model_home", node_model_name=node_model_name)
 
 
-def handle_creation(request_POST, request_FILES, admin_fields_dict, node_model, node_model_name, available_objects_dict):
+def handle_creation(request, admin_fields_dict, node_model, node_model_name, available_objects_dict):
     try:
-        admin_request_post = request_POST
-        admin_request_files = request_FILES
+        admin_request_post = request.POST
+        admin_request_files = request.FILES
         admin_request = {**admin_request_post, **admin_request_files}
 
         properties = {}
@@ -1623,8 +1628,8 @@ def handle_creation(request_POST, request_FILES, admin_fields_dict, node_model, 
                 del properties[password_field_name]
                 # add_message(request, ERROR,
                 #             "Le mot de passe et sa confirmation ne correspondent pas. Le mot de passe n'a donc pas été défini.")
-            bulb_logger.error('BULBAdminError("The password and its confirmation do no match. So the password was not modified.")')
-            raise BULBAdminError("The password and its confirmation do no match. So the password was not modified.")
+                bulb_logger.error('BULBAdminError("The password and its confirmation do no match. So the instance was not created.")')
+                raise BULBAdminError("The password and its confirmation do no match. So the instance was not created.")
 
         for property_name, property_value in properties.items():
             try:
@@ -1700,6 +1705,9 @@ def handle_creation(request_POST, request_FILES, admin_fields_dict, node_model, 
                                 properties[property_name] = datetime_to_time
 
         new_instance = node_model.create(**properties)
+
+        bulb_logger.activity(
+            f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | create | {node_model_name} | {new_instance.uuid}")
 
         for rel_name, rel_instructions in relationships_dict.items():
             related_relationship_object = eval(f"new_instance.{rel_name}")
@@ -2648,9 +2656,8 @@ def node_creation_view(request, node_model_name):
                 """
 
                 response = pool.apply_async(handle_creation,
-                                            (request.POST, request.FILES, admin_fields_dict, node_model, node_model_name,
+                                            (request, admin_fields_dict, node_model, node_model_name,
                                              available_objects_dict))
-
 
                 while True:
                     if response.ready():
