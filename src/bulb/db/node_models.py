@@ -356,7 +356,7 @@ class Property:
                     'A property must not have "required=True" and a "default" value.')
 
 
-class BaseNode:
+class BaseNodeAndRelationship:
 
     # The UUID is the common property that all nodes have.
     uuid = Property(default=make_uuid,
@@ -429,7 +429,7 @@ class BaseNode:
         fake_instance_class = cls
 
         if forced_fake_instance_class is not None:
-            if BaseNode in forced_fake_instance_class.__mro__\
+            if BaseNodeAndRelationship in forced_fake_instance_class.__mro__\
                     or RelationshipInstance in forced_fake_instance_class.__mro__:
                 fake_instance_class = forced_fake_instance_class
 
@@ -466,7 +466,7 @@ class BaseNode:
         return fake_instance
 
 
-class Node(BaseNode):
+class Node(BaseNodeAndRelationship):
     """
     This is the base class for all Node classes.
     """
@@ -1110,7 +1110,7 @@ class Node(BaseNode):
 
         # Add classes names in the labels list.
         for mro_class in cls.__mro__:
-            if not mro_class in [object, Node, BaseNode]:
+            if not mro_class in [object, Node, BaseNodeAndRelationship]:
                 labels_list.add(mro_class.__name__)
 
         return list(labels_list)
@@ -1136,7 +1136,7 @@ class Node(BaseNode):
         return relationships_dict
 
 
-class Relationship(BaseNode):
+class Relationship(BaseNodeAndRelationship):
     """
     This class allow using of relationships with node_models.
 
