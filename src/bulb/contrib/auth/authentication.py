@@ -1,6 +1,7 @@
 from bulb.contrib.auth.exceptions import BULBLoginError
 from bulb.contrib.auth.node_models import get_user_node_model, get_anonymoususer_node_model
 from bulb.contrib.auth.hashers import _check_password
+from bulb.utils.log import bulb_logger
 from bulb.db.base import gdbh
 from django.conf import settings
 import os
@@ -48,10 +49,15 @@ def preserve_or_login(request, if_authentication_user=AnonymousUser()):
                 from_request_user = request.user
 
         if not if_authentication_user and not request.user:
-            raise BULBLoginError("To login an user with the 'preserve_or_login()' function, you must provide as function's parameters : the request and the user object.")
+            bulb_logger.error(
+                'BULBLoginError("To login an user with the \'preserve_or_login()\' function, you must provide as function\'s parameters : the request and the user object.")')
+            raise BULBLoginError(
+                "To login an user with the 'preserve_or_login()' function, you must provide as function's parameters : the request and the user object.")
 
     except BULBLoginError:
         request.session.flush()
+        bulb_logger.error(
+            'BULBLoginError("To login an user with the \'preserve_or_login()\' function, you must provide as function\'s parameters : the request and the user object.")')
         raise
 
     else:
@@ -215,4 +221,3 @@ def get_user_is_logged(request):
 
                                 return True
     return False
-

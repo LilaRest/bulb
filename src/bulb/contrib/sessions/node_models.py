@@ -1,5 +1,6 @@
 from bulb.contrib.sessions.exceptions import BULBSessionError, BULBSessionDoesNotExist,\
     BULBSessionDoesNotHaveData, BULBSessionWarning
+from bulb.utils.log import bulb_logger
 from bulb.db import node_models
 from bulb.db.base import gdbh
 from django.utils import timezone
@@ -31,6 +32,8 @@ class AbstractBaseSession:
         if session_dict:
             s = self.__class__(session_key, self.encode(session_dict), expire_date)
         else:
+            bulb_logger.error(
+                'BULBSessionDoesNotHaveData("The does\'nt have datas (\'session_dict\'), failed to save it.")')
             raise BULBSessionDoesNotHaveData("The does'nt have datas ('session_dict'), failed to save it.")
         return s
 
@@ -39,6 +42,7 @@ class AbstractBaseSession:
 
     @classmethod
     def get_session_store_class(cls):
+        bulb_logger.error('NotImplementedError')
         raise NotImplementedError
 
     def get_decoded(self):
@@ -166,6 +170,8 @@ class Session(node_models.Node, AbstractBaseSession):
         # Build limit_statement.
         if limit is not None:
             if not isinstance(limit, str) and not isinstance(limit, int):
+                bulb_logger.error(
+                    f'BULBSessionError("The \'limit\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                 raise BULBSessionError(
                     f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -175,6 +181,8 @@ class Session(node_models.Node, AbstractBaseSession):
         # Build skip_statement and add its required variable.
         if skip is not None:
             if not isinstance(skip, str) and not isinstance(skip, int):
+                bulb_logger.error(
+                    f'BULBSessionError("The \'skip\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                 raise BULBSessionError(
                     f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -183,6 +191,8 @@ class Session(node_models.Node, AbstractBaseSession):
 
         # Build desc_statement.
         if not isinstance(desc, bool):
+            bulb_logger.error(
+                f'BULBSessionError("The \'desc\' parameter of the get() method of {cls.__name__} must be a boolean.")')
             raise BULBSessionError(
                 f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
@@ -261,13 +271,15 @@ class Session(node_models.Node, AbstractBaseSession):
             gdbh.w_transaction("MATCH (s:Session {session_key:'%s'}) DETACH DELETE (s)" % session_key)
 
         else:
+            bulb_logger.error(
+                f'BULBSessionDoesNotExist("No session with session_key = \'{session_key}\'. So it cannot be deleted.")')
             raise BULBSessionDoesNotExist(f"No session with session_key = '{session_key}'. So it cannot be deleted.")
 
     @classmethod
     def clear_expired_sessions(cls):
         gdbh.r_transaction("""
-            MATCH (s:Session) 
-            WHERE s.expire_date < datetime('%s') 
+            MATCH (s:Session)
+            WHERE s.expire_date < datetime('%s')
             DETACH DELETE (s)
             """ % str(timezone.now()).replace(' ', 'T'))
 

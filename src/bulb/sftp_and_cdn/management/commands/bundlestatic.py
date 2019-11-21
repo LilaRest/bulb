@@ -1,5 +1,6 @@
 from bulb.sftp_and_cdn.exceptions import BULBStaticfilesError
 from bulb.utils import get_folders_paths_list
+from bulb.utils.log import bulb_logger
 import bulb
 from django.core.management.base import BaseCommand
 from django.template import Template, Context
@@ -23,13 +24,15 @@ class Command(BaseCommand):
             """
             If the command is executed when DEBUG = False, errors can occur from the bulb templatetags.
             Indeed, if DEBUG = False, if {% static_raw_src %}, {% static_bundled_src %} are used, staticfiles will be
-            recovered from the SFTP : this will cause that the 'collectstatic command will collect staticfiles from the 
+            recovered from the SFTP : this will cause that the 'collectstatic command will collect staticfiles from the
             old files on the SFTP, and not from the local new files.
-            But also in certain cases, bundled staticfiles will be used : this will cause that the new bundle files will 
+            But also in certain cases, bundled staticfiles will be used : this will cause that the new bundle files will
             be build from the old bundle files.
 
             See : TODO : add the related documentation page url.
             """
+            bulb_logger.error(
+                'BULBStaticfilesError("The DEBUG variable must be set on \'True\' to handle new staticfiles.")')
             raise BULBStaticfilesError("The DEBUG variable must be set on 'True' to handle new staticfiles.")
 
         else:
@@ -42,7 +45,10 @@ class Command(BaseCommand):
 
             # Test if the staticfiles folder exist.
             if not os.path.isdir(os.path.join(BASE_DIR, "staticfiles")):
-                raise BULBStaticfilesError("The 'staticfiles' folder was not found. Please run the 'python manage.py collectstatic' command.")
+                bulb_logger.error(
+                    'BULBStaticfilesError("The \'staticfiles\' folder was not found. Please run the \'python manage.py collectstatic\' command.")')
+                raise BULBStaticfilesError(
+                    "The 'staticfiles' folder was not found. Please run the 'python manage.py collectstatic' command.")
 
             else:
                 try:
@@ -177,7 +183,7 @@ class Command(BaseCommand):
         process.env.WEBPACK_ENTRY = ['{entry_file_path}'];
         process.env.WEBPACK_OUTPUT = '{parent_folder_path}';
         process.env.BUNDLE_NAME = '{file[:-5]}';
-        
+
         """)
                                 webpack_config_file.write(open(bulb_path + "/sftp_and_cdn/webpack_files/webpack.config.js", "r").read())
                                 webpack_config_file.close()
@@ -242,4 +248,5 @@ class Command(BaseCommand):
                     except (FileNotFoundError, TypeError):
                         pass
 
+                    bulb_logger.error("FileNotFoundError or TypeError")
                     raise

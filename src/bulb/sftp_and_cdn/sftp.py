@@ -1,5 +1,6 @@
 from bulb.sftp_and_cdn.cdn_apis import CDN77
 from bulb.sftp_and_cdn.exceptions import *
+from bulb.utils.log import bulb_logger
 from django.conf import settings
 from base64 import decodebytes
 import warnings
@@ -18,7 +19,10 @@ class SFTP:
         keydata = settings.BULB_SFTP_HOST_SSH_KEY
 
         if keydata is None:
-            raise BULBSftpError("To establish an SFTP connection you have to provide the SSH key of the server. Please put it in the BULB_SFTP_HOST_SSH_KEY variable in 'settings.py'.")
+            bulb_logger.error(
+                'BULBSftpError("To establish an SFTP connection you have to provide the SSH key of the server. Please put it in the BULB_SFTP_HOST_SSH_KEY variable in \'settings.py\'.")')
+            raise BULBSftpError(
+                "To establish an SFTP connection you have to provide the SSH key of the server. Please put it in the BULB_SFTP_HOST_SSH_KEY variable in 'settings.py'.")
 
         else:
             key = paramiko.RSAKey(data=decodebytes(keydata))
@@ -46,8 +50,10 @@ class SFTP:
             sftp_staticfiles_folder_path = "/www/staticfiles/bundled_src"
 
         else:
+            bulb_logger.error(
+                f'BULBStaticfilesError("The \'src_type\' parameter of the clear_staticfiles() method should be \'raw\' or \'bundled\'. It is {str(src_type)}.")')
             raise BULBStaticfilesError(
-                f'The "src_type" parameter of the clear_staticfiles() method should be "raw" or "bundled". It is {str(src_type)}.')
+                f"The 'src_type' parameter of the clear_staticfiles() method should be 'raw' or 'bundled'. It is {str(src_type)}.")
 
         with SFTP.connect() as sftp:
 
@@ -89,7 +95,10 @@ class SFTP:
             sftp_staticfiles_folder_path = "/www/staticfiles/bundled_src"
 
         else:
-            raise BULBStaticfilesError(f'The "src_type" parameter of the clear_staticfiles() method should be "raw", "bundled". It is {str(src_type)}.')
+            bulb_logger.error(
+                f'BULBStaticfilesError("The \'src_type\' parameter of the clear_staticfiles() method should be \'raw\', \'bundled\'. It is {str(src_type)}.")')
+            raise BULBStaticfilesError(
+                f"The 'src_type' parameter of the clear_staticfiles() method should be 'raw', 'bundled'. It is {str(src_type)}.")
 
         with SFTP.connect() as sftp:
 

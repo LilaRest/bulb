@@ -1,6 +1,7 @@
 from bulb.db.exceptions import BULBNodeLabelsInitializationError
-from bulb.db.node_models import Node
 from bulb.utils import get_files_paths_list
+from bulb.utils.log import bulb_logger
+from bulb.db.node_models import Node
 from bulb.db.base import gdbh
 from django.core.management.base import BaseCommand
 import importlib.util
@@ -89,7 +90,7 @@ class Command(BaseCommand):
                         # If the property is defined as "required" (required=True), create REQUIRED constraint in the database
                         if property_content.required:
                             gdbh.w_transaction("""
-                                CREATE CONSTRAINT ON (x:%s) 
+                                CREATE CONSTRAINT ON (x:%s)
                                 ASSERT exists(x.%s)
                                 """ % (node_class_labels_cypher_format, property_name))
 
@@ -127,4 +128,5 @@ class Command(BaseCommand):
                 return ':'.join(render)
 
             else:
-                raise BULBNodeLabelsInitializationError('self.labels attribute must be a list.')
+                bulb_logger.error('BULBNodeLabelsInitializationError("self.labels attribute must be a list.")')
+                raise BULBNodeLabelsInitializationError("self.labels attribute must be a list.")

@@ -1,4 +1,5 @@
 from bulb.sftp_and_cdn.exceptions import BULBStaticfilesError
+from bulb.utils.log import bulb_logger
 from django.core.management.base import BaseCommand
 from django.conf import settings
 import subprocess
@@ -19,13 +20,14 @@ class Command(BaseCommand):
             """
             If the command is executed when DEBUG = False, errors can occur from the bulb templatetags.
             Indeed, if DEBUG = False, if {% static_raw_src %}, {% static_bundled_src %} are used, staticfiles will be
-            recovered from the SFTP : this will cause that the 'collectstatic command will collect staticfiles from the 
+            recovered from the SFTP : this will cause that the 'collectstatic command will collect staticfiles from the
             old files on the SFTP, and not from the local new files.
-            But also in certain cases, bundled staticfiles will be used : this will cause that the new bundle files will 
+            But also in certain cases, bundled staticfiles will be used : this will cause that the new bundle files will
             be build from the old bundle files.
 
             See : TODO : add the related documentation page url.
             """
+            bulb_logger.error('BULBStaticfilesError("The DEBUG variable must be set on \'True\' to handle new staticfiles.")')
             raise BULBStaticfilesError("The DEBUG variable must be set on 'True' to handle new staticfiles.")
 
         else:
