@@ -25,7 +25,51 @@
 {% endblock administration_part_name %}
 
 {% block content %}
-    <p>LOGS</p>
+    <div id="log-choice">
+        <button id="all-button" class="log-button">All</button>
+        <button id="errors-button" class="log-button">Errors</button>
+    </div>
+
+    <div id="all-log" class="log">
+        {{ all_log }}
+    </div>
+
+    <div id="errors-log" class="log" style="display: none;">
+        {{ errors_log }}
+    </div>
+
+    <script>
+        const all_log_button = document.querySelector("div#log-choice button#all-button")
+        const errors_log_button = document.querySelector("div#log-choice button#errors-button")
+        const all_log = document.querySelector("#all-log")
+        const errors_log = document.querySelector("#errors-log")
+        let opened_log = "all"
+
+        let errors_log_was_opened = false;
+
+        all_log.scrollTo(0, all_log.scrollHeight)
+
+        all_log_button.addEventListener("click", function () {
+            if (opened_log === "errors") {
+                all_log.style.display = "block";
+                errors_log.style.display = "none";
+                opened_log = "all";
+            }
+        })
+
+        errors_log_button.addEventListener("click", function () {
+            if (opened_log === "all") {
+                all_log.style.display = "none";
+                errors_log.style.display = "block";
+                opened_log = "errors";
+            }
+
+            if (!errors_log_was_opened) {
+                errors_log.scrollTo(0, errors_log.scrollHeight)
+                errors_log_was_opened = true;
+            }
+        })
+    </script>
 {% endblock content %}
 
 {% block scripts %}{% endblock scripts %}

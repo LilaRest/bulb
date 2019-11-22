@@ -30,7 +30,7 @@ def init_bulb_logger_singleton():
 
     logging.Logger.activity = activity
 
-    # Create formatter for stream_handler, all_rotating_file_handler, error_rotating_file_handler.
+    # Create formatter for stream_handler, all_rotating_file_handler, errors_rotating_file_handler.
     formatter = logging.Formatter("[BULB %(levelname)s] [%(asctime)s] from '%(pathname)s' at line %(lineno)s in %(funcName)s : \"%(message)s\"")
 
     # Create the stream handler.
@@ -52,16 +52,16 @@ def init_bulb_logger_singleton():
     all_rotating_file_handler.setFormatter(formatter)
     bulb_logger.addHandler(all_rotating_file_handler)
 
-    # Create the warning, error and critical file handler.
-    error_rotating_file_handler = logging.handlers.RotatingFileHandler(filename=os.path.join(settings.BASE_DIR, "bulb.error.log"),
+    # Create the warnings, errors and criticals file handler.
+    errors_rotating_file_handler = logging.handlers.RotatingFileHandler(filename=os.path.join(settings.BASE_DIR, "bulb.errors.log"),
                                                                        maxBytes=1000000, backupCount=0)
-    error_rotating_file_handler.setLevel(logging.WARNING)
-    error_rotating_file_handler.setFormatter(formatter)
-    error_rotating_file_handler.addFilter(LevelFilter(logging.ACTIVITY))
-    bulb_logger.addHandler(error_rotating_file_handler)
+    errors_rotating_file_handler.setLevel(logging.WARNING)
+    errors_rotating_file_handler.setFormatter(formatter)
+    errors_rotating_file_handler.addFilter(LevelFilter(logging.ACTIVITY))
+    bulb_logger.addHandler(errors_rotating_file_handler)
 
     # Create formatter for activity_rotating_file_handler.
-    activity_formatter = logging.Formatter("[BULB %(levelname)s] [%(asctime)s] from '%(pathname)s' at line %(lineno)s in %(funcName)s : \"%(message)s\"")
+    activity_formatter = logging.Formatter("[BULB %(levelname)s] [%(asctime)s] : \"%(message)s\"")
 
     # Create the activity file handler.
     activity_rotating_file_handler = logging.handlers.RotatingFileHandler(filename=os.path.join(settings.BASE_DIR, "bulb.activity.log"),
