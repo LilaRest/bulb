@@ -1,7 +1,9 @@
 from bulb.contrib.handling.exceptions import BULBAdminError
+from bulb.contrib.auth.exceptions import BULBPermissionError
 from bulb.contrib.auth.decorators import login_required, staff_only
 from bulb.utils import get_files_paths_list, get_all_node_models
 from bulb.contrib.auth.node_models import User
+from bulb.utils.log import bulb_logger
 from bulb.db import gdbh
 from django.contrib.messages import add_message, SUCCESS, ERROR
 from django.shortcuts import render, redirect
@@ -475,7 +477,10 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
                                 # add_message(
                                 #     request, ERROR,
                                 #     "Le mot de passe et sa confirmation ne correspondent pas. Le mot de passe n'a donc pas été modifié.")
-                                raise BULBAdminError("The password and its confirmation do no match. So the password was not modified.")
+                                bulb_logger.error(
+                                    'BULBAdminError("The password and its confirmation don\'t match. So the password was not modified.")')
+                                raise BULBAdminError(
+                                    "The password and its confirmation don\'t match. So the password was not modified.")
 
                         # Handle relationships.
                         elif property_name == "relationships-helper":
@@ -498,8 +503,9 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
                                                 break
 
                                         if uuid_is_valid is False:
-                                            raise BULBAdminError(
-                                                "HTML modifications was found, the modifications cannot be done.")
+                                            bulb_logger.error(
+                                                'BULBAdminError("HTML modifications was found, the modifications cannot be done.")')
+                                            raise BULBAdminError("HTML modifications was found, the modifications cannot be done.")
 
                                         related_relationship_object.add(uuid=to_add_uuid)
 
@@ -514,8 +520,9 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
                                                 break
 
                                         if uuid_is_valid is False:
-                                            raise BULBAdminError(
-                                                "HTML modifications was found, the modifications cannot be done.")
+                                            bulb_logger.error(
+                                                'BULBAdminError("HTML modifications was found, the modifications cannot be done.")')
+                                            raise BULBAdminError("HTML modifications was found, the modifications cannot be done.")
 
                                         related_relationship_object.remove(uuid=to_remove_uuid)
 
@@ -534,8 +541,9 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
                                     break
 
                             if uuid_is_valid is False:
-                                raise BULBAdminError(
-                                    "HTML modifications was found, the modifications cannot be done.")
+                                bulb_logger.error(
+                                    'BULBAdminError("HTML modifications was found, the modifications cannot be done.")')
+                                raise BULBAdminError("HTML modifications was found, the modifications cannot be done.")
 
                             related_relationship_object.remove(uuid=object_uuid)
 
@@ -555,6 +563,8 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
                 if request.user.has_perm("delete_" + node_model_name.lower()) or request.user.has_perm("delete"):
 
                     instance.delete()
+                    bulb_logger.activity(
+                        f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | delete | {node_model_name} | {instance.uuid}")
                     # add_message(request, SUCCESS, "L'instance a bien été supprimée.")
 
                     # if node_model_name:
@@ -567,10 +577,12 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
                     # add_message(request, ERROR, "Vous n'avez pas la permission de supprimer cette instance.")
                     # return redirect("node_handling", node_model_name=node_model_name, node_uuid=node_uuid)
 
-                    raise PermissionError("You're not allowed to delete this instance.")
+                    bulb_logger.error('BULBPermissionError("You\'re not allowed to delete this instance.")')
+                    raise BULBPermissionError("You're not allowed to delete this instance.")
 
         else:
-            raise BULBAdminError("You must provide the 'action' in the POST request.")
+            bulb_logger.error('BULBAdminError("You must provide the \'action\' key in the POST request.")')
+            raise BULBAdminError("You must provide the 'action' key in the POST request.")
 
     except:
         return sys.exc_info()
@@ -1543,6 +1555,9 @@ def node_handling_view(request, node_model_name, node_uuid):
 
                         if response.successful():
                             if not response.get():
+                                if not dict(request.POST)["action"][0] == "delete":
+                                    bulb_logger.activity(
+                                        f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | edit | {node_model_name} | {instance.uuid}")
                                 yield "<center><i style='font-size: 150px;' class='material-icons valid-icons'>check_circle</i><br/><br/><p>Successful</p></center>"
                                 time.sleep(2)
                                 break
@@ -1577,10 +1592,10 @@ def node_handling_view(request, node_model_name, node_uuid):
         return redirect("node_model_home", node_model_name=node_model_name)
 
 
-def handle_creation(request_POST, request_FILES, admin_fields_dict, node_model, node_model_name, available_objects_dict):
+def handle_creation(request, admin_fields_dict, node_model, node_model_name, available_objects_dict):
     try:
-        admin_request_post = request_POST
-        admin_request_files = request_FILES
+        admin_request_post = request.POST
+        admin_request_files = request.FILES
         admin_request = {**admin_request_post, **admin_request_files}
 
         properties = {}
@@ -1613,7 +1628,8 @@ def handle_creation(request_POST, request_FILES, admin_fields_dict, node_model, 
                 del properties[password_field_name]
                 # add_message(request, ERROR,
                 #             "Le mot de passe et sa confirmation ne correspondent pas. Le mot de passe n'a donc pas été défini.")
-            raise BULBAdminError("The password and its confirmation do no match. So the password was not modified.")
+                bulb_logger.error('BULBAdminError("The password and its confirmation do no match. So the instance was not created.")')
+                raise BULBAdminError("The password and its confirmation do no match. So the instance was not created.")
 
         for property_name, property_value in properties.items():
             try:
@@ -1690,6 +1706,9 @@ def handle_creation(request_POST, request_FILES, admin_fields_dict, node_model, 
 
         new_instance = node_model.create(**properties)
 
+        bulb_logger.activity(
+            f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | create | {node_model_name} | {new_instance.uuid}")
+
         for rel_name, rel_instructions in relationships_dict.items():
             related_relationship_object = eval(f"new_instance.{rel_name}")
 
@@ -1706,8 +1725,8 @@ def handle_creation(request_POST, request_FILES, admin_fields_dict, node_model, 
                             break
 
                     if uuid_is_valid is False:
-                        raise BULBAdminError(
-                            "HTML modifications was found, the modifications cannot be done.")
+                        bulb_logger.error('BULBAdminError("HTML modifications was found, the modifications cannot be done.")')
+                        raise BULBAdminError("HTML modifications was found, the modifications cannot be done.")
 
                     related_relationship_object.add(uuid=to_add_uuid)
 
@@ -2637,9 +2656,8 @@ def node_creation_view(request, node_model_name):
                 """
 
                 response = pool.apply_async(handle_creation,
-                                            (request.POST, request.FILES, admin_fields_dict, node_model, node_model_name,
+                                            (request, admin_fields_dict, node_model, node_model_name,
                                              available_objects_dict))
-
 
                 while True:
                     if response.ready():

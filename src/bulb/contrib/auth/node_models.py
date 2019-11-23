@@ -1,6 +1,7 @@
 from bulb.contrib.auth.hashers import _hash_password
 from bulb.contrib.auth.exceptions import *
 from bulb.db.exceptions import BULBNodeError
+from bulb.utils.log import bulb_logger
 from bulb.db.utils import make_uuid
 from bulb.db import node_models
 from bulb.db.base import gdbh
@@ -229,6 +230,8 @@ class Permission(node_models.Node):
             # Build limit_statement.
             if limit is not None:
                 if not isinstance(limit, str) and not isinstance(limit, int):
+                    bulb_logger.error(
+                        f'BULBNodeError("The \'limit\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                     raise BULBNodeError(
                         f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -238,6 +241,8 @@ class Permission(node_models.Node):
             # Build skip_statement and add its required variable.
             if skip is not None:
                 if not isinstance(skip, str) and not isinstance(skip, int):
+                    bulb_logger.error(
+                        f'BULBNodeError("The \'skip\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                     raise BULBNodeError(
                         f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -246,6 +251,8 @@ class Permission(node_models.Node):
 
             # Build desc_statement.
             if not isinstance(desc, bool):
+                bulb_logger.error(
+                    f'BULBNodeError("The \'desc\' parameter of the get() method of {cls.__name__} must be a boolean.")')
                 raise BULBNodeError(
                     f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
@@ -342,6 +349,8 @@ def get_permission_node_model():
             overloaded_permission = overloaded_permission_module.Permission
 
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBAuthNodeModelsWarning("You have defined BULB_PERMISSION_NODE_MODEL_FILE = \'{settings.BULB_PERMISSION_NODE_MODEL_FILE}\' but no Permission node model was found in it. So the native Permission node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_PERMISSION_NODE_MODEL_FILE = '{settings.BULB_PERMISSION_NODE_MODEL_FILE}' but no Permission node model was found in it. So the native Permission node model will be used.",
                 BULBAuthNodeModelsWarning)
@@ -476,6 +485,8 @@ class Group(node_models.Node):
             # Build limit_statement.
             if limit is not None:
                 if not isinstance(limit, str) and not isinstance(limit, int):
+                    bulb_logger.error(
+                        f'BULBNodeError("The \'limit\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                     raise BULBNodeError(
                         f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -485,6 +496,8 @@ class Group(node_models.Node):
             # Build skip_statement and add its required variable.
             if skip is not None:
                 if not isinstance(skip, str) and not isinstance(skip, int):
+                    bulb_logger.error(
+                        f'BULBNodeError("The \'skip\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                     raise BULBNodeError(
                         f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -493,6 +506,8 @@ class Group(node_models.Node):
 
             # Build desc_statement.
             if not isinstance(desc, bool):
+                bulb_logger.error(
+                    f'BULBNodeError("The \'desc\' parameter of the get() method of {cls.__name__} must be a boolean.")')
                 raise BULBNodeError(
                     f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
@@ -588,6 +603,8 @@ def get_group_node_model():
             overloaded_group = overloaded_group_module.Group
 
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBAuthNodeModelsWarning("You have defined BULB_GROUP_NODE_MODEL_FILE = \'{settings.BULB_GROUP_NODE_MODEL_FILE}\' but no Group node model was found in it. So the native Group node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_GROUP_NODE_MODEL_FILE = '{settings.BULB_GROUP_NODE_MODEL_FILE}' but no Group node model was found in it. So the native Group node model will be used.",
                 BULBAuthNodeModelsWarning)
@@ -623,10 +640,12 @@ class AnonymousUser:
 
     @classmethod
     def create(cls, **extrafields):
+        bulb_logger.error(f'NotImplementedError("bulb doesn\'t provide a DB representation for AnonymousUser.")')
         raise NotImplementedError("bulb doesn't provide a DB representation for AnonymousUser.")
 
     @classmethod
     def create_super_user(cls, **extrafields):
+        bulb_logger.error(f'NotImplementedError("bulb doesn\'t provide a DB representation for AnonymousUser.")')
         raise NotImplementedError("bulb doesn't provide a DB representation for AnonymousUser.")
 
     @classmethod
@@ -634,12 +653,15 @@ class AnonymousUser:
         return cls()
 
     def update(self, user_property, new_user_property_value):
+        bulb_logger.error(f'NotImplementedError("bulb doesn\'t provide a DB representation for AnonymousUser.")')
         raise NotImplementedError("bulb doesn't provide a DB representation for AnonymousUser.")
 
     def delete(self):
+        bulb_logger.error(f'NotImplementedError("bulb doesn\'t provide a DB representation for AnonymousUser.")')
         raise NotImplementedError("bulb doesn't provide a DB representation for AnonymousUser.")
 
     def set_password(self, new_password):
+        bulb_logger.error(f'NotImplementedError("bulb doesn\'t provide a DB representation for AnonymousUser.")')
         raise NotImplementedError("bulb doesn't provide a DB representation for AnonymousUser.")
 
     def has_perm(self, permission_code_name):
@@ -655,6 +677,8 @@ def get_anonymoususer_node_model():
         try:
             overloaded_anonymoususer = overloaded_anonymoususer_module.AnonymousUser
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBAuthNodeModelsWarning("You have defined BULB_ANONYMOUSUSER_NODE_MODEL_FILE = \'{settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE}\' but no AnonymousUser node model was found in it. So the native AnonymousUser node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_ANONYMOUSUSER_NODE_MODEL_FILE = '{settings.BULB_ANONYMOUSUSER_NODE_MODEL_FILE}' but no AnonymousUser node model was found in it. So the native AnonymousUser node model will be used.",
                 BULBAuthNodeModelsWarning)
@@ -746,9 +770,11 @@ class User(node_models.Node):
         is_super_user = extrafields.get('is_super_user')
         is_staff_user = extrafields.get('is_staff_user')
         if not is_super_user:
+            bulb_logger.error('ValueError(\'A SuperUser must have "is_super_user = True".\')')
             raise ValueError('A SuperUser must have "is_super_user = True".')
 
         elif not is_staff_user:
+            bulb_logger.error('ValueError(\'A SuperUser must have "is_staff_user = True".\')')
             raise ValueError('A SuperUser must have "is_staff_user = True".')
 
         else:
@@ -873,6 +899,8 @@ class User(node_models.Node):
             # Build limit_statement.
             if limit is not None:
                 if not isinstance(limit, str) and not isinstance(limit, int):
+                    bulb_logger.error(
+                        f'BULBNodeError("The \'limit\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                     raise BULBNodeError(
                         f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -882,6 +910,8 @@ class User(node_models.Node):
             # Build skip_statement and add its required variable.
             if skip is not None:
                 if not isinstance(skip, str) and not isinstance(skip, int):
+                    bulb_logger.error(
+                        f'BULBNodeError("The \'skip\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                     raise BULBNodeError(
                         f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -890,6 +920,8 @@ class User(node_models.Node):
 
             # Build desc_statement.
             if not isinstance(desc, bool):
+                bulb_logger.error(
+                    f'BULBNodeError("The \'desc\' parameter of the get() method of {cls.__name__} must be a boolean.")')
                 raise BULBNodeError(
                     f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
@@ -1015,6 +1047,8 @@ def get_user_node_model():
             overloaded_user = overloaded_user_module.User
 
         except AttributeError:
+            bulb_logger.warning(
+                f'BULBAuthNodeModelsWarning("You have defined BULB_USER_NODE_MODEL_FILE = \'{settings.BULB_USER_NODE_MODEL_FILE}\' but no User node model was found in it. So the native User node model will be used.")')
             warnings.warn(
                 f"You have defined BULB_USER_NODE_MODEL_FILE = '{settings.BULB_USER_NODE_MODEL_FILE}' but no User node model was found in it. So the native User node model will be used.",
                 BULBAuthNodeModelsWarning)

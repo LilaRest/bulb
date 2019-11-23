@@ -1,6 +1,7 @@
 from bulb.sftp_and_cdn.exceptions import BULBStaticfilesError
 from bulb.utils import get_folders_paths_list
 from bulb.sftp_and_cdn.sftp import SFTP
+from bulb.utils.log import bulb_logger
 from django.core.management.base import BaseCommand
 
 
@@ -32,6 +33,8 @@ class Command(BaseCommand):
                                               local_staticfiles_folder_path=bundled_staticfiles_folder_path)
 
                 else:
+                    bulb_logger.error(
+                        'BULBStaticfilesError("The bundled_staticfiles folder was not found. Please execute the \'collectstatic\' and \'bundlestatic\' commands before pushing it to your sftp server.")')
                     raise BULBStaticfilesError(
                         "The bundled_staticfiles folder was not found. Please execute the 'collectstatic' and 'bundlestatic' commands before pushing it to your sftp server.")
 
@@ -43,8 +46,12 @@ class Command(BaseCommand):
                     SFTP.push_src_staticfiles(src_type="bundled",
                                               local_staticfiles_folder_path=bundled_staticfiles_folder_path)
                 else:
+                    bulb_logger.error(
+                        'BULBStaticfilesError("The bundled_staticfiles folder was not found. Please execute the \'collectstatic\' and \'bundlestatic\' commands before pushing it to your sftp server.")')
                     raise BULBStaticfilesError(
                         "The bundled_staticfiles folder was not found. Please execute the 'collectstatic' and 'bundlestatic' commands before pushing it to your sftp server.")
         else:
+            bulb_logger.error(
+                'BULBStaticfilesError("The staticfiles folder was not found. Please execute the \'collectstatic\' command before pushing it to your sftp server.")')
             raise BULBStaticfilesError(
                 "The staticfiles folder was not found. Please execute the 'collectstatic' command before pushing it to your sftp server.")

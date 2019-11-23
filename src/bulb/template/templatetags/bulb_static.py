@@ -1,3 +1,4 @@
+from bulb.utils.log import bulb_logger
 from urllib.parse import quote, urljoin
 from django import template
 from django.conf import settings
@@ -26,6 +27,8 @@ def static_raw_src(path):
             return urljoin(src_url, quote(path))
 
         else:
+            bulb_logger.error(
+                'BULBStaticTemplateTagsError("To use the \'{% static_raw_src %}\' tag you must define the BULB_SFTP_PULL_URL variable in your \'settings.py\' file.")')
             raise BULBStaticTemplateTagsError(
                 "To use the '{% static_raw_src %}' tag you must define the BULB_SFTP_PULL_URL variable in your 'settings.py' file.")
 
@@ -43,6 +46,8 @@ def static_bundled_src(path):
             return urljoin(src_url, quote(path))
 
         else:
+            bulb_logger.error(
+                'BULBStaticTemplateTagsError("To use the \'{% static_bundle_src %}\' tag you must define the BULB_SFTP_PULL_URL variable in your \'settings.py\' file.")')
             raise BULBStaticTemplateTagsError(
                 "To use the '{% static_bundle_src %}' tag you must define the BULB_SFTP_PULL_URL variable in your 'settings.py' file.")
 
@@ -59,5 +64,7 @@ def static_content(path):
             return urljoin(src_url, quote(path))
 
         else:
+            bulb_logger.error(
+                'BULBStaticTemplateTagsError("To use the \'{% static_content %}\' tag you must define the BULB_SFTP_PULL_URL variable in your \'settings.py\' file.")')
             raise BULBStaticTemplateTagsError(
                 "To use the '{% static_content %}' tag you must define the BULB_SFTP_PULL_URL variable in your 'settings.py' file.")

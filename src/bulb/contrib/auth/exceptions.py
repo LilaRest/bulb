@@ -10,6 +10,11 @@ class BULBAuthError(BULBException):
     pass
 
 
+#  BULBException --> BULBAuthError --> BULBPermissionError
+class BULBPermissionError(BULBAuthError):
+    pass
+
+
 #  BULBException --> BULBAuthError --> BULBLoginError
 class BULBLoginError(BULBAuthError):
     pass
