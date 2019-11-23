@@ -2,7 +2,6 @@ from bulb.contrib.auth.decorators import login_required, staff_only
 from django.shortcuts import render
 from django.conf import settings
 import os
-from bulb.utils.log import bulb_logger
 
 login_page_url = "/" + settings.BULB_ADMIN_BASEPATH_NAME + "/login"
 

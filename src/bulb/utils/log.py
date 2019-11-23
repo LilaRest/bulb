@@ -54,7 +54,7 @@ def init_bulb_logger_singleton():
 
     # Create the warnings, errors and criticals file handler.
     errors_rotating_file_handler = logging.handlers.RotatingFileHandler(filename=os.path.join(settings.BASE_DIR, "bulb.errors.log"),
-                                                                       maxBytes=1000000, backupCount=0)
+                                                                       maxBytes=500000, backupCount=0)
     errors_rotating_file_handler.setLevel(logging.WARNING)
     errors_rotating_file_handler.setFormatter(formatter)
     errors_rotating_file_handler.addFilter(LevelFilter(logging.ACTIVITY))
@@ -65,7 +65,7 @@ def init_bulb_logger_singleton():
 
     # Create the activity file handler.
     activity_rotating_file_handler = logging.handlers.RotatingFileHandler(filename=os.path.join(settings.BASE_DIR, "bulb.activity.log"),
-                                                                          maxBytes=1000000, backupCount=0)
+                                                                          maxBytes=500000, backupCount=0)
     activity_rotating_file_handler.setLevel(logging.ACTIVITY)
     activity_rotating_file_handler.setFormatter(activity_formatter)
     bulb_logger.addHandler(activity_rotating_file_handler)

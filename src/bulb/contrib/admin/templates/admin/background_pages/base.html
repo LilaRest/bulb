@@ -11,7 +11,7 @@
 
         {% block head %}{% endblock head %}
     </head>
-    
+
     {# Screen size helper for development #}
     {# <div id="mq-test"></div> #}
 
@@ -28,12 +28,14 @@
 
                     <li><a href="{% url "handling_home" %}">Handling</a></li>
 
+                    <li><a href="{% url "activity" %}">Activity</a></li>
+
                     {% for module_name, module_infos in BULB_ADDITIONAL_ADMIN_MODULES.items %}
                         <li><a href="{% url module_infos.home_view_url_name %}">{{ module_infos.printed_name }}</a></li>
                     {% endfor %}
 
                     <li><a href="{% url "releases" %}">Releases</a></li>
-                    
+
                     <li><a href="{% url "logs" %}">Logs</a></li>
 
                     <li>

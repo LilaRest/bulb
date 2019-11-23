@@ -1,4 +1,3 @@
-# from bulb.utils.log import bulb_logger
 import os
 
 
@@ -143,6 +142,16 @@ def set_bulb_settings_on(root_settings):
 
     else:
         INSTALLED_APPS.insert(0, 'bulb.contrib.releases')
+
+    # Add the bulb contrib.activity module.
+    try:
+        INSTALLED_APPS = root_settings['INSTALLED_APPS']
+
+    except KeyError:
+        root_settings['INSTALLED_APPS'] = ['bulb.contrib.activity', ]
+
+    else:
+        INSTALLED_APPS.insert(0, 'bulb.contrib.activity')
 
     # Add the bulb contrib.logs module.
     try:

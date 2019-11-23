@@ -11,6 +11,7 @@ urlpatterns = [
     path("handling/", include("bulb.contrib.handling.urls")),
     path("releases/", include("bulb.contrib.releases.urls")),
     path("logs/", include("bulb.contrib.logs.urls")),
+    path("activity/", include("bulb.contrib.activity.urls")),
 ]
 
 for module_name, module_infos in BULB_ADDITIONAL_ADMIN_MODULES.items():
