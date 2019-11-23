@@ -564,7 +564,7 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
 
                     instance.delete()
                     bulb_logger.activity(
-                        f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | delete | {node_model_name} | {instance.uuid}")
+                        f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:6]}) | delete | {node_model_name} | {instance.uuid[:6]}")
                     # add_message(request, SUCCESS, "L'instance a bien été supprimée.")
 
                     # if node_model_name:
@@ -1557,7 +1557,7 @@ def node_handling_view(request, node_model_name, node_uuid):
                             if not response.get():
                                 if not dict(request.POST)["action"][0] == "delete":
                                     bulb_logger.activity(
-                                        f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | edit | {node_model_name} | {instance.uuid}")
+                                        f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:6]}) | edit | {node_model_name} | {instance.uuid[:6]}")
                                 yield "<center><i style='font-size: 150px;' class='material-icons valid-icons'>check_circle</i><br/><br/><p>Successful</p></center>"
                                 time.sleep(2)
                                 break
@@ -1707,7 +1707,7 @@ def handle_creation(request, admin_fields_dict, node_model, node_model_name, ava
         new_instance = node_model.create(**properties)
 
         bulb_logger.activity(
-            f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:5]}) | create | {node_model_name} | {new_instance.uuid}")
+            f"{request.user.first_name} {request.user.last_name} ({request.user.uuid[:6]}) | create | {node_model_name} | {new_instance.uuid[:6]}")
 
         for rel_name, rel_instructions in relationships_dict.items():
             related_relationship_object = eval(f"new_instance.{rel_name}")

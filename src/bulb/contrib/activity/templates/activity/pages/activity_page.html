@@ -1,0 +1,78 @@
+{% extends "admin/background_pages/base.html" %}
+
+{% load bulb_static static compress humanize %}
+
+{% block title %}Activity{% endblock title %}
+
+{% block head %}
+    {% if DEBUG %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static "activity/css/style/activity_page.scss" %}"/>
+        {% endcompress %}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    {% elif not DEBUG %}
+        <link rel="stylesheet" href="{% static_bundled_src "activity/bundle_activity_page.css" %}"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    {% endif %}
+{% endblock head %}
+
+{% block administration_part_name %}
+    <i class="material-icons">keyboard_arrow_right</i>
+
+    <a class="nav-link" href="{% url "activity" %}">Activity</a>
+{% endblock administration_part_name %}
+
+{% block content %}
+    <div id="activities">
+        {% for activity in activities %}
+            <div class="activity
+                {% if activity.action == "create" %}
+                     create">
+                    <p>
+                        <i class="material-icons i-create">add_circle_outline</i>
+
+                {% elif activity.action == "edit" %}
+                     edit">
+                    <p>
+                        <i class="material-icons i-edit">edit</i>
+
+                {% elif activity.action == "delete" %}
+                     delete">
+                    <p>
+                        <i class="material-icons i-delete">delete</i>
+
+                {% endif %}
+                    <span class="user">{{ activity.user }}</span>
+                    <span
+                    {% if activity.action == "create" %}
+                        class="create-action">
+                        create
+
+                    {% elif activity.action == "edit" %}
+                        class="edit-action">
+                        edit
+
+                    {% elif activity.action == "delete" %}
+                        class="delete-action">
+                        delete
+
+                    {% endif %}
+                    </span>
+
+                    <span class="node_model"> {{ activity.node_model }}</span>
+
+                    <span class="instance_uuid"> ({{ activity.instance_uuid }})</span>
+
+                    <span class="datetime">{{ activity.datetime|naturaltime }}</span>
+                    </p>
+            </div>
+
+        {% empty %}
+            No administrator's activities (creation, edition or deletion) yet.
+        {% endfor %}
+    </div>
+{% endblock content %}
+
+{% block scripts %}{% endblock scripts %}

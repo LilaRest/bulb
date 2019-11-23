@@ -1,0 +1,302 @@
+/* Schéma */
+
+    /* Position */
+
+    /* Dimensions */
+
+    /* Style */
+
+    /* For child properties */
+
+
+/*
+    ##################################################
+    ##################### GENERAL ####################
+    ##################################################
+*/
+
+
+html {
+
+    body {
+
+        main#principal-main {
+            /* Position */
+
+            /* Dimensions */
+
+            /* Style */
+
+            /* For child properties */
+            display: flex;
+            justify-content: center;
+
+
+            div#activities {
+                /* Position */
+                margin-top: 50px;
+                padding: 40px;
+
+                /* Dimensions */
+                width: 1200px;
+
+                /* Style */
+                background-color: darken($old-white, 5);
+                border-radius: 3px;
+
+                /* For child properties */
+
+
+                div.activity {
+                    /* Position */
+                    margin: 5px;
+                    padding: 15px;
+                    padding-left: 60px;
+                    position: relative;
+
+                    /* Dimensions */
+
+                    /* Style */
+                    border-top: {
+                        style: solid;
+                        width: 1px;
+                    }
+                    border-right: {
+                        style: solid;
+                        width: 10px;
+                    }
+                    border-radius: 2px;
+                    border-bottom: {
+                        style: solid;
+                        width: 1px;
+                        color: lighten($dark-grey, 50);
+                    }
+                    font-size: $xs-fs;
+                    font-family: $text-font;
+                    background-color: $old-white;
+                    word-spacing: 1px;
+
+                    /* For child properties */
+                    display: flex;
+                    align-items: center;
+
+
+                    &.create {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        border-top-color: $middle-green;
+                        border-right-color: $middle-green;
+
+                        /* For child properties */
+                    }
+
+
+                    &.edit {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        border-top-color: $middle-turquoise;
+                        border-right-color: $middle-turquoise;
+
+                        /* For child properties */
+                    }
+
+
+                    &.delete {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        border-top-color: $middle-red;
+                        border-right-color: $middle-red;
+
+                        /* For child properties */
+                    }
+
+
+                    i {
+                        /* Position */
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        padding-top: 5px;
+                        padding-bottom: 5px;
+                        padding-left: 10px;
+                        padding-right: 10px;
+
+                        /* Dimensions */
+                        height: 100%;
+
+                        /* Style */
+                        font-size: $m-fs;
+                        color: $old-white;
+
+                        /* For child properties */
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+
+                    i.i-create {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        background-color: $middle-green;
+
+                        /* For child properties */
+                    }
+
+
+                    i.i-edit {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        background-color: $middle-turquoise;
+
+                        /* For child properties */
+                    }
+
+
+                    i.i-delete {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+                        background-color: $middle-red;
+
+                        /* For child properties */
+                    }
+
+
+                    span.create-action {
+                        /* Position */
+                        padding: 3px;
+                        padding-right: 5px;
+                        padding-left: 5px;
+                        margin-left: 5px;
+                        margin-right: 5px;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        background-color: $middle-green;
+                        color: $old-white;
+                        border-radius: 2px;
+
+                        /* For child properties */
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+
+                    span.edit-action {
+                        /* Position */
+                        padding: 3px;
+                        padding-right: 5px;
+                        padding-left: 5px;
+                        margin-left: 5px;
+                        margin-right: 5px;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        background-color: $middle-turquoise;
+                        color: $old-white;
+                        border-radius: 2px;
+
+                        /* For child properties */
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+
+                    span.delete-action {
+                        /* Position */
+                        padding: 3px;
+                        padding-right: 5px;
+                        padding-left: 5px;
+                        margin-left: 5px;
+                        margin-right: 5px;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        background-color: $middle-red;
+                        color: $old-white;
+                        border-radius: 2px;
+
+                        /* For child properties */
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+
+                    span.user {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+
+                        /* For child properties */
+                    }
+
+
+                    span.node_model {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+
+                        /* For child properties */
+                    }
+
+
+                    span.instance_uuid {
+                        /* Position */
+
+                        /* Dimensions */
+
+                        /* Style */
+
+                        /* For child properties */
+                    }
+
+
+                    span.datetime {
+                        /* Position */
+                        position: absolute;
+                        right: 15px;
+
+                        /* Dimensions */
+
+                        /* Style */
+                        color: lighten($dark-grey, 20);
+                        font-style: italic;
+                        font-size: $xs-fs;
+
+                        /* For child properties */
+                    }
+                }
+            }
+
+        }
+    }
+}
