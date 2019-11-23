@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Code&display=swap');
+/* Schéma */
+
+    /* Position */
+
+    /* Dimensions */
+
+    /* Style */
+
+    /* For child properties */
+
+
+
+/*
+    ##################################################
+    ##################### GENERAL ####################
+    ##################################################
+*/
+
+
+html {
+
+    body {
+
+        main#principal-main {
+            /* Position */
+
+            /* Dimensions */
+
+            /* Style */
+
+            /* For child properties */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+
+            div#log-choice {
+                /* Position */
+
+                /* Dimensions */
+
+                /* Style */
+
+                /* For child properties */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+
+                button.log-button {
+                    /* Position */
+                    padding-top: 15px;
+                    padding-bottom: 15px;
+                    padding-right: 30px;
+                    padding-left: 30px;
+                    margin: 10px;
+
+                    /* Dimensions */
+
+                    /* Style */
+                    font-size: $m-fs;
+                    color: $dark-grey;
+                    border: {
+                        width: 1px;
+                        color: $dark-grey;
+                        radius: 2px;
+                        style: solid;
+                    }
+
+                    /* For child properties */
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+
+                    &:hover {
+                        background-color: darken($old-white, 20);
+                    }
+                }
+            }
+
+
+            div.log {
+                /* Position */
+                width: 1200px;
+                height: 600px;
+                padding: 70px;
+                margin-bottom: 100px;
+                position: relative;
+
+                /* Dimensions */
+
+                /* Style */
+                background-color: $dark-grey;
+                color: $old-white;
+                font-family: 'Fira Code', monospace;
+                font-size: $s-fs;
+                white-space: pre-line;
+                line-height: 30px;
+
+                /* For child properties */
+                overflow-y: scroll;
+            }
+        }
+    }
+}

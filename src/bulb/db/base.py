@@ -1,3 +1,4 @@
+from bulb.utils.log import bulb_logger
 from neo4j.v1 import GraphDatabase
 from neo4j.exceptions import ServiceUnavailable, AuthError
 from bulb.db.exceptions import *
@@ -82,6 +83,12 @@ class Database:
             response_connection = self._try_connection()
 
             if connection_attempts >= self.initial_connection_attempts_number:
+                bulb_logger.error(
+                '''BULBConnectionError("""
+                The connection with the Neo4j database cannot be established, please check if :
+                - your database is still running,
+                - yours authentication credentials (uri, id, password) are valid in the settings.py file of your project.
+                """)''')
                 raise BULBConnectionError("""
                 The connection with the Neo4j database cannot be established, please check if :
                 - your database is still running,
@@ -137,9 +144,11 @@ class Database:
             return False
 
         else:
-            warnings.warn("""WARNING : Yours database informations are not valid, the connection has been establish
-            with the default authentification informations (uri = 'bolt://localhost:7687', id = 'neo4j', password = 'neo4j'.""",
-                          BULBConnectionWarning)
+            bulb_logger.warning(
+                'BULBConnectionWarning("WARNING : Yours database informations are not valid, the connection has been establish with the default authentification informations (uri = \'bolt://localhost:7687\', id = \'neo4j\', password = \'neo4j\'."')
+            warnings.warn(
+                "Yours database informations are not valid, the connection has been establishwith the default authentification informations (uri = 'bolt://localhost:7687', id = 'neo4j', password = 'neo4j'.",
+                BULBConnectionWarning)
             return True
 
     def close_connection(self):
@@ -172,8 +181,10 @@ class Session:
         try:
             self.session = self.database_instance.driver.session(access_mode=self.type, bookmark=self.bookmarks)
         except AttributeError:
+            bulb_logger.error(
+                'BULBConnectionError("Failed to establish connection with the database. Check yours given informations (uri, id and password).")')
             raise BULBConnectionError(
-                'Failed to establish connection with the database. Check yours given informations(uri, id and password)')
+                "Failed to establish connection with the database. Check yours given informations (uri, id and password).")
         return self.session
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -183,6 +194,8 @@ class Session:
     @staticmethod
     def check_and_set_session_type(session_type):
         if session_type not in ['WRITE', 'READ', None]:
+            bulb_logger.error(
+                'BULBSessionError("The current session\'s type must be defined on \'WRITE\', \'READ\' or None.")')
             raise BULBSessionError("The current session's type must be defined on 'WRITE', 'READ' or None.")
         else:
             return session_type
@@ -217,7 +230,8 @@ class Transaction:
                     lambda tx, cypher_query: tx.run(cypher_query), self.cypher_query)
                 return self.active_transaction.data()
         else:
-            raise BULBTransactionError('A transaction is already running...')
+            bulb_logger.error('BULBTransactionError("A transaction is already running...")')
+            raise BULBTransactionError("A transaction is already running...")
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.active_transaction = None
@@ -225,8 +239,10 @@ class Transaction:
     @staticmethod
     def check_and_set_transaction_type(transaction_type):
         if transaction_type not in ['WRITE', 'READ']:
+            bulb_logger.error(
+                f'BULBTransactionError("The current transaction\'s \'type\' must be defined on \'WRITE\', \'READ\' or None, not \'{transaction_type}\'.")')
             raise BULBTransactionError(
-                f"The current transaction's 'type' must be defined on 'WRITE',  'READ' or None, not '{transaction_type}'")
+                f"The current transaction's 'type' must be defined on 'WRITE', 'READ' or None, not '{transaction_type}'.")
         else:
             return transaction_type
 

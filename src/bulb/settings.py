@@ -1,3 +1,4 @@
+# from bulb.utils.log import bulb_logger
 import os
 
 
@@ -16,6 +17,8 @@ def set_bulb_settings_on(root_settings):
         BASE_DIR = root_settings['BASE_DIR']
 
     except KeyError:
+        bulb_logger.error(
+            'BULB_BASE_DIRError("You must define the default BASE_DIR variable into the settings.py file of your project.")')
         raise BULB_BASE_DIRError("You must define the default BASE_DIR variable into the settings.py file of your project.")
 
     else:
@@ -140,6 +143,16 @@ def set_bulb_settings_on(root_settings):
 
     else:
         INSTALLED_APPS.insert(0, 'bulb.contrib.releases')
+
+    # Add the bulb contrib.logs module.
+    try:
+        INSTALLED_APPS = root_settings['INSTALLED_APPS']
+
+    except KeyError:
+        root_settings['INSTALLED_APPS'] = ['bulb.contrib.logs', ]
+
+    else:
+        INSTALLED_APPS.insert(0, 'bulb.contrib.logs')
 
     # Add the bulb template module.
     try:

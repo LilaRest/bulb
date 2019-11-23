@@ -2,6 +2,7 @@ from bulb.contrib.statictools.compressor import compress_file_and_build_paths
 from bulb.db.utils import make_uuid, compare_different_modules_classes
 from bulb.utils import get_all_node_models
 from bulb.sftp_and_cdn.sftp import SFTP
+from bulb.utils.log import bulb_logger
 from bulb.db.exceptions import *
 from bulb.db import gdbh, Q
 from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
@@ -76,6 +77,7 @@ class DatabaseNode:
             return ':'.join(render)
 
         else:
+            bulb_logger.error('BULBNodeLabelsInitializationError("\'labels_list\' attribute must be a list.")')
             raise BULBNodeLabelsInitializationError("'labels_list' attribute must be a list.")
 
     @classmethod
@@ -122,6 +124,7 @@ class DatabaseNode:
             return '{' + ', '.join(render) + '}'
 
         else:
+            bulb_logger.error('BULBNodeLabelsInitializationError("\'object_properties_dict\' attribute must be a dict.")')
             raise BULBNodeLabelsInitializationError("'object_properties_dict' attribute must be a dict.")
 
 
@@ -191,6 +194,8 @@ class Property:
                                         current_object_properties_dict[key] = value
 
                                     else:
+                                        bulb_logger.error(
+                                            f'BULBPropertyError("The property \'{key}\' is configured with \'sftp=True\' but its value is neither a file nor \'None\'.")')
                                         raise BULBPropertyError(
                                             f"The property '{key}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
 
@@ -289,11 +294,15 @@ class Property:
                     relationship_name = node_or_rel_object._name
                     relationship_related_node_name = node_or_rel_object._self_node_instance.__class__.__name__
 
+                    bulb_logger.error(
+                        f'BULBRequiredConstraintError("The \'{relationship_name}\' relationship of an instance of {relationship_related_node_name} must have a/an \'{property_name}\'.")')
                     raise BULBRequiredConstraintError(
                         f"The '{relationship_name}' relationship of an instance of {relationship_related_node_name} must have a/an '{property_name}'.")
 
                 # Support Node and "distinct" Relationship syntaxes.
                 else:
+                    bulb_logger.error(
+                        'BULBRequiredConstraintError("An instance of {node_or_rel_object.__class__.__name__} must have a/an \'{property_name}\'.")')
                     raise BULBRequiredConstraintError(
                         f"An instance of {node_or_rel_object.__class__.__name__} must have a/an '{property_name}'.")
 
@@ -318,6 +327,8 @@ class Property:
 
                     # If an instance is found, raise an error
                     if result:
+                        bulb_logger.error(
+                            f'BULBUniqueConstraintError("An instance of {node_or_rel_object.__class__.__name__} must have an UNIQUE \'{property_name}\'.")')
                         raise BULBUniqueConstraintError(
                             f"An instance of {node_or_rel_object.__class__.__name__} must have an UNIQUE '{property_name}'.")
 
@@ -340,7 +351,8 @@ class Property:
 
                     # If an instance is found, raise an error
                     if result:
-
+                        bulb_logger.error(
+                            f'BULBUniqueConstraintError("An instance of {node_or_rel_object.__class__.__name__} must have an UNIQUE \'{property_name}\'.")')
                         raise BULBUniqueConstraintError(
                             f"An instance of {node_or_rel_object.__class__.__name__} must have an UNIQUE '{property_name}'.")
 
@@ -352,8 +364,9 @@ class Property:
         finally:
             # Checks if a property is not be at the same time 'required' and with a 'default' value :
             if self.required and self.default is not None:
-                raise BULBPropertyError(
-                    'A property must not have "required=True" and a "default" value.')
+                bulb_logger.error(
+                    'BULBPropertyError("A property must not have \'required=True\' and a \'default\' value.")')
+                raise BULBPropertyError("A property must not have \'required=True\' and a \'default\' value.")
 
 
 class BaseNodeAndRelationship:
@@ -460,6 +473,8 @@ class BaseNodeAndRelationship:
                     setattr(fake_instance, name, value)
 
             else:
+                bulb_logger.error(
+                    'BULBFakeInstanceError("The \'additional_parameters\' argument of the build_fake_instance() method, must be a dict.")')
                 raise BULBFakeInstanceError(
                     "The 'additional_parameters' argument of the build_fake_instance() method, must be a dict.")
 
@@ -614,6 +629,8 @@ class Node(BaseNodeAndRelationship):
             # Build limit_statement.
             if limit is not None:
                 if not isinstance(limit, str) and not isinstance(limit, int):
+                    bulb_logger.error(
+                        f'BULBNodeError("The \'limit\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                     raise BULBNodeError(
                         f"The 'limit' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -623,6 +640,8 @@ class Node(BaseNodeAndRelationship):
             # Build skip_statement and add its required variable.
             if skip is not None:
                 if not isinstance(skip, str) and not isinstance(skip, int):
+                    bulb_logger.error(
+                        f'BULBNodeError("The \'skip\' parameter of the get() method of {cls.__name__} must be a string or an integer.")')
                     raise BULBNodeError(
                         f"The 'skip' parameter of the get() method of {cls.__name__} must be a string or an integer.")
 
@@ -631,6 +650,8 @@ class Node(BaseNodeAndRelationship):
 
             # Build desc_statement.
             if not isinstance(desc, bool):
+                bulb_logger.error(
+                    f'BULBNodeError("The \'desc\' parameter of the get() method of {cls.__name__} must be a boolean.")')
                 raise BULBNodeError(
                     f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
@@ -732,8 +753,10 @@ class Node(BaseNodeAndRelationship):
         class_name = self.__class__.__name__
 
         if not settings.BULB_CREATE_PROPERTY_IF_NOT_FOUND and property_name not in self.__dict__.keys():
+            bulb_logger.warning(
+                f'BULBNodeWarning("You are trying to update the property \'{property_name}\' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.")')
             warnings.warn(
-                f"WARNING : You try to update the property '{property_name}' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.",
+                f"You are trying to update the property '{property_name}' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.",
                 BULBNodeWarning)
 
         else:
@@ -753,8 +776,10 @@ class Node(BaseNodeAndRelationship):
                         setattr(self, property_name, None)
 
                 except:
+                    bulb_logger.warning(
+                        f'BULBNodeWarning("You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j\'s \'apoc\' plugin is not installed. So no new property was created.")')
                     warnings.warn(
-                        f"WARNING : You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
+                        f"You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
                         BULBNodeWarning)
 
             # File handling (with SFTP storage).
@@ -801,7 +826,10 @@ class Node(BaseNodeAndRelationship):
                                                 pass
 
                     else:
-                        raise BULBPropertyError(f"The property '{property_name}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
+                        bulb_logger(
+                            f'BULBPropertyError("The property \'{property_name}\' is configured with \'sftp=True\' but its value is neither a file nor \'None\'.")')
+                        raise BULBPropertyError(
+                            f"The property '{property_name}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
 
                 else:
 
@@ -1212,11 +1240,13 @@ class Relationship(BaseNodeAndRelationship):
                 self.rel_type = self.__class__.rel_type
 
             except AttributeError:
-                raise BULBRelationshipError(
-                    f"A {self.__class__.__name__} instance must have a 'rel_type'.")
+                bulb_logger.error(f'BULBRelationshipError("A {self.__class__.__name__} instance must have a \'rel_type\'.")')
+                raise BULBRelationshipError(f"A {self.__class__.__name__} instance must have a 'rel_type'.")
 
         # 'rel_type' parameter value check.
         if not isinstance(self.rel_type, str):
+            bulb_logger.error(
+                f'BULBRelationshipError("The \'rel_type\' argument of a {self.__class__.__name__} instance must be a string.")')
             raise BULBRelationshipError(
                 f"The 'rel_type' argument of a {self.__class__.__name__} instance must be a string.")
 
@@ -1231,6 +1261,8 @@ class Relationship(BaseNodeAndRelationship):
 
         # 'direction' parameter value check.
         if self.direction not in ["from", "to", "bi"]:
+            bulb_logger.error(
+                'BULBRelationshipError("The parameter \'direction\' of a Relationship must be a \'from\', \'to\' or \'bi\'.")')
             raise BULBRelationshipError(
                 "The parameter 'direction' of a Relationship must be a 'from', 'to' or 'bi'.")
 
@@ -1247,6 +1279,8 @@ class Relationship(BaseNodeAndRelationship):
         if self.start is not None:
             if self.direction == "from" or self.direction == "bi":
                 if not self.start == "self":
+                    bulb_logger.error(
+                        f'BULBRelationshipError("A {self.__class__.__name__} instance must have start = \'self\' if direction = \'from\' or \'bi\'.")')
                     raise BULBRelationshipError(
                         f"A {self.__class__.__name__} instance must have start = 'self' if direction = 'from' or 'bi'.")
 
@@ -1254,6 +1288,8 @@ class Relationship(BaseNodeAndRelationship):
                 # Support class syntax.
                 if inspect.isclass(self.start):
                     if not Node in self.start.__mro__:
+                        bulb_logger.error(
+                            f'BULBRelationshipError("The parameter \'start\' of a {self.__class__.__name__} instance must be a node_model, its name or \'self\'.")')
                         raise BULBRelationshipError(
                             f"The parameter 'start' of a {self.__class__.__name__} instance must be a node_model, its name or 'self'.")
 
@@ -1291,10 +1327,14 @@ class Relationship(BaseNodeAndRelationship):
                                 break
 
                         if related_node_model_was_found is False:
+                            bulb_logger.error(
+                                f'BULBRelationshipError("The parameter \'start\' of a {self.__class__.__name__} instance must be a node_model, its name or \'self\'.")')
                             raise BULBRelationshipError(
                                 f"The parameter 'start' of a {self.__class__.__name__} instance must be a node_model, its name or 'self'.")
 
                 else:
+                    bulb_logger.error(
+                        f'BULBRelationshipError("The parameter \'start\' of a {self.__class__.__name__} instance must be a node_model, its name or \'self\'.")')
                     raise BULBRelationshipError(
                         f"The parameter 'start' of a {self.__class__.__name__} instance must be a node_model, its name or 'self'.")
 
@@ -1311,6 +1351,8 @@ class Relationship(BaseNodeAndRelationship):
         if self.target is not None:
             if self.direction == "to":
                 if not self.target == "self":
+                    bulb_logger.error(
+                        f'BULBRelationshipError("A {self.__class__.__name__} instance must have target = \'self\' if direction = \'to\'.")')
                     raise BULBRelationshipError(
                         f"A {self.__class__.__name__} instance must have target = 'self' if direction = 'to'.")
 
@@ -1318,6 +1360,8 @@ class Relationship(BaseNodeAndRelationship):
                 # Support class syntax.
                 if inspect.isclass(self.target):
                     if not Node in self.target.__mro__:
+                        bulb_logger.error(
+                            f'BULBRelationshipError("The parameter \'target\' of a {self.__class__.__name__} instance must be a node_model, its name or \'self\'.")')
                         raise BULBRelationshipError(
                             f"The parameter 'target' of a {self.__class__.__name__} instance must be a node_model, its name or 'self'.")
 
@@ -1335,10 +1379,14 @@ class Relationship(BaseNodeAndRelationship):
                                 break
 
                         if related_node_model_was_found is False:
+                            bulb_logger.error(
+                                f'BULBRelationshipError("The parameter \'target\' of a {self.__class__.__name__} instance must be a node_model, its name or \'self\'.")')
                             raise BULBRelationshipError(
                                 f"The parameter 'target' of a {self.__class__.__name__} instance must be a node_model, its name or 'self'.")
 
                 else:
+                    bulb_logger.error(
+                        f'BULBRelationshipError("The parameter \'target\' of a {self.__class__.__name__} instance must be a node_model, its name or \'self\'.")')
                     raise BULBRelationshipError(
                         f"The parameter 'target' of a {self.__class__.__name__} instance must be a node_model, its name or 'self'.")
 
@@ -1354,6 +1402,8 @@ class Relationship(BaseNodeAndRelationship):
         # 'auto' parameter value check.
         if self.auto is not None:
             if not isinstance(self.auto, bool):
+                bulb_logger.error(
+                    f'BULBRelationshipError("The parameter \'auto\' of a {self.__class__.__name__} instance must be a boolean.")')
                 raise BULBRelationshipError(
                     f"The parameter 'auto' of a {self.__class__.__name__} instance must be a boolean.")
 
@@ -1369,6 +1419,8 @@ class Relationship(BaseNodeAndRelationship):
         # 'on_delete' parameter value check.
         if self.on_delete is not None:
             if not self.on_delete in ["PROTECT", "CASCADE"]:
+                bulb_logger.error(
+                    f'BULBRelationshipError("The parameter \'on_delete\' of a {self.__class__.__name__} instance must be \'PROTECT\' or \'CASCADE\'.")')
                 raise BULBRelationshipError(
                     f"The parameter 'on_delete' of a {self.__class__.__name__} instance must be 'PROTECT' or 'CASCADE'.")
 
@@ -1384,6 +1436,8 @@ class Relationship(BaseNodeAndRelationship):
         # 'unique' parameter value check.
         if self.unique is not None:
             if not isinstance(self.unique, bool):
+                bulb_logger.error(
+                    f'BULBRelationshipError("The parameter \'unique\' of a {self.__class__.__name__} instance must be a boolean.")')
                 raise BULBRelationshipError(
                     f"The parameter 'unique' of a {self.__class__.__name__} instance must be a boolean.")
 
@@ -1446,6 +1500,8 @@ class Relationship(BaseNodeAndRelationship):
                         relationship_target_node = other_node_instance
 
                     else:
+                        bulb_logger.error(
+                            f'BULBRelationshipError("The \'{self._name}\' relationship connects \'{relationship_start_node.__class__.__name__}\' to \'{self.target.__name__}\' instances (or instances of one of their children classes). Not \'{relationship_start_node.__class__.__name__}\' to \'{other_node_instance.__class__.__name__}\'.")')
                         raise BULBRelationshipError(
                             f"The '{self._name}' relationship connects '{relationship_start_node.__class__.__name__}' to '{self.target.__name__}' instances (or instances of one of their children classes). Not '{relationship_start_node.__class__.__name__}' to '{other_node_instance.__class__.__name__}'.")
 
@@ -1454,6 +1510,8 @@ class Relationship(BaseNodeAndRelationship):
                         relationship_target_node = other_node_instance
 
                     else:
+                        bulb_logger.error(
+                            f'BULBRelationshipError("The \'instance\' parameter of the add() method of {self.__class__.__name__} instances must be a node_model\'s instance.")')
                         raise BULBRelationshipError(
                             f"The 'instance' parameter of the add() method of {self.__class__.__name__} instances must be a node_model's instance.")
 
@@ -1466,6 +1524,8 @@ class Relationship(BaseNodeAndRelationship):
                         relationship_start_node = other_node_instance
 
                     else:
+                        bulb_logger.error(
+                            f'BULBRelationshipError("The \'{self._name}\' relationship connects \'{self.start.__name__}\' to \'{relationship_target_node.__class__.__name__}\' instances (or instances of one of their children classes). Not \'{other_node_instance.__class__.__name__}\' to \'{relationship_target_node.__class__.__name__}\'.")')
                         raise BULBRelationshipError(
                             f"The '{self._name}' relationship connects '{self.start.__name__}' to '{relationship_target_node.__class__.__name__}' instances (or instances of one of their children classes). Not '{other_node_instance.__class__.__name__}' to '{relationship_target_node.__class__.__name__}'.")
 
@@ -1474,6 +1534,8 @@ class Relationship(BaseNodeAndRelationship):
                         relationship_start_node = other_node_instance
 
                     else:
+                        bulb_logger.error(
+                            f'BULBRelationshipError("The \'instance\' parameter of the add() method of {self.__class__.__name__} instances must be a node_model\'s instance.")')
                         raise BULBRelationshipError(
                             f"The 'instance' parameter of the add() method of {self.__class__.__name__} instances must be a node_model's instance.")
 
@@ -1497,6 +1559,8 @@ class Relationship(BaseNodeAndRelationship):
                         relationship_target_node = other_node_instance
 
                     else:
+                        bulb_logger.error(
+                            f'BULBRelationshipError("The \'{self._name}\' relationship connects \'{relationship_start_node.__class__.__name__}\' to \'{self.target.__name__}\' instances (or instances of one of their children classes) only.")')
                         raise BULBRelationshipError(
                             f"The '{self._name}' relationship connects '{relationship_start_node.__class__.__name__}' to '{self.target.__name__}' instances (or instances of one of their children classes) only.")
 
@@ -1524,6 +1588,8 @@ class Relationship(BaseNodeAndRelationship):
                         relationship_start_node = other_node_instance
 
                     else:
+                        bulb_logger.error(
+                            f'BULBRelationshipError("The \'{self._name}\' relationship connects \'{self.start.__name__}\' to \'{relationship_target_node.__class__.__name__}\' instances (or instances of one of their children classes) only.")')
                         raise BULBRelationshipError(
                             f"The '{self._name}' relationship connects '{self.start.__name__}' to '{relationship_target_node.__class__.__name__}' instances (or instances of one of their children classes) only.")
 
@@ -1538,12 +1604,16 @@ class Relationship(BaseNodeAndRelationship):
                         relationship_start_node = other_node_instance
 
         else:
+            bulb_logger.error(
+                f'BULBRelationshipError("The add() method of {self.__class__.__name__} instances must take either an \'uuid\' or a node_model instance.")')
             raise BULBRelationshipError(
                 f"The add() method of {self.__class__.__name__} instances must take either an 'uuid' or a node_model instance.")
 
         # Apply the 'auto' constraint.
         if self.auto is False:
             if relationship_start_node.uuid == relationship_target_node.uuid:
+                bulb_logger.error(
+                    f'BULBRelationshipError("The parameter \'auto\' of the \'{self._name}\' relationship is True. It says that the same node cannot be the start and the target of a relationship.")')
                 raise BULBRelationshipError(
                     f"The parameter 'auto' of the '{self._name}' relationship is True. It says that the same node cannot be the start and the target of a relationship.")
 
@@ -1566,7 +1636,10 @@ class Relationship(BaseNodeAndRelationship):
                                   self.rel_type))
 
                 if uniqueness_test_response:
-                    raise BULBUniqueConstraintError(f"The {self.__class__.__name__} instances must be UNIQUE : {self_node_instance.__class__.__name__} instances must have an unique '{self._name}'.")
+                    bulb_logger.error(
+                        f'BULBUniqueConstraintError("The {self.__class__.__name__} instances must be UNIQUE : {self_node_instance.__class__.__name__} instances must have an unique \'{self._name}\'.")')
+                    raise BULBUniqueConstraintError(
+                        f"The {self.__class__.__name__} instances must be UNIQUE : {self_node_instance.__class__.__name__} instances must have an unique '{self._name}'.")
 
             response = gdbh.w_transaction("""
                        MATCH (n1:%s {uuid:'%s'}),
@@ -1591,6 +1664,8 @@ class Relationship(BaseNodeAndRelationship):
                                   self.rel_type))
 
                 if uniqueness_test_response:
+                    bulb_logger.error(
+                        f'BULBUniqueConstraintError("The {self.__class__.__name__} instances must be UNIQUE : {self_node_instance.__class__.__name__} instances must have an unique \'{self._name}\'.")')
                     raise BULBUniqueConstraintError(
                         f"The {self.__class__.__name__} instances must be UNIQUE : {self_node_instance.__class__.__name__} instances must have an unique '{self._name}'.")
 
@@ -1619,6 +1694,8 @@ class Relationship(BaseNodeAndRelationship):
                                   self.rel_type))
 
                 if uniqueness_test_response:
+                    bulb_logger.error(
+                        f'BULBUniqueConstraintError("The {self.__class__.__name__} instances must be UNIQUE : {self_node_instance.__class__.__name__} instances must have an unique \'{self._name}\'.")')
                     raise BULBUniqueConstraintError(
                         f"The {self.__class__.__name__} instances must be UNIQUE : {self_node_instance.__class__.__name__} instances must have an unique '{self._name}'.")
 
@@ -1776,6 +1853,8 @@ class Relationship(BaseNodeAndRelationship):
                     match_statement = "MATCH (:%s {uuid:'%s'})-[r:%s]-(n)"
 
         else:
+            bulb_logger.error(
+                f'BULBRelationshipError("The \'direction\' argument of the get() method of a {self.__class__.__name__} instance, must be \'from\', \'to\', or \'bi\'.")')
             raise BULBRelationshipError(
                 f"The 'direction' argument of the get() method of a {self.__class__.__name__} instance, must be 'from', 'to', or 'bi'.")
 
@@ -1791,6 +1870,8 @@ class Relationship(BaseNodeAndRelationship):
             if distinct is True:
                 return_statement_list.append("DISTINCT")
         else:
+            bulb_logger.error(
+                f'BULBRelationshipError("The \'distinct\' argument of the get() method of a {self.__class__.__name__} instance, must be a boolean.")')
             raise BULBRelationshipError(
                 f"The 'distinct' argument of the get() method of a {self.__class__.__name__} instance, must be a boolean.")
 
@@ -1835,6 +1916,8 @@ class Relationship(BaseNodeAndRelationship):
 
             if order_by is not None:
                 if order_by[:2] not in ["r.", "n."]:
+                    bulb_logger.error(
+                        f'BULBRelationshipError("The \'order_by\' argument of the get() method of a {self.__class__.__name__} instance, must start by \'r.\' or \'n.\' when the \'returned\' argument is \'both\'.")')
                     raise BULBRelationshipError(
                         f"The 'order_by' argument of the get() method of a {self.__class__.__name__} instance, must start by 'r.' or 'n.' when the 'returned' argument is 'both'.")
 
@@ -1849,6 +1932,8 @@ class Relationship(BaseNodeAndRelationship):
                 return_statement_list.append(only_statement)
 
         else:
+            bulb_logger.error(
+                f'BULBRelationshipError("The \'returned\' argument of the get() method of a {self.__class__.__name__} instance, must be \'rel\', \'node\' or \'both\'.")')
             raise BULBRelationshipError(
                 f"The 'returned' argument of the get() method of a {self.__class__.__name__} instance, must be 'rel', 'node' or 'both'.")
 
@@ -1976,6 +2061,8 @@ class Relationship(BaseNodeAndRelationship):
                                             related_node_model_class_was_found = True
 
                             if related_node_model_class_was_found is False:
+                                bulb_logger.error(
+                                    f'BULBRelationshipError("The node retrieved with the get() method of a {self.__class__.__name__} instance, matches with no one node_model of the project.")')
                                 raise BULBRelationshipError(
                                     f"The node retrieved with the get() method of a {self.__class__.__name__} instance, matches with no one node_model of the project.")
 
@@ -2032,6 +2119,8 @@ class Relationship(BaseNodeAndRelationship):
                 self._self_node_instance.__class__.__name__, self._self_node_instance.uuid, self.rel_type, uuid))
 
         else:
+            bulb_logger.error(
+                f'BULBRelationshipError("The remove() method of {self.__class__.__name__} instances must have as parameter either a node_model instance, or an \'uuid\'.")')
             raise BULBRelationshipError(
                 f"The remove() method of {self.__class__.__name__} instances must have as parameter either a node_model instance, or an 'uuid'.")
 
@@ -2052,8 +2141,10 @@ class RelationshipInstance:
         properties_fields = self.related_relationship.__dict__["properties_fields"]
 
         if not settings.BULB_CREATE_PROPERTY_IF_NOT_FOUND and property_name not in properties_fields.keys():
+            bulb_logger.warning(
+                f'BULBRelationshipInstanceWarning("You are trying to update the property \'{property_name}\' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.")')
             warnings.warn(
-                f"WARNING : You try to update the property '{property_name}' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.",
+                f"You are trying to update the property '{property_name}' of an {class_name} instance, but this property was not found in the instance dict. The update will have maybe no effect.",
                 BULBRelationshipInstanceWarning)
 
         else:
@@ -2072,8 +2163,10 @@ class RelationshipInstance:
                            property_name, None))
 
                 except:
+                    bulb_logger.warning(
+                        f'BULBNodeWarning("You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j\'s \'apoc\' plugin is not installed. So no new property was created.")')
                     warnings.warn(
-                        f"WARNING : You have define BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
+                        f"You have defined BULB_CREATE_PROPERTY_IF_NOT_FOUND = True, but the neo4j's 'apoc' plugin is not installed. So no new property was created.",
                         BULBNodeWarning)
 
             # File handling (with SFTP storage)
@@ -2093,6 +2186,8 @@ class RelationshipInstance:
                                property_name, None))
 
                     else:
+                        bulb_logger.error(
+                            f'BULBPropertyError("The property \'{property_name}\' is configured with \'sftp=True\' but its value is neither a file nor \'None\'.")')
                         raise BULBPropertyError(
                             f"The property '{property_name}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
 

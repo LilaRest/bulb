@@ -1,3 +1,4 @@
+from bulb.utils.log import bulb_logger
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
 from django.core.exceptions import SuspiciousOperation
@@ -57,12 +58,13 @@ class SessionMiddleware(MiddlewareMixin):
                     if response.status_code != 500:
                         try:
                             request.session.save()
+                            
                         except UpdateError:
+                            bulb_logger.error(
+                                'SuspiciousOperation("The request\'s session was deleted before the request completed. The user may have logged out in a concurrent request, for example.")')
                             raise SuspiciousOperation(
-                                "The request's session was deleted before the "
-                                "request completed. The user may have logged "
-                                "out in a concurrent request, for example."
-                            )
+                                "The request's session was deleted before the request completed. The user may have logged out in a concurrent request, for example.")
+
                         response.set_cookie(
                             settings.SESSION_COOKIE_NAME,
                             request.session.session_key, max_age=max_age,

@@ -1,3 +1,4 @@
+from bulb.utils.log import bulb_logger
 from django import forms
 import re
 
@@ -34,10 +35,12 @@ class AdminLoginForm(forms.Form):
         email = self.cleaned_data.get("email")
 
         if not email:
-            raise forms.ValidationError("Veuillez saisir une adresse email.", code="invalid")
+            bulb_logger.error('ValidationError("Please enter an email address.")')
+            raise forms.ValidationError("Please enter an email address.", code="invalid")
 
         if not re.fullmatch(email_regex, email) or 6 > len(email) > 255:
-            raise forms.ValidationError("Veuillez renseigner une adresse email valide.", code="invalid")
+            bulb_logger.error('ValidationError("Please enter a valid email address.")')
+            raise forms.ValidationError("Please enter a valid email address.", code="invalid")
 
         return email.lower()
 
@@ -46,10 +49,12 @@ class AdminLoginForm(forms.Form):
         password = self.cleaned_data.get("password")
 
         if not password:
-            raise forms.ValidationError("Veuillez saisir un mot de passe.", code="invalid")
+            bulb_logger.error('ValidationError("Please enter a password."')
+            raise forms.ValidationError("Please enter a password.", code="invalid")
 
         if not re.fullmatch(password_regex, password) or not re.fullmatch("^(.*)?\d(.*)?$", password) or 10 > len(
                 password) > 255:
-            raise forms.ValidationError("Veuillez saisir un mot de passe valide.", code="invalid")
+            bulb_logger.error('ValidationError("Please enter a valid password."')
+            raise forms.ValidationError("Please enter a valid password.", code="invalid")
 
         return password

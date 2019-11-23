@@ -12,8 +12,6 @@ login_page_url = "/" + settings.BULB_ADMIN_BASEPATH_NAME + "/login"
 def releases_view(request):
 
     releases = ""
-    print(find("releases/releases.txt"))
-
     with open(find("releases/releases.txt"), "r") as r:
         for line in r:
             if line != "" and "|" in line:
@@ -26,20 +24,11 @@ def releases_view(request):
                 description = "<div class='description'>"
 
                 raw_description = split_line[1]
-                print("RAW DESCRIPTION")
-                print(raw_description)
 
                 descriptions_parts = raw_description.split(";")
-                print("DESCRIPTION PARTS")
-                print(descriptions_parts)
 
                 for part in descriptions_parts:
-                    print("PART")
-                    print(part)
                     split_part = part.split(":")
-
-                    print("split_part")
-                    print(split_part)
 
                     # Build part title render
                     part_title = f"<p class='part-title'>{split_part[0]}</p>"
@@ -48,9 +37,7 @@ def releases_view(request):
                     # Build part content render
                     part_content = "<ul class='part-content'>"
                     split_part_content = split_part[1][3:-3].split('", "')
-                    print("split_part_content")
-                    print(split_part_content)
-
+                    
                     for element in split_part_content:
                         part_content = part_content + f"<li>{element}</li>"
 
