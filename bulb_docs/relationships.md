@@ -6,10 +6,10 @@
 
 ---
 
-# Introducing
+# Introduction
 **bulb** provides a group of classes used to structure and manipulate relationships and properties.  
-Only the most important things have been introduced, in order to leave lots of flexibility to the package's user and not to burden him with useless things.  
-Furthermore, when you work with a database, personalization of each request is the key of fast and powerful interactions. So don't hesitate to make your own request, for complexes works.
+Only the most important things have been introduced, in order to leave a lot of flexibility to the package's user and not to burden him with useless things.  
+Furthermore, when you work with a database, the personalization of each request is the key of fast and powerful interactions. So don't hesitate to make your own request, for complex works.
 <br/>
 <br/>
 <br/>
@@ -26,7 +26,7 @@ The Relationship instances, possesses some parameters which define their behavio
 - **`rel_type`** (required) : This parameter defines the relationship type. It must be a string.    
                               See : [https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types](https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types)   
 <br/>
-- **`direction`** (optional, default="from") : Must be "from", "to", or "bi". If it is "from", the relationship will be an arrow that starts from the self node_model's instance to other node_models' instances. If it is "to" it will be the reverse case : the relationship will be an arrow that starts from other node_models' instances to the self node_model's instance.Finally if it is "bi", it will be two relationships that will work by peers, one from and one to the self node_model's instance : a bi-directional relationships will be created.   
+- **`direction`** (optional, default="from") : Must be "from", "to", or "bi". If it is "from", the relationship will be an arrow that starts from the self node_model's instance to other node_models' instances. If it is "to" it will be the opposite case : the relationship will be an arrow that starts from other node_models' instances to the self node_model's instance. Finally if it is "bi", it will be two relationships that will work by peers, one from and one to the self node_model's instance : a bi-directional relationships will be created.   
 <br/>
 - **`properties_fields`** (optional, default=None) : A dict of properties for "all in node_model" syntax. If the Relationship classes are out of the node_model classes, this argument will be None.
 <br/>
@@ -34,9 +34,9 @@ The Relationship instances, possesses some parameters which define their behavio
 <br/>                          
 - **`target`** (optional, default=None) : This parameter must be a node_model class, its name or "self". It applies a target constraint to the relationship.  
 <br/>
-- **`auto`** (optional, default=False) : This parameter must be a boolean. If it is True, the relationship is allowed to be applied on one unique node, which one will be the start and the target of the relationship.   
+- **`auto`** (optional, default=False) : This parameter must be a boolean. If it is True, the relationship is allowed to be applied on a single node, which will be the start and the target of the relationship.   
 <br/>
-- **`on_delete`** (optional, default="PROTECT") : This parameter must be "PROTECT" or "CASCADE". It defines the behavior of the related nodes. If it is "PROTECT", if the self node object of the relationship is deleted, nothing happen for nodes related to it (A simple DETACH DELETE command is run). In the other hand, if it is "CASCADE", the other nodes will be deleted in the same time as the self node object.    
+- **`on_delete`** (optional, default="PROTECT") : This parameter must be "PROTECT" or "CASCADE". It defines the behavior of the related nodes. If it is "PROTECT", if the self node object of the relationship is deleted, nothing happen for the nodes that are related to it (A simple DETACH DELETE command is run). On the other hand, if it is "CASCADE", the other nodes will be deleted in the same time as the self node object.    
 <br/>
 - **`unique`** (optional, default=False) : This parameter must be a boolean. If it is True the relationship will be unique.    
 
@@ -47,13 +47,13 @@ The Relationship instances, possesses some parameters which define their behavio
 
 There are **two different syntaxes** to implement relationships into your project, but both are using the **`Relationship`** class imported from **`bulb.db.node_models`**.
 
-Let's see the two different ways to use relationships :
+Let's see the two different ways of using relationships :
 <br/>
 <br/>
 
 >- ### The "all in node_models" syntax
 
-With this syntax, you can define the Relationship as an attribute of a node_model. Useful and convenient if you don't have to reuse the relationship configuration for another node_model.
+With this syntax, you can define the Relationship as an attribute of a node_model. Useful and convenient if you don't have to rse the relationship configuration again for another node_model.
 
 >> <small>node_models.py</small>
 ```python
@@ -112,7 +112,7 @@ class Comment(node_models.Node):
 
 - ## Access to the relationships instances
 
-When the previous step is done, you could now access to the Relationship instances through the related node attribute.
+When the previous step is completed, you can access to the Relationship instances through the related node attribute.
 
 See this example (based on the previous examples) :
 
@@ -133,19 +133,19 @@ These instances will able you to work with the relationships.
 
 - ## Create relationships
 
-Create the relationship is the easiest step cause all the configuration and behaviours have been defined in the previous step.
+Create the relationship is the easiest step because each configurations and behaviours have been defined in the previous step.
 To do this you only have to use the **`add()`** method of instances of the **`Relationship`** class.
 
 This method can take 3 parameters :
 
 - **`instance`** (required if not uuid) : A node_model's instance, to which the relationship will target.  
 <br/>
-- **`uuid`** (required if not instance) : A node_models uuid, to which the relationship will target.   
+- **`uuid`** (required if not instance) : A node_model's uuid, to which the relationship will target.   
 <br/>
 - **`properties`** (optional) : The properties dictionary to fill if the relationship take one or more properties.     
 
 
-Remember that in the previous example we had defined the **`RelatedAuthorsRelationship`** and see this demonstration :
+Keep in mind the previous example where we've defined the **`RelatedAuthorsRelationship`** when you read this demonstration :
 
 >> <small>node_models.py</small>
 ```python
@@ -186,12 +186,12 @@ first_article.authors.add(john)
 
 > - ### Retrieve relationships elements
 
-A relationship is composed by two nodes and the relationship that joins them.
-The relationships possesses a **`get()`** method. This method allows us to retrieve one/two node(s) of a relationship and/or the relationship object. As the get() method of the node_models, this one takes many parameters to able us to do very complex and customizable requests :
+A relationship is made of two nodes and the relationship that joins them.
+The relationships possesses a **`get()`** method. This method allows us to retrieve one/two node(s) of a relationship and/or the relationship object. As the get() method of the node_models, this one takes many parameters to allow us to do very complex and customizable requests :
 
-- **`direction`** (optional, default="bi") : Must be "from", "to", or "bi". If it is "from", the research will be focused on all the relationships that have as start point the self node_model's instance. If it is "to", the research will be focused on all the relationships that have as end point the self node_model's instance. Finally, if it is "bi", the research will be focused on the relationships of both cases.   
+- **`direction`** (optional, default="bi") : Must be "from", "to", or "bi". If it is "from", the research will be focused on all the relationships that have, as a start point, the self node_model's instance. If it is "to", the research will be focused on all the relationships that have, as end point, the self node_model's instance. Finally, if it is "bi", the research will be focused on the relationships of both cases.   
 <br/>
-- **`returned`** (optional, default="node") : Must be "rel", "node" or "both". If it is "rel", the method will return a list that contains relationships as RelationshipInstance (or of one of its children classes) instances. If it is "node", the method will return a list that contains the nodes at the other ends of these relationships as node_models' instances. Finally if it is "both", it will return a list of dictionaries in which ones the "rel" key refers to a relationships and the "node" key to its associated node.   
+- **`returned`** (optional, default="node") : Must be "rel", "node" or "both". If it is "rel", the method will return a list that contains relationships as RelationshipInstance (or of one of its children classes) instances. If it is "node", the method will return a list that contains the nodes at the other ends of these relationships as node_models' instances. Finally if it is "both", it will return a list of dictionaries in which the "rel" key refers to a relationships and the "node" key to its associated node.   
 Example :          
 ```python
 {"rel": <RelationshipInstance object(uuid="3a43238c76ec4d6cb392b138f0871e75")>,
