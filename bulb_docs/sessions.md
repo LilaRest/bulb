@@ -271,7 +271,7 @@ def my_view(request):
 <br/>
 
 - ## Protect authentication pages
-Sometimes, you want to forbid the access to the authentication pages (login and registration pages) when the user is logged. To do so you can use the **`protect_authentication_view`** decorator on your login and registration views. This decorator can take as an optional argument, the url towards which you want to redirect the user if he is already logged. Otherwise, you can directly define the **`BULB_HOME_PAGE_URL`** in your **settings.py** file.  
+Sometimes, you want to forbid the access to the authentication pages (login and registration pages) when the user is logged. To do so you can use the **`protect_authentication_view`** decorator on your login and registration views. This decorator can take as an optional argument, the url towards which you want the user to be redirected if he is already logged. Otherwise, you can directly define the **`BULB_HOME_PAGE_URL`** in your **settings.py** file.  
 <br/>
 > <small>views.py</small>
 ```python
@@ -294,7 +294,8 @@ def registration_view(request):
 - ## Apply restrictions
 Some decorators have been developped to apply restrictions to our views. Their behaviours are similar to the native Django's views restrictions.  
 <br/>
-First, you can allow the access to a view only if the user is logged, and redirect him to the login page if he is not. To do that you can use above your views, the **`login_required`** decorator imported from **`bulb.contrib.auth.decorators`**. This decorator can take one parameter named **`login_page_url`**. This parameter must be defined with the url, to which redirect the user if he tries to access to the 'logged user only' view.  Otherwise, if the page to redirect to is the same for all of your projects, you could directly define the **`BULB_LOGIN_URL`** variable in your settings.py file. That variable contains the url of your login page.  
+First, you can allow the access to a view only if the user is logged, and redirect him to the login page if he is not. To do so you can use above your views, the **`login_required`** decorator imported from **`bulb.contrib.auth.decorators`**. This decorator can take one parameter named **`login_page_url`**. This parameter must be defined with the url, towards which the user will be redirected if he tries to access to the 'logged user only' view.  Otherwise, if the page to redirect to is the same for all of your projects, you can directly define the **`BULB_LOGIN_URL`** variable in your settings.py file with the url of your login page.
+
 <br/>
 > <small>views.py</small>
 ```python
@@ -308,7 +309,7 @@ def my_view(request):
 <br/>
 <br/>
 
-Once again, if you want to apply specifics restrictions (based on permissions) to views, you can use the **`permission_required`** decorator imported from **`bulb.contrib.auth.decorators`**. This decorator takes as arguments : the **codename** of the permission and optionally, the url to which redirect the user if he hasn't the permission required. Or else, you can directly define the BULB_HOME_PAGE_URL in your **settings.py** file.
+Once again, if you want to apply specifics restrictions (based on permissions) to the views, you can use the **`permission_required`** decorator imported from **`bulb.contrib.auth.decorators`**. This decorator takes as arguments : the **codename** of the permission and optionally, the url toward which the user will be redirected if he hasn't the permission required. Or else, you can directly define the BULB_HOME_PAGE_URL in your **settings.py** file.
 <br/>
 > <small>views.py</small>
 ```python
