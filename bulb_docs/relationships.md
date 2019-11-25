@@ -21,7 +21,7 @@ Furthermore, when you work with a database, the personalization of each request 
 
 <br/>
 
-The Relationship instances, possesses some parameters which define their behaviour in the database :
+The Relationship instances possess some parameters which define their behaviour in the database :
 
 - **`rel_type`** (required) : This parameter defines the relationship type. It must be a string.    
                               See : [https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types](https://neo4j.com/docs/getting-started/current/graphdb-concepts/#graphdb-relationship-types)   
@@ -199,18 +199,18 @@ Example :
 ```     
 <br/>
 
-- **`order_by`** (optional, default=None) : Must be the name of the property with which the returned datas will be sorted. BUT, if self.returned = "both", two different types of datas will be returned (relationships and nodes). So to sort them this property must start with "r." (like 'relationships') or "n." (like 'nodes').       
+- **`order_by`** (optional, default=None) : Must be the name of the property with which the returned datas will be sorted. BUT, if self.returned = "both", two different types of datas will be returned (relationships and nodes). Therefore, to sort them, this property must start with "r." (like 'relationships') or "n." (like 'nodes').       
  Examples : "r.datetime", "n.first_name", etc...      
 <br/>
 - **`limit`** (optional, default=None) : Must be an integer. This parameter defines the number of returned elements.   
 <br/>
-- **`skip`** (optional, default=None) : Must be an integer. This parameter defines the number of skipped elements. For example if self.skip = 3, the 3 first returned elements will be skipped.    
+- **`skip`** (optional, default=None) : Must be an integer. This parameter defines the number of skipped elements. For example if self.skip = 3, the first 3 returned elements will be skipped.    
 <br/>
-- **`desc`** (optional, default=False): Must be a boolean. If it is False the elements will be returned in an increasing order, but it is True, they will be returned in a descending order.   
+- **`desc`** (optional, default=False): Must be a boolean. If it's False the elements will be returned in an increasing order, but if it's True, they will be returned in a descending order.   
 <br/>
-- **`distinct`** (optional, default=False) : Must be a boolean. If it is True, the returned list will be only composed with unique elements.    
+- **`distinct`** (optional, default=False) : Must be a boolean. If it's True, the returned list will be only composed by single elements.    
 <br/>
-- **`only`** (optional, default=None) : Must be a list of field_names. If this parameter is filled, the return will not be node_models and relationships instances, but a dict with "only" the mentioned fields. BUT, if self.returned = "both", two different types of datas will be returned (relationships and nodes). So to mention their properties fields, the elements of the list will must start with "r." (like 'relationships') or "n." (like 'nodes').     
+- **`only`** (optional, default=None) : Must be a list of field_names. If this parameter is filled, the return won't be node_models and relationships instances, but a dict with "only" the mentioned fields. BUT, if self.returned = "both", two different types of datas will be returned (relationships and nodes). Therefore, to mention their properties fields, the elements of the list must start with "r." (like 'relationships') or "n." (like 'nodes').     
  Examples : "r.datetime", "n.first_name", etc...    
  <br/>
  - **`filter`** (optional, default=None) : Must be Q statement. You must use the Q class stored in bulb.db  
@@ -218,7 +218,7 @@ Example :
  <br/>
 - **`return_query`** (optional, default=False) : Must be a boolean. If true, the method will only return the cypher query.   
 
-Remember that in the previous example we had defined the **`RelatedAuthorsRelationship`** and see this demonstration :
+Keep in mind the previous example where we've defined the **`RelatedAuthorsRelationship`** and read this demonstration :
 
 >> <small>node_models.py</small>
 ```python
@@ -240,7 +240,6 @@ class Article(node_models.Node):
     content = node_models.Property(required=True)
     publication_datetime = node_models.Property(default=datetime.datetime.now)
     authors = RelatedAuthorsRelationship()
-
 first_article = Article.create(title="A great article !",
                                content="Lorem ipsum...")
 
@@ -264,15 +263,15 @@ first_article.authors.get(returned="both")
 
 > - ### Make your own getter, setter and deletter
 
-A Relationship instance possesses native getter, setter and deletter, but these methods could be personalized for each Relationship class. Handle perfectly all the situations is impossible, and try to do this, leads to very heavy and inefficient programs. To make your own node methods, you'll just have to take the native methods and re-implement them with your modifications.
+A Relationship instance possesses native getter, setter and deletter, but these methods could be personalized for each Relationship class. Handling perfectly every situations is impossible, and trying it leads to very heavy and inefficient programs. To make your own node methods, you'll just have to take the native methods and re-implement them with your modifications.
 
 <br/>
 <br/>
 
 - ## Work with RelationshipInstance instances
 <br/>
-We have just seen how to work with **`Relationship`** instances. As a reminder, the **`Relationship`** class allow us to create relationships models and then create relationships in the database which ones respects these models.
-But you have to know that an other class exists to represent the relationships themselves in the database, it is called **`RelationshipInstance`**.
+We've just seen how to work with **`Relationship`** instances. As a reminder, the **`Relationship`** class allow us to create relationships models and then create relationships in the database that respects these models.
+But you have to know that another class exists to represent the relationships itself in the database, it is called **`RelationshipInstance`**.
 For example, if you use the **`get()`** method of the **`Relationship`** instances, you can retrieve both nodes and relationships by settings **returned** parameter on **'both'**.     
 Let's see a demonstration which is based on the example of the  **`get()`** method of the **`Relationship`** instances (above) :
 
@@ -321,7 +320,7 @@ And if you use the "all in node_models" syntax, the **`RelationshipInstance`** c
 
 <br/>
 
-Now you have retrieved a **`RelatedAuthorsRelationshipInstance`** instance you can update properties of the relationship that it represents. To do this, **bulb** give you an **`update()`** method. This method works identically like the **`update()`** method of the **`Node`** instances : it takes as first argument the name of the property to update and as second argument, the new value of this property.
+Now that you have retrieved a **`RelatedAuthorsRelationshipInstance`** instance you can update properties of the relationship it represents. To do so, **bulb** give you an **`update()`** method. This method works identically like the **`update()`** method of the **`Node`** instances : it takes as first argument the name of the property to update and as second argument, the new value of this property.
 
 >> <small>node_models.py</small>
 ```python
@@ -335,7 +334,7 @@ my_rel_instance.update("creation_datetime", datetime.datetime.now())
 
 > - ### Delete relationships
 
-**`RelatedAuthorsRelationshipInstance`** instances possess a **`delete()`** method, which one delete allows us to delete the relationship.
+**`RelatedAuthorsRelationshipInstance`** instances possess a **`delete()`** method, that allows us to delete the relationship.
 
 <br/>
 <br/>
