@@ -5,8 +5,8 @@
 
 ---
 
-# Introducing
-Storing files in the Neo4j database is not allowed. Some tips can able us to do this, but if files storage is natively prohibited is for a simple reason : The graph databases will slow down a lot if they had to store heavy files.
+# Introduction
+Storing files in the Neo4j database isn't allowed. Some tips can allow us to do so, though files' storage is natively prohibited for a simple reason : The graph databases will slow down a lot if they have to store heavy files.
 
 You can test it by yourself : just encode one or many heavy image(s) with the base64 algorithm and try to store it/them in your graph database. You should observe lowest performances when you run some queries.
 
