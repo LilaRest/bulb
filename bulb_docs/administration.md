@@ -12,8 +12,8 @@
 
 # Setting up the administration
 
-The bulb's administration isn't automatically set when you implement bulb into your project.
-But you can set it up with only 2 little steps :
+Bulb's administration isn't automatically set when you implement bulb into your project.
+But you can set it up with only 2 small steps :
 
 1) Firstly, you'll have to define the administration's url via the **BULB_ADMIN_BASEPATH_NAME** settings' variable.
 For example, if you define this variable on **"my_admin"**, the administration will be accessible at _**www.mydomain.com/my_admin/**_    
