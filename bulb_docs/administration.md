@@ -5,21 +5,21 @@
 
 ---
 
-# Introducing
+# Introduction
 **bulb** provides an administration especially created to interact with Neo4j databases and to give us some other functionalities.
 
 <br/>
 
 # Setting up the administration
 
-The bulb's administration isn't automatically set when you implement bulb into your project.
-But you can set it up with only 2 little steps :
+Bulb's administration isn't automatically set when you implement bulb into your project.
+But you can set it up with only 2 small steps :
 
 1) Firstly, you'll have to define the administration's url via the **BULB_ADMIN_BASEPATH_NAME** settings' variable.
-For example, if you defined this variable on **"my_admin"**, the administration will be accessible at _**www.mydomain.com/my_admin/**_    
+For example, if you define this variable on **"my_admin"**, the administration will be accessible at _**www.mydomain.com/my_admin/**_    
 Per default, **BULB_ADMIN_BASEPATH_NAME** is defined on **"admin"**.
 
-2) Finally, go in the global **urls.py** file of your project, comment the line of the the native Django administration (if it isn't already done) and implement the **bulb**'s one like this :
+2) Finally, go in the global **urls.py** file of your project, comment the line of the native Django's administration (if it isn't already done) and implement the **bulb**'s one like this :
 
 >> <small>urls.py</small>
 ```python
@@ -35,9 +35,9 @@ urlpatterns = [
 
 <br/>
 
-Now you can access to the administration via the url that you had defined with **BULB_ADMIN_BASEPATH_NAME** settings' variable
+Now you can access to the administration via the url that you've defined with **BULB_ADMIN_BASEPATH_NAME** settings' variable
 
-> _Note that the administration could'nt have any style, if you haven't followed the "Staticfiles" part of this documentation_
+> _Note that the administration may not have style, if you haven't followed the "Staticfiles" part of this documentation_
 
 <br/>
 <br/>
@@ -46,9 +46,9 @@ Now you can access to the administration via the url that you had defined with *
 <br/>
 
 Natively, **bulb**'s administration contains only the "Handling" part (see the Handling part of this documentation to learn more about it).
-Later, it will contain also a "Statistic" part, a "Logs" part, and a "Bulb news" part.
+Later, it'll also contain a "Statistic" part, a "Logs" part, and a "Bulb news" part.
 
-But the administration is highly modular, you can add yours own administrations modules : for example a modules especially designed to create and edit the articles of an on-line newspaper, for the editorial team.
+But the administration is highly modular, you can add your own administrations' modules : for example a module especially designed to create and edit the articles of an on-line newspaper, for the editorial team.
 
 <br/>
 
@@ -58,13 +58,13 @@ Let's see how you can do this :
 
 2) Secondly, create a Django application for your new administration's module with the command **`python manage.py startapp <your app name>`**.
 
-3) Thirdly, create a template in your new application, which one will be the home of your new administration's module. This template must inherit of the administration's base template located in **`bulb/contrib/admin/templates/admin/background_pages/base.html`**. So you have to add this line at the head of your new template :
+3) Thirdly, create a template in your new application, which will be the home of your new administration's module. This template must inherit of the administration's base template located in **`bulb/contrib/admin/templates/admin/background_pages/base.html`**. So you have to add this line at the head of your new template :
 
 ```django
 {% extends "administration/background_pages/base.html" %}
 ```
 
-But you can find a generic template especially designed to create a new administration's module's template at **`bulb/contrib/admin/templates/admin/background_pages/generic_template.html`**. It will allow you to quickly inherit of the base template :
+But you can find a generic template especially designed to create a template for a new administration's module at **`bulb/contrib/admin/templates/admin/background_pages/generic_template.html`**. It'll allow you to quickly inherit of the base template :
 
 >> <small>generic_template.html</small>
 ```django
@@ -83,14 +83,14 @@ But you can find a generic template especially designed to create a new administ
 
 <br/>
 
-Then, fill each block of your new module page :     
+Then, fill each block of your new module's page :     
 
-- The **title** block defines the content of the **`<title></title>`** tags of the page.
+- The **title** block defines the content of the **`<title></title>`** page's tag.
 
 <br/>
 
-- The **head** block defines the content of the **`<head></head>`** tags of the page.     
-Note that per default the header contains already these 3 lines :
+- The **head** block defines the content of the **`<head></head>`** page's tag.     
+Note that the header contains already these 3 lines per default :
 
 ```django
 <title>{% block title %}{% endblock title %}</title>
@@ -110,7 +110,7 @@ Example inspired from [https://grassemat.info](https://grassemat.info) :
 {% endblock administration_part_name %}
 ```
 
-> _Note that to inherits of the bulb's administration's style, the link's class must be **"nav-link"**._
+(TODO LATER)> _Note that to inherit of the bulb's administration's style, the link's class must be **"nav-link"**._
 
 Render when you're on the administration's home:
 
@@ -122,12 +122,12 @@ Render when you're on the home of your the new administration's module:
 
 <br/>
 
-- The **content**  defines the content of the **`<body></body>`** tags of the page.  
+- The **content**  defines the content of the **`<body></body>`** page's tag.  
 
 <br/>   
 
-- And finally, in the **scripts** block you'll have to put yours **`<script></script>`** tags.    
-Note that a loader script and a polyfill script are contained by default is the base template :
+- And finally, in the **scripts** block you'll have to put your **`<script></script>`** tags.    
+Note that a loader script and a polyfill script are contained by default in the base template :
 
 ```django
 <script>
@@ -242,7 +242,7 @@ def editorial_home_view(request):
 
 <br/>
 
-5) After, you'll have to fill the **urls.py** of your new administration's module, to create an url which will render the home page of this module.
+5) After, you'll have to fill the **urls.py** of your new administration's module, to create an url that will render the home page of this module.
 
 >> <small>urls.py</small>
 ```python
