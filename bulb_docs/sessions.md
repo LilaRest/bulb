@@ -5,25 +5,25 @@
 
 ---
 
-# Introducing
-**bulb** allows easily usage of Django's sessions, with the Neo4j databases. So, it will be possible to implement login, registration portals, and logout button, to your website.
-Like in the native Django' sessions, the module interacts with the **bulb** authentication. So, we could store in the sessions datas, informations about the current logged user, and so be able to allow access to certain pages for only a certain group of users, for example.  
+# Introduction
+**bulb** provides an easy usage of Django's sessions, with the Neo4j databases. So, it'll be possible to implement login, registration portals, and logout button, to your website.
+Like in the native Django' sessions, the module interacts with the **bulb** authentication. So we can store in the sessions' datas, informations about the current logged user, and then, for example, be able to allow the access to certain pages for certain group of users only.  
 
-> Note that to setup the sessions and if we don't want to customize them, we will not work with the **bulb** sessions themself, but yet with the **bulb** authentication, that itself relies on the sessions package.
+> Note that to setup the sessions and if we don't want to customize them, we won't work with the **bulb** sessions themself, but yet with the **bulb** authentication, that itself relies on the sessions package.
 
-Let's see that !  
+Let's see this !  
 <br/>
 <br/>
 
 ---
 
 # Login
-Like in the native Django packages you'll have to create a form that allows to receive the datas in the view.
+Like in the native Django packages you'll have to create a form that allows to receive datas in the view.
 
-After and like in the native Django, logging an user is composed of 2 steps :  
+Then, and like in the native Django, logging in a user is composed of 2 steps :  
 <br/>
 <br/>
-1. First; use the **`authenticate()`** method from **`bulb.contrib.auth.authentication`** to check and retrieve the user if one exists with the email and the password provided by the user. This method takes as parameters, the **email** and **password** retrieved.  
+1. First; use the **`authenticate()`** method from **`bulb.contrib.auth.authentication`** to check and retrieve the user if one already exists with the same email and the password provided by the user. This method takes as parameters, the **email** and **password** retrieved.  
 <br/>
 2. Finally, use the **`preserve_or_login()`** method from **`bulb.contrib.auth.authentication`**.  
 This methods takes two parameters :  
@@ -31,7 +31,8 @@ This methods takes two parameters :
 - The **request** (required),  
 <br/>
 
-- **`if_authentication_user`** (optional) : You have to fill this parameter in the case of an explicit authentication, like below, in a login page : where you retrieve the user from the **`authenticate()`** method. If you don't fill the parameter, the method will not try to log in the user, but only to preserve his session if there is already one. In all the other case the method triggers a session cleaning.
+- **`if_authentication_user`** (optional) : You have to fill this parameter in the case of an explicit authentication, like below, in a login page : where you retrieve the user from the **`authenticate()`** method. If you don't fill the parameter, the method won't try to log in the user, but only to preserve his session if there is already one. In all the other cases, the method triggers a session's cleaning.
+
 <br/>
 <br/>
 
@@ -40,10 +41,10 @@ To summarize, this method will :
 - try to log in the user or preserve his session, if the **`if_authentication_user`** parameter is filled,  
 <br/>  
 
-- try only to preserve the user session if the parameter is not filled (like in the **`bulb.contrib.auth.middleware`**, which refresh and preserve the session at every request),  
+- try only to preserve the user's session if the parameter isn't filled (like in the **`bulb.contrib.auth.middleware`**, that refresh and preserve the session at each request),  
 <br/>  
 
-- clean the related sessions in the database and in the cookie, if their is nor the **`if_authentication_user`** parameter, nor a user in the request (or if datas are obsolete or damaged).  
+- clean the related sessions in the database and in the cookie, if there is neither the **`if_authentication_user`** parameter, nor a user in the request (or if datas are obsolete or damaged).  
 <br/>
 <br/>
 Demonstration : 
@@ -83,8 +84,8 @@ def login_view(request):
 ---
 
 # Registration
-The registrations of users is mainly the role of the authentication **bulb** module. You'll have to create a form, which, on submit, will create an user. (See [Authentication](https://bulb.readthedocs.io/en/latest/authentication/))   
-But for a better experience you could add an automatic login when the users have just registered :
+The registration of users is mainly the role of the authentication **bulb** module. You'll have to create a form, which, on submit, will create a user. (See [Authentication](https://bulb.readthedocs.io/en/latest/authentication/))   
+But for a better experience you can add an automatic login when the users have just registered :
 <br/>
 
 > <small>views.py</small>
@@ -131,7 +132,7 @@ def registration_view(request):
 ---
 
 # Logout
-The logout is the easiest step in the sessions management, just use the **`force_clear_user_session()`** method. This method takes only one argument, the **request**.
+The logout is the easiest step in the sessions' management, just use the **`force_clear_user_session()`** method. This method takes only one argument, the **request**.
 <br/>
 
 > <small>views.py</small>
@@ -177,9 +178,9 @@ You can use the **user** variable to access and work with the current logged use
 <br/>
 
 - ## Apply restrictions
-Sometimes we will need to allow only certain users to see a certain content.  
+Sometimes we'll need to allow only certain users to see a certain content.  
 <br/>
-In the same way with as the native Django's package, you can allow only the logged users to see a certain content. To do that, use the **user_is_logged** variable, that returns **True** if the user is logged and **False** if he isn't.  
+As in the native Django's package, you can allow only the logged users to see a certain content. To do so, use the **user_is_logged** variable, that returns **True** if the user is logged and **False** if he isn't.  
 
 > <small>my_template.html</small>
 ```html
@@ -208,7 +209,7 @@ In the same way with as the native Django's package, you can allow only the logg
 <br/>
 <br/>
 
-But, if you want to apply restrictions with specifics permissions, you could use the **has_perm** tag from the **auth_extras** library. This is to apply on the user variable and it takes one parameter, the codename of the permission to test, and returns **True** if the user has the permission and **False** if he hasn't.  
+But, if you want to apply restrictions with specific permissions, you can use the **has_perm** tag from the **auth_extras** library. This is to apply on the user variable and it takes one parameter, the codename of the permission to test, and returns **True** if the user has the permission and **False** if he hasn't.  
 > <small>my_template.html</small>
 ```html
 {% load auth_extras %}
@@ -248,7 +249,7 @@ So, you can do the same things in the views of your project.
 
 - ## Access to the logged user instance
 For each new created session, the user instance is stored in the **`user`** attribute of the **`request`** object.  
-So you could work with the logged user like that :
+So you could work with the logged user like this :
 
 > <small>views.py</small>
 ```python
@@ -270,7 +271,7 @@ def my_view(request):
 <br/>
 
 - ## Protect authentication pages
-Sometimes, you could have to disallow the access to the authentication pages (login and registration pages) when the user is logged. To do that you can use the **`protect_authentication_view`** decorator on your login and registration views. This decorator can takes as an optional argument the url to which redirect the user if he is already logged. Otherwise, you can directly define the **`BULB_HOME_PAGE_URL`** in your **settings.py** file.  
+Sometimes, you want to forbid the access to the authentication pages (login and registration pages) when the user is logged. To do so you can use the **`protect_authentication_view`** decorator on your login and registration views. This decorator can take as an optional argument, the url towards which you want the user to be redirected if he is already logged. Otherwise, you can directly define the **`BULB_HOME_PAGE_URL`** in your **settings.py** file.  
 <br/>
 > <small>views.py</small>
 ```python
@@ -293,7 +294,8 @@ def registration_view(request):
 - ## Apply restrictions
 Some decorators have been developped to apply restrictions to our views. Their behaviours are similar to the native Django's views restrictions.  
 <br/>
-First, you can allow the access to a view only if the user is logged, and redirect him to the login page if he is not. To do that you can use above your views, the **`login_required`** decorator imported from **`bulb.contrib.auth.decorators`**. This decorator can take one parameter named **`login_page_url`**. This parameter must be defined with the url, to which redirect the user if he tries to access to the 'logged user only' view.  Otherwise, if the page to redirect to is the same for all of your projects, you could directly define the **`BULB_LOGIN_URL`** variable in your settings.py file. That variable contains the url of your login page.  
+First, you can allow the access to a view only if the user is logged, and redirect him to the login page if he is not. To do so you can use above your views, the **`login_required`** decorator imported from **`bulb.contrib.auth.decorators`**. This decorator can take one parameter named **`login_page_url`**. This parameter must be defined with the url, towards which the user will be redirected if he tries to access to the 'logged user only' view.  Otherwise, if the page to redirect to is the same for all of your projects, you can directly define the **`BULB_LOGIN_URL`** variable in your settings.py file with the url of your login page.
+
 <br/>
 > <small>views.py</small>
 ```python
@@ -307,7 +309,7 @@ def my_view(request):
 <br/>
 <br/>
 
-Once again, if you want to apply specifics restrictions (based on permissions) to views, you can use the **`permission_required`** decorator imported from **`bulb.contrib.auth.decorators`**. This decorator takes as arguments : the **codename** of the permission and optionally, the url to which redirect the user if he hasn't the permission required. Or else, you can directly define the BULB_HOME_PAGE_URL in your **settings.py** file.
+Once again, if you want to apply specifics restrictions (based on permissions) to the views, you can use the **`permission_required`** decorator imported from **`bulb.contrib.auth.decorators`**. This decorator takes as arguments : the **codename** of the permission and optionally, the url toward which the user will be redirected if he hasn't the permission required. Or else, you can directly define the BULB_HOME_PAGE_URL in your **settings.py** file.
 <br/>
 > <small>views.py</small>
 ```python

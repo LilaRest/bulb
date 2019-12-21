@@ -1,12 +1,12 @@
 ### >> Installation :
 <br/>
 
-1. First, open a terminal.
+1. Open a terminal.
 <br/>
 <br/>
 <br/>
 
-2. Then, go into your Django project or start your virtual environment if you have one :
+2. Go into your Django project or start your virtual environment if you've got one :
 
     Example :
     
@@ -16,7 +16,7 @@
 <br/>
 <br/>
 
-3. Finally, execute :
+3. Execute :
 
 ```
 > pip install bulb-core
@@ -29,7 +29,7 @@ or if it doesn't work :
 <br/>
 <br/>
 
-4. To check if all works open the terminal, and go in your virtual environment if you have one. Then, run the python shell of your Django project and try to import the **bulb** package :
+4. To check if everything works, open the terminal and go in your virtual environment if you've got one. Then, run the python shell of your Django project and try to import the **bulb** package :
 
 ```
 (my_env) > python manage.py shell
@@ -40,7 +40,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-   If no error message is raised, that's good.  
+   If there's no error message, everything's fine.  
 <br/>
 <br/>
 <br/>
