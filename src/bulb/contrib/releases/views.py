@@ -1,6 +1,4 @@
 from bulb.contrib.auth.decorators import login_required, staff_only
-from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.contrib.staticfiles.finders import find
 from django.shortcuts import render
 from django.conf import settings
 import os
@@ -37,7 +35,7 @@ def releases_view(request):
                     # Build part content render
                     part_content = "<ul class='part-content'>"
                     split_part_content = split_part[1][3:-3].split('", "')
-                    
+
                     for element in split_part_content:
                         part_content = part_content + f"<li>{element}</li>"
 
