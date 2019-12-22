@@ -185,65 +185,67 @@ class Property:
                             not_defined_fields.remove((field_name, field_content))
 
                             # Handle sftp fields:
-                            if eval(f"node_or_rel_object.__class__.{key}.sftp"):
+                            if eval(f"node_or_rel_object.__class__.{key}") is not None:
 
-                                if not isinstance(value, InMemoryUploadedFile) and not isinstance(value, TemporaryUploadedFile):
+                                if eval(f"node_or_rel_object.__class__.{key}.sftp"):
 
-                                    if value == "None" or value == "":
-                                        setattr(node_or_rel_object, key, value)
-                                        current_object_properties_dict[key] = value
+                                    if not isinstance(value, InMemoryUploadedFile) and not isinstance(value, TemporaryUploadedFile):
+
+                                        if value == "None" or value == "":
+                                            setattr(node_or_rel_object, key, value)
+                                            current_object_properties_dict[key] = value
+
+                                        else:
+                                            bulb_logger.error(
+                                                f'BULBPropertyError("The property \'{key}\' is configured with \'sftp=True\' but its value is neither a file nor \'None\'.")')
+                                            raise BULBPropertyError(
+                                                f"The property '{key}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
 
                                     else:
-                                        bulb_logger.error(
-                                            f'BULBPropertyError("The property \'{key}\' is configured with \'sftp=True\' but its value is neither a file nor \'None\'.")')
-                                        raise BULBPropertyError(
-                                            f"The property '{key}' is configured with 'sftp=True' but its value is neither a file nor 'None'.")
+                                        temporary_local_file_path, remote_file_path = compress_file_and_build_paths(value)
 
+                                        with SFTP.connect() as sftp:
+                                            try:
+                                                sftp.put(temporary_local_file_path, remote_file_path)
+
+                                            # Check and create default storage folders if they are not already created.
+                                            except IOError:
+                                                if not sftp.exists("/www/staticfiles"):
+                                                    sftp.mkdir("/www/staticfiles")
+
+                                                if not sftp.exists("/www/staticfiles/content"):
+                                                    sftp.mkdir("/www/staticfiles/content")
+
+                                                if not sftp.exists("/www/staticfiles/content/img"):
+                                                    sftp.mkdir("/www/staticfiles/content/img")
+
+                                                if not sftp.exists("/www/staticfiles/content/pdf"):
+                                                    sftp.mkdir("/www/staticfiles/content/pdf")
+
+                                                if not sftp.exists("/www/staticfiles/content/svg"):
+                                                    sftp.mkdir("/www/staticfiles/content/svg")
+
+                                                sftp.put(temporary_local_file_path, remote_file_path)
+
+                                        os.remove(temporary_local_file_path)
+
+                                        full_stored_file_path_list = (settings.BULB_SFTP_PULL_URL + remote_file_path).split("/")
+                                        full_stored_file_path_list.pop(3)
+                                        full_stored_file_path = "/".join(full_stored_file_path_list)
+
+                                        setattr(node_or_rel_object, key, full_stored_file_path)
+                                        current_object_properties_dict[key] = full_stored_file_path
+
+                                # Callable value handling.
+                                elif callable(value):
+                                    value = value()
+                                    setattr(node_or_rel_object, key, value)
+                                    current_object_properties_dict[key] = value
+
+                                # Other.
                                 else:
-                                    temporary_local_file_path, remote_file_path = compress_file_and_build_paths(value)
-
-                                    with SFTP.connect() as sftp:
-                                        try:
-                                            sftp.put(temporary_local_file_path, remote_file_path)
-
-                                        # Check and create default storage folders if they are not already created.
-                                        except IOError:
-                                            if not sftp.exists("/www/staticfiles"):
-                                                sftp.mkdir("/www/staticfiles")
-
-                                            if not sftp.exists("/www/staticfiles/content"):
-                                                sftp.mkdir("/www/staticfiles/content")
-
-                                            if not sftp.exists("/www/staticfiles/content/img"):
-                                                sftp.mkdir("/www/staticfiles/content/img")
-
-                                            if not sftp.exists("/www/staticfiles/content/pdf"):
-                                                sftp.mkdir("/www/staticfiles/content/pdf")
-
-                                            if not sftp.exists("/www/staticfiles/content/svg"):
-                                                sftp.mkdir("/www/staticfiles/content/svg")
-
-                                            sftp.put(temporary_local_file_path, remote_file_path)
-
-                                    os.remove(temporary_local_file_path)
-
-                                    full_stored_file_path_list = (settings.BULB_SFTP_PULL_URL + remote_file_path).split("/")
-                                    full_stored_file_path_list.pop(3)
-                                    full_stored_file_path = "/".join(full_stored_file_path_list)
-
-                                    setattr(node_or_rel_object, key, full_stored_file_path)
-                                    current_object_properties_dict[key] = full_stored_file_path
-
-                            # Callable value handling.
-                            elif callable(value):
-                                value = value()
-                                setattr(node_or_rel_object, key, value)
-                                current_object_properties_dict[key] = value
-
-                            # Other.
-                            else:
-                                setattr(node_or_rel_object, key, value)
-                                current_object_properties_dict[key] = value
+                                    setattr(node_or_rel_object, key, value)
+                                    current_object_properties_dict[key] = value
 
         # Treat the undefined fields
         for field_item in not_defined_fields:
@@ -405,12 +407,23 @@ class BaseNodeAndRelationship:
 
         :return: A dictionary of all Node instance's properties.
         """
+        print("\n\n\nSTART OF TEST ZONE\n\n\n")
+
         properties_dict = {}
 
         # Retrieve the properties declared in the class and those declared in all these parents: allow class inheritance.
         class_dict = cls.__dict__.copy()
+
+        # Collect keys of properties that have None as value to remove them of the properties_dict
+        none_properties = []
+
         for mro_class in cls.__mro__:
-            class_dict.update(mro_class.__dict__)
+            for key, value in mro_class.__dict__.items():
+                if value is not None:
+                    class_dict[key] = value
+
+                else:
+                    none_properties.append(key)
 
         # Support "all in node" Relationship syntax.
         if additional_fields_dict is not None:
@@ -419,6 +432,12 @@ class BaseNodeAndRelationship:
         for k, v in class_dict.items():
             if isinstance(v, Property) or Property in v.__class__.__mro__:
                 properties_dict[k] = v
+
+        for key in none_properties:
+            try:
+                del properties_dict[key]
+            except:
+                pass
 
         return properties_dict
 
