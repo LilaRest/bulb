@@ -1,3 +1,7 @@
+0.0.80 | Node : ["Add the possibility to overload default node_models attributes"]
+
+0.0.79 | All : ["Django 3.0 support"]
+
 0.0.78 | Administration : ["Creation of a new administration's module named 'Releases', which lists the last bulb's releases", "Creation of a new administration's module named 'Logs', which lists all logs as well as all the warnings and errors raised by the server", "Creation of a new administration's module named 'Activity', which lists all administrators' actions (creation, edition, deletion)", "Translation of many forgot french words in english", "Deactivation of the administration’s screen size helper for development"] ; Node models : ["Renaming of BaseNode into BaseNodeAndRelationship in ‘bulb.db.node_models’"] ; Errors : ["Full overhaul of the errors system"]
 
 0.0.77 | Administration > Handling : ["Add search bars", "Add instances counters", "Add instances sorting", "Fix some display bugs"]
