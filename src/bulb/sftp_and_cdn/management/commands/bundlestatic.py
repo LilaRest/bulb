@@ -248,5 +248,5 @@ class Command(BaseCommand):
                     except (FileNotFoundError, TypeError):
                         pass
 
-                    bulb_logger.error("FileNotFoundError or TypeError")
-                    raise
+                    # bulb_logger.error("FileNotFoundError or TypeError")
+                    # raise

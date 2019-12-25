@@ -16,23 +16,94 @@ class SFTP:
     @staticmethod
     def connect(log=None):
 
-        keydata = settings.BULB_SFTP_HOST_SSH_KEY
+        use_sftp = settings.BULB_USE_SFTP
 
-        if keydata is None:
-            bulb_logger.error(
-                'BULBSftpError("To establish an SFTP connection you have to provide the SSH key of the server. Please put it in the BULB_SFTP_HOST_SSH_KEY variable in \'settings.py\'.")')
-            raise BULBSftpError(
-                "To establish an SFTP connection you have to provide the SSH key of the server. Please put it in the BULB_SFTP_HOST_SSH_KEY variable in 'settings.py'.")
+        if use_sftp is True:
+            host = settings.BULB_SFTP_HOST
 
-        else:
-            key = paramiko.RSAKey(data=decodebytes(keydata))
+            if host is None:
+                bulb_logger.error(
+                'BULBSftpError("To establish an SFTP connection you have to provide the a host server. Please put it in the BULB_SFTP_HOST variable in \'settings.py\'.")')
+                raise BULBSftpError(
+                    "To establish an SFTP connection you have to provide the a host server. Please put it in the BULB_SFTP_HOST variable in \'settings.py\'.")
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", category=UserWarning)
-                cnopts = pysftp.CnOpts()
-                cnopts.hostkeys.add(settings.BULB_SFTP_HOST, 'ssh-rsa', key)
+            port = settings.BULB_SFTP_PORT
 
-            return pysftp.Connection(host=settings.BULB_SFTP_HOST, username=settings.BULB_SFTP_USER, password=settings.BULB_SFTP_PASSWORD, cnopts=cnopts, log=log)
+            if port is None:
+                port = 22
+
+            username = settings.BULB_SFTP_USER
+
+            if username is None:
+                bulb_logger.error(
+                'BULBSftpError("To establish an SFTP connection you have to provide the a server user name. Please put it in the BULB_SFTP_USER variable in \'settings.py\'.")')
+                raise BULBSftpError(
+                    "To establish an SFTP connection you have to provide the a server user name. Please put it in the BULB_SFTP_USER variable in \'settings.py\'.")
+
+            hostkey = settings.BULB_SFTP_HOST_SSH_KEY
+            password = settings.BULB_SFTP_PASSWORD
+            private_key_path = settings.BULB_SFTP_PRIVATE_KEY_PATH
+            private_key_pass = settings.BULB_SFTP_PRIVATE_KEY_PASS
+
+            if hostkey is None:
+                if password is not None:
+                    return pysftp.Connection(host=host,
+                                             port=port,
+                                             username=username,
+                                             password=password,
+                                             log=log)
+
+                if private_key_path is not None:
+                    if private_key_pass is not None:
+                        return pysftp.Connection(host=host,
+                                                 port=port,
+                                                 username=username,
+                                                 private_key=private_key_path,
+                                                 private_key_pass=private_key_pass,
+                                                 log=log)
+
+                    else:
+                        return pysftp.Connection(host=host,
+                                                 port=port,
+                                                 username=username,
+                                                 private_key=private_key_path,
+                                                 log=log)
+
+            else:
+                key = paramiko.RSAKey(data=decodebytes(hostkey))
+
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore", category=UserWarning)
+                    cnopts = pysftp.CnOpts()
+                    cnopts.hostkeys.add(settings.BULB_SFTP_HOST, 'ssh-rsa', key)
+
+                if settings.BULB_SFTP_PASSWORD is not None:
+                    if password is not None:
+                        return pysftp.Connection(host=host,
+                                                 username=username,
+                                                 password=password,
+                                                 cnopts=cnopts,
+                                                 log=log)
+
+                    if private_key_path is not None:
+
+                        if private_key_pass is not None:
+                            return pysftp.Connection(host=host,
+                                                     username=username,
+                                                     password=password,
+                                                     private_key=private_key_path,
+                                                     private_key_pass=private_key_pass,
+                                                     cnopts=cnopts,
+                                                     log=log)
+
+                        if private_key_pass is not None:
+                            return pysftp.Connection(host=host,
+                                                     username=username,
+                                                     password=password,
+                                                     private_key=private_key_path,
+                                                     cnopts=cnopts,
+                                                     log=log)
+
 
     @staticmethod
     def push_src_staticfiles(src_type, local_staticfiles_folder_path):

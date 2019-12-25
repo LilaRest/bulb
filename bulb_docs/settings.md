@@ -171,11 +171,17 @@ BULB_USE_SFTP = False
 
 BULB_SFTP_HOST = None
 
+BULB_SFTP_HOST_SSH_KEY = None
+
+BULB_SFTP_PORT = None
+
 BULB_SFTP_USER = None
 
 BULB_SFTP_PASSWORD = None
 
-BULB_SFTP_HOST_SSH_KEY = None
+BULB_SFTP_PRIVATE_KEY_PATH = None
+
+BULB_SFTP_PRIVATE_KEY_PASS = None
 
 BULB_SFTP_PULL_URL = None
 
@@ -199,15 +205,15 @@ The webpack polyfill is the easiest way to implement polyfills for the entire we
 Just set this variable on True and all your scripts will be compatible for all browsers of all versions.
 
 But to obtain a more powerful website, it is recommended to don't use the webpack polyfill because:
-- The webpack polyfill is directly implemented into your bundle scripts, this means that if one of your scripts doesn't 
+- The webpack polyfill is directly implemented into your bundle scripts, this means that if one of your scripts doesn't
   need all polyfills , they will still be loaded.
-- The webpack polyfill don't have any regard on the browser used to load a page. This means that if your page is open 
+- The webpack polyfill don't have any regard on the browser used to load a page. This means that if your page is open
   on a modern browser which doesn't need any polyfills, they will still be loaded.
-  
-Best solution : Use 'polyfill.io' which one will load a the polyfills required in each different context. 
+
+Best solution : Use 'polyfill.io' which one will load a the polyfills required in each different context.
 See : (TODO: Add the related documentation).
 
-A good configuration of polyfill.io : 
+A good configuration of polyfill.io :
     <script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?flags=gated&features=blissfuljs%2Cdefault%2Ces2015%2Ces2016%2Ces2017%2Ces5%2Ces6%2Ces7"></script>
 (Implement this script tag as the first script tag of each page which could need some polyfills.)
 """
@@ -253,6 +259,20 @@ BULB_ADDITIONAL_ADMIN_MODULES = {}
 PASSWORD_HASHERS = [
         'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
     ]
+
+# SASS INTEGRATION.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_OFFLINE = True
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
 
 ```
 <br/>

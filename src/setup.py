@@ -3,7 +3,7 @@ from distutils.util import convert_path
 from fnmatch import fnmatchcase
 import os
 
-bulb_version = "0.0.80"
+bulb_version = "0.0.81"
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -98,7 +98,7 @@ setuptools.setup(
     url="https://github.com/LilaRest/bulb",
     packages=setuptools.find_packages(),
     package_data=find_package_data(),
-    install_requires=['neo4j', "Pillow-SIMD", "requests", "paramiko", "pysftp", "bcrypt", "scour", "django-compressor"],
+    install_requires=["neo4j", "Pillow-SIMD", "requests", "paramiko", "pysftp", "bcrypt", "scour", "django-compressor", "django_libsass", "lxml"],
     # bcrypt: for password hashing,
     # requests: for CDNs purge requests,
     # pysftp: for sftp content saving,
