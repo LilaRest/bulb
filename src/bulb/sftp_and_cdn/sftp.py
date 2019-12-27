@@ -75,7 +75,8 @@ class SFTP:
                 #
                 # with warnings.catch_warnings():
                 #     warnings.simplefilter("ignore", category=UserWarning)
-                cnopts = pysftp.CnOpts(knownhosts=known_hosts)
+                cnopts = pysftp.CnOpts()
+                cnopts.hostkeys.load(known_hosts)
                 # cnopts.hostkeys.add(host, 'ssh-rsa', key)
                 # cnopts.hostkeys = None
 
