@@ -40,12 +40,12 @@ class SFTP:
                 raise BULBSftpError(
                     "To establish an SFTP connection you have to provide the a server user name. Please put it in the BULB_SFTP_USER variable in \'settings.py\'.")
 
-            hostkey = settings.BULB_SFTP_HOST_SSH_KEY
+            known_hosts = settings.BULB_SFTP_KNOWN_HOSTS
             password = settings.BULB_SFTP_PASSWORD
             private_key_path = settings.BULB_SFTP_PRIVATE_KEY_PATH
             private_key_pass = settings.BULB_SFTP_PRIVATE_KEY_PASS
 
-            if hostkey is None:
+            if known_hosts is None:
                 if password is not None:
                     return pysftp.Connection(host=host,
                                              port=port,
@@ -70,15 +70,18 @@ class SFTP:
                                                  log=log)
 
             else:
-                key = paramiko.rsakey.RSAKey(data=decodebytes(hostkey))
-
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore", category=UserWarning)
-                    cnopts = pysftp.CnOpts()
-                    cnopts.hostkeys.add(host, 'ssh-rsa', key)
+                # To clean :
+                # key = paramiko.rsakey.RSAKey(data=decodebytes(hostkey))
+                #
+                # with warnings.catch_warnings():
+                #     warnings.simplefilter("ignore", category=UserWarning)
+                cnopts = pysftp.CnOpts(knownhosts=known_hosts)
+                # cnopts.hostkeys.add(host, 'ssh-rsa', key)
+                # cnopts.hostkeys = None
 
                 if password is not None:
                     return pysftp.Connection(host=host,
+                                             port=port,
                                              username=username,
                                              password=password,
                                              cnopts=cnopts,
@@ -88,6 +91,7 @@ class SFTP:
 
                     if private_key_pass is not None:
                         return pysftp.Connection(host=host,
+                                                 port=port,
                                                  username=username,
                                                  private_key=private_key_path,
                                                  private_key_pass=private_key_pass,
@@ -96,6 +100,7 @@ class SFTP:
 
                     else:
                         return pysftp.Connection(host=host,
+                                                 port=port,
                                                  username=username,
                                                  private_key=private_key_path,
                                                  cnopts=cnopts,
