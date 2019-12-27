@@ -36,7 +36,7 @@ class Command(BaseCommand):
             print("-- COLLECT STATIC FILES --")
             print("--------------------------\n")
 
-            subprocess.call("python manage.py collectstatic --clear", shell=True)
+            subprocess.call("python manage.py collectstatic --clear --noinput", shell=True)
 
             # Clear old source staticfiles and purge them on the CDN if there is one.
             subprocess.call("python manage.py clearstatic", shell=True)

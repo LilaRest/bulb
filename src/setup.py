@@ -3,7 +3,7 @@ from distutils.util import convert_path
 from fnmatch import fnmatchcase
 import os
 
-bulb_version = "0.0.83.1"
+bulb_version = "0.0.84"
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
