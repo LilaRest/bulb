@@ -70,39 +70,36 @@ class SFTP:
                                                  log=log)
 
             else:
-                key = paramiko.RSAKey(data=decodebytes(hostkey))
+                key = paramiko.rsakey.RSAKey(data=decodebytes(hostkey))
 
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore", category=UserWarning)
                     cnopts = pysftp.CnOpts()
-                    cnopts.hostkeys.add(settings.BULB_SFTP_HOST, 'ssh-rsa', key)
+                    cnopts.hostkeys.add(host, 'ssh-rsa', key)
 
-                if settings.BULB_SFTP_PASSWORD is not None:
-                    if password is not None:
+                if password is not None:
+                    return pysftp.Connection(host=host,
+                                             username=username,
+                                             password=password,
+                                             cnopts=cnopts,
+                                             log=log)
+
+                if private_key_path is not None:
+
+                    if private_key_pass is not None:
                         return pysftp.Connection(host=host,
                                                  username=username,
-                                                 password=password,
+                                                 private_key=private_key_path,
+                                                 private_key_pass=private_key_pass,
                                                  cnopts=cnopts,
                                                  log=log)
 
-                    if private_key_path is not None:
-
-                        if private_key_pass is not None:
-                            return pysftp.Connection(host=host,
-                                                     username=username,
-                                                     password=password,
-                                                     private_key=private_key_path,
-                                                     private_key_pass=private_key_pass,
-                                                     cnopts=cnopts,
-                                                     log=log)
-
-                        if private_key_pass is not None:
-                            return pysftp.Connection(host=host,
-                                                     username=username,
-                                                     password=password,
-                                                     private_key=private_key_path,
-                                                     cnopts=cnopts,
-                                                     log=log)
+                    else:
+                        return pysftp.Connection(host=host,
+                                                 username=username,
+                                                 private_key=private_key_path,
+                                                 cnopts=cnopts,
+                                                 log=log)
 
 
     @staticmethod
