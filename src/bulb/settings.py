@@ -441,7 +441,7 @@ def set_bulb_settings_on(root_settings):
 
     root_settings['BULB_SFTP_HOST'] = None
 
-    root_settings['BULB_SFTP_HOST_SSH_KEY'] = None
+    root_settings['BULB_SFTP_KNOWN_HOSTS'] = None
 
     root_settings['BULB_SFTP_PORT'] = None
 
@@ -450,7 +450,7 @@ def set_bulb_settings_on(root_settings):
     root_settings['BULB_SFTP_PASSWORD'] = None
 
     root_settings['BULB_SFTP_PRIVATE_KEY_PATH'] = None
-    
+
     root_settings['BULB_SFTP_PRIVATE_KEY_PASSWORD'] = None
 
     root_settings['BULB_SFTP_PULL_URL'] = None
