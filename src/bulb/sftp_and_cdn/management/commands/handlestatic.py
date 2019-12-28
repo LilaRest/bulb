@@ -1,4 +1,5 @@
 from bulb.sftp_and_cdn.exceptions import BULBStaticfilesError
+from bulb.sftp_and_cdn.sftp import SFTP
 from bulb.utils.log import bulb_logger
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -38,8 +39,10 @@ class Command(BaseCommand):
 
             subprocess.call("python manage.py collectstatic --clear --noinput", shell=True)
 
-            # Clear old source staticfiles and purge them on the CDN if there is one.
-            subprocess.call("python manage.py clearstatic", shell=True)
+            # Remove old source staticfiles and collect them in a list to purge them on the CDN at the end.
+            raw_files_to_purge_list = SFTP.clear_src_staticfiles(src_type="raw", no_purge=True)
+            bundled_files_to_purge_list = SFTP.clear_src_staticfiles(src_type="bundled", no_purge=True)
+            files_to_purge_list = raw_files_to_purge_list + bundled_files_to_purge_list
 
             if settings.BULB_SFTP_SRC_STATICFILES_MODE == "raw" or settings.BULB_SFTP_SRC_STATICFILES_MODE == "both":
 
@@ -53,3 +56,6 @@ class Command(BaseCommand):
 
                 # Push new source staticfiles on the SFTP.
                 subprocess.call("python manage.py pushstatic --bundled", shell=True)
+
+            # Purge all old staticfiles.
+            SFTP.purge_src_staticfiles(files_to_purge_list=files_to_purge_list)

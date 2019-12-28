@@ -155,7 +155,46 @@ class SFTP:
 
 
     @staticmethod
-    def clear_src_staticfiles(src_type):
+    def purge_src_staticfiles(files_to_purge_list):
+
+        if settings.BULB_USE_CDN77:
+            print(f"\n------------------------------------------")
+            print(f"--  PURGE STATICFILES ON CDN77 SERVERS  --")
+            print(f"------------------------------------------")
+
+            files_to_purge_number = len(files_to_purge_list)
+
+            print(f"\n      {files_to_purge_number} file{'s' if files_to_purge_number > 1 or files_to_purge_number == 0 else ''} to purge.\n")
+
+            # CDN77 allows up to 20 requests with up to 2000 files to purge every 5 minutes.
+            # See : https://client.cdn77.com/support/api/version/2.0/data
+
+            if files_to_purge_number != 0:
+
+                # If the number of files to purge is under the limit send a unique request:
+                if files_to_purge_number < 2000:
+                    CDN77.purge(files_to_purge_list)
+
+                # Else send multiple requests, each with up to 2000 files maximum.
+                else:
+                    request_number = 1
+
+                    while files_to_purge_number >= 2000:
+                        purge_response = CDN77.purge(files_to_purge_list[:2000], request_number)
+
+                        request_number += 1
+                        files_to_purge_number -= 2000
+                        files_to_purge_list = files_to_purge_list[2000:]
+
+                        if purge_response.status_code != "200":
+                            break
+
+                    if files_to_purge_number > 0:
+                        CDN77.purge(files_to_purge_list, request_number)
+
+
+    @staticmethod
+    def clear_src_staticfiles(src_type, no_purge=False):
         """
         This method delete old source staticfiles on the SFTP server.
 
@@ -175,7 +214,6 @@ class SFTP:
                 f"The 'src_type' parameter of the clear_staticfiles() method should be 'raw', 'bundled'. It is {str(src_type)}.")
 
         with SFTP.connect() as sftp:
-
             files_to_purge_list = []
 
             def remove_file(path):
@@ -225,37 +263,8 @@ class SFTP:
                             print(path, " removed !")
                             paths_list.remove(path)
 
-            if settings.BULB_USE_CDN77:
-                print(f"\n----------------------------------------------{'----' if src_type == 'bundled' else ''}")
-                print(f"--  PURGE {src_type.upper()} STATICFILES ON CDN77 SERVERS  --")
-                print(f"----------------------------------------------{'----' if src_type == 'bundled' else ''}\n")
+            if no_purge is False:
+                SFTP.purge_src_staticfiles(files_to_purge_list=files_to_purge_list)
 
-                files_to_purge_number = len(files_to_purge_list)
-
-                print(f"\n      {files_to_purge_number} file{'s' if files_to_purge_number > 1 or files_to_purge_number == 0 else ''} to purge.\n")
-
-                # CDN77 allows up to 20 requests with up to 2000 files to purge every 5 minutes.
-                # See : https://client.cdn77.com/support/api/version/2.0/data
-
-                if files_to_purge_number != 0:
-
-                    # If the number of files to purge is under the limit send a unique request:
-                    if files_to_purge_number < 2000:
-                        CDN77.purge(files_to_purge_list)
-
-                    # Else send multiple requests, each with up to 2000 files maximum.
-                    else:
-                        request_number = 1
-
-                        while files_to_purge_number >= 2000:
-                            purge_response = CDN77.purge(files_to_purge_list[:2000], request_number)
-
-                            request_number += 1
-                            files_to_purge_number -= 2000
-                            files_to_purge_list = files_to_purge_list[2000:]
-
-                            if purge_response.status_code != "200":
-                                break
-
-                        if files_to_purge_number > 0:
-                            CDN77.purge(files_to_purge_list, request_number)
+            else:
+                return files_to_purge_list
