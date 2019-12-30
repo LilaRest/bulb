@@ -21,7 +21,7 @@ export class ModalPopup {
 
         this.modal_popup = document.createElement("div");
         this.modal_popup.setAttribute("id", "modal-popup");
-        this.modal_popup.innerHTML = this.html_content + "<br/><p id='modal-popup-info'>(Cliquez n'importe où pour fermer la fenêtre d'aide.)</p>";
+        this.modal_popup.innerHTML = this.html_content + "<br/><p id='modal-popup-info'>(Click anywhere to close the popup.)</p>";
         this.modal_popup_container.appendChild(this.modal_popup);
 
         // Initialize special-characters-list buttons.
