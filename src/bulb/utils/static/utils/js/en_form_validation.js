@@ -27,16 +27,18 @@ function getCsrfTokenCookie() {
 class Validator {
     constructor(form_id,
                 field_id,
-                field_name) {
+                field_name,
+                errorlist_into_the_field_block) {
+
+        // Field informations.
+        this.field_name = field_name;
+        this.is_valid = false;
+        this.errorlist_into_the_field_block = errorlist_into_the_field_block;
 
         // DOM elements.
         this.form = document.querySelector(`form#${form_id}`);
         this.field = this.form.querySelector(`#${field_id}`);
         this.errorlist = this.getErrorList();
-
-        // Field informations.
-        this.field_name = field_name;
-        this.is_valid = false;
     }
 
     // Retrieve the errolist related to the field.
@@ -45,12 +47,25 @@ class Validator {
         if (this.field.parentElement.previousElementSibling.className === "errorlist") {
             return this.field.parentElement.previousElementSibling;
         }
+        else if (this.field.previousElementSibling.className === "errorlist") {
+            return this.field.previousElementSibling;
+        }
+
         // If there isn't.
         else {
-            const errorlist = document.createElement("ul");
-            errorlist.classList.add("errorlist");
-            this.form.insertBefore(errorlist, this.field.parentElement);
-            return errorlist
+            if (this.errorlist_into_the_field_block) {
+                const errorlist = document.createElement("ul");
+                errorlist.classList.add("errorlist");
+                this.field.parentElement.insertBefore(errorlist, this.field.parentElement.firstChild);
+                return errorlist
+            }
+
+            else {
+                const errorlist = document.createElement("ul");
+                errorlist.classList.add("errorlist");
+                this.form.insertBefore(errorlist, this.field.parentElement);
+                return errorlist
+            }
         }
     }
 }
@@ -60,8 +75,7 @@ export class FieldValidator extends Validator {
     constructor(form_id,
                 field_id,
                 field_name,
-                pronoun_un_une,
-                pronoun_ce_cette,
+                errorlist_into_the_field_block,
                 required,
                 min_length,
                 max_length,
@@ -75,7 +89,7 @@ export class FieldValidator extends Validator {
                 modal_popup,
                 confirmation_field_instance) {
 
-        super(form_id, field_id, field_name);
+        super(form_id, field_id, field_name, errorlist_into_the_field_block);
 
         // DOM elements.
         this.modal_popup = modal_popup;
@@ -83,12 +97,6 @@ export class FieldValidator extends Validator {
         // Field informations.
         this.field_id = field_id;
         this.case_sensitive = case_sensitive;
-
-        // This variable determines the pronoun to use before the field_name in errors : 'un' or 'une'.
-        this.pronoun_un_une = pronoun_un_une;
-
-        // This variable determines the pronoun to use before the field_name in errors : 'ce' or 'cette'.
-        this.pronoun_ce_cette = pronoun_ce_cette;
 
         // Field restrictions.
         this.required = required;
@@ -161,7 +169,7 @@ export class FieldValidator extends Validator {
         // Check the 'required' restriction.
         if (this.required) {
             if (!field_value) {
-                set_error_style(this.field, this.errorlist, `Veuillez saisir votre ${this.field_name}.`);
+                set_error_style(this.field, this.errorlist, `Please, enter a ${this.field_name}.`);
                 this.is_valid = false;
                 return false
             }
@@ -170,7 +178,7 @@ export class FieldValidator extends Validator {
         // Check the 'max_length' restriction.
         if (this.max_length !== null) {
             if (this.max_length < field_value.length) {
-                set_error_style(this.field, this.errorlist, `Veuillez renseigner ${this.pronoun_un_une} ${this.field_name} valide. <a href="#" id="${this.field_name}-modal-input-button">En savoir plus</a>.`);
+                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_name}-modal-input-button">Learn more</a>.`);
                 const modal_popup_link = document.getElementById(`${this.field_name}-modal-input-button`);
                 modal_popup_link.onclick = this.modal_popup.toggle.bind(this.modal_popup);
                 this.is_valid = false;
@@ -181,7 +189,7 @@ export class FieldValidator extends Validator {
         // Check the 'min_length' restriction.
         if (this.min_length !== null) {
             if (this.min_length > field_value.length) {
-                set_error_style(this.field, this.errorlist, `Veuillez renseigner ${this.pronoun_un_une} ${this.field_name} valide. <a href="#" id="${this.field_name}-modal-input-button">En savoir plus</a>.`);
+                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_name}-modal-input-button">Learn more</a>.`);
                 const modal_popup_link = document.getElementById(`${this.field_name}-modal-input-button`);
                 modal_popup_link.onclick = this.modal_popup.toggle.bind(this.modal_popup);
                 this.is_valid = false;
@@ -192,7 +200,7 @@ export class FieldValidator extends Validator {
         // Check the 'first_regex' and 'second_regex' restrictions.
         if (this.first_regex.toString() !== "/null/") {
             if (!this.first_regex.test(field_value)) {
-                set_error_style(this.field, this.errorlist, `Veuillez renseigner ${this.pronoun_un_une} ${this.field_name} valide. <a href="#" id="${this.field_name}-modal-input-button">En savoir plus</a>.`);
+                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_name}-modal-input-button">Learn more</a>.`);
                 const modal_popup_link = document.getElementById(`${this.field_name}-modal-input-button`);
                 modal_popup_link.onclick = this.modal_popup.toggle.bind(this.modal_popup);
                 this.is_valid = false;
@@ -200,7 +208,7 @@ export class FieldValidator extends Validator {
             }
             if (this.second_regex.toString() !== "/null/") {
                 if (!this.second_regex.test(field_value)) {
-                    set_error_style(this.field, this.errorlist, `Veuillez renseigner ${this.pronoun_un_une} ${this.field_name} valide. <a href="#" id="${this.field_name}-modal-input-button">En savoir plus</a>.`);
+                    set_error_style(this.field, this.errorlist,`Please enter a valid ${this.field_name}. <a href="#" id="${this.field_name}-modal-input-button">Learn more</a>.`);
                     const modal_popup_link = document.getElementById(`${this.field_name}-modal-input-button`);
                     modal_popup_link.onclick = this.modal_popup.toggle.bind(this.modal_popup);
                     this.is_valid = false;
@@ -245,10 +253,11 @@ export class ConfirmationFieldValidator extends Validator {
     constructor(form_id,
                 field_id,
                 field_name,
+                errorlist_into_the_field_block,
                 field_to_confirm_id,
                 field_to_confirm_name) {
 
-        super(form_id, field_id, field_name);
+        super(form_id, field_id, field_name, errorlist_into_the_field_block);
 
         // DOM elements.
         this.field_to_confirm = this.form.querySelector(`#${field_to_confirm_id}`);
@@ -277,21 +286,22 @@ export class ConfirmationFieldValidator extends Validator {
         if (this.field_to_confirm_is_case_sensitive) {
             field_value = this.field.value;
             field_to_confirm_value = this.field_to_confirm.value;
-        } else {
+        }
+        else {
             field_value = this.field.value.toLowerCase();
             field_to_confirm_value = this.field_to_confirm.value.toLowerCase();
         }
 
         // First, check if the confirmation field is not empty.
         if (!field_value) {
-            set_error_style(this.field, this.errorlist, `Veuillez confirmer votre ${this.field_to_confirm_name}.`);
+            set_error_style(this.field, this.errorlist, `Please, confirm your ${this.field_to_confirm_name}.`);
             this.is_valid = false;
             return false
         }
 
         // Then, test if it is identical to his related field.
         if (field_value !== field_to_confirm_value) {
-            set_error_style(this.field, this.errorlist, `${this.field_name === "adresse email de confirmation" ? "L'" : "Le "}${this.field_name} ne correspond pas ${this.field_name === "adresse email de confirmation" ? "à l'" : "au "}${this.field_to_confirm_name}.`);
+            set_error_style(this.field, this.errorlist, `The ${this.field_to_confirm_name} and its confirmation are not identical.`);
             this.is_valid = false;
             return false
         }
