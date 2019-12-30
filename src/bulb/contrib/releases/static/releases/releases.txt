@@ -1,3 +1,5 @@
+0.0.87 | Utils : ["Add french and english versions of the form validation module"]
+
 0.0.80 | Node : ["Add the possibility to overload default node_models attributes"]
 
 0.0.79 | All : ["Django 3.0 support"]
