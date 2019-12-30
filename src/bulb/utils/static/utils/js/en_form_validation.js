@@ -178,8 +178,8 @@ export class FieldValidator extends Validator {
         // Check the 'max_length' restriction.
         if (this.max_length !== null) {
             if (this.max_length < field_value.length) {
-                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_name}-modal-input-button">Learn more</a>.`);
-                const modal_popup_link = document.getElementById(`${this.field_name}-modal-input-button`);
+                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_id}-modal-input-button">Learn more</a>.`);
+                const modal_popup_link = document.getElementById(`${this.field_id}-modal-input-button`);
                 modal_popup_link.onclick = this.modal_popup.toggle.bind(this.modal_popup);
                 this.is_valid = false;
                 return false
@@ -189,8 +189,8 @@ export class FieldValidator extends Validator {
         // Check the 'min_length' restriction.
         if (this.min_length !== null) {
             if (this.min_length > field_value.length) {
-                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_name}-modal-input-button">Learn more</a>.`);
-                const modal_popup_link = document.getElementById(`${this.field_name}-modal-input-button`);
+                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_id}-modal-input-button">Learn more</a>.`);
+                const modal_popup_link = document.getElementById(`${this.field_id}-modal-input-button`);
                 modal_popup_link.onclick = this.modal_popup.toggle.bind(this.modal_popup);
                 this.is_valid = false;
                 return false
@@ -200,16 +200,16 @@ export class FieldValidator extends Validator {
         // Check the 'first_regex' and 'second_regex' restrictions.
         if (this.first_regex.toString() !== "/null/") {
             if (!this.first_regex.test(field_value)) {
-                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_name}-modal-input-button">Learn more</a>.`);
-                const modal_popup_link = document.getElementById(`${this.field_name}-modal-input-button`);
+                set_error_style(this.field, this.errorlist, `Please enter a valid ${this.field_name}. <a href="#" id="${this.field_id}-modal-input-button">Learn more</a>.`);
+                const modal_popup_link = document.getElementById(`${this.field_id}-modal-input-button`);
                 modal_popup_link.onclick = this.modal_popup.toggle.bind(this.modal_popup);
                 this.is_valid = false;
                 return false
             }
             if (this.second_regex.toString() !== "/null/") {
                 if (!this.second_regex.test(field_value)) {
-                    set_error_style(this.field, this.errorlist,`Please enter a valid ${this.field_name}. <a href="#" id="${this.field_name}-modal-input-button">Learn more</a>.`);
-                    const modal_popup_link = document.getElementById(`${this.field_name}-modal-input-button`);
+                    set_error_style(this.field, this.errorlist,`Please enter a valid ${this.field_name}. <a href="#" id="${this.field_id}-modal-input-button">Learn more</a>.`);
+                    const modal_popup_link = document.getElementById(`${this.field_id}-modal-input-button`);
                     modal_popup_link.onclick = this.modal_popup.toggle.bind(this.modal_popup);
                     this.is_valid = false;
                     return false
