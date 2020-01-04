@@ -16,7 +16,13 @@ def login_required(login_page_url=settings.BULB_LOGIN_URL):
 
         def wrapped_function(request, *args, **kwargs):
 
-            current_path = request.environ["PATH_INFO"]
+            try:
+                # Support wsgi.
+                current_path = request.environ["PATH_INFO"]
+
+            except AttributeError:
+                # Support asgi.
+                current_path = request.__dict__["META"]["PATH_INFO"]
 
             if get_user_is_logged(request):
                 return related_function(request, *args, **kwargs)
@@ -137,4 +143,3 @@ def super_user_only(if_false_html=None, if_false_url=settings.BULB_HOME_PAGE_URL
         return wrapped_function
 
     return decorator
-
