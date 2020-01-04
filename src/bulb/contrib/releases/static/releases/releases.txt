@@ -1,4 +1,6 @@
-0.0.80 | Utils : ["Fix some modal popups' errors"]
+0.0.89 | Auth : ["Make the auth compatible with asgi servers"]
+
+0.0.88 | Utils : ["Fix some modal popups' errors"]
 
 0.0.87 | Utils : ["Add french and english versions of the form validation module"]
 

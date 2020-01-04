@@ -199,25 +199,50 @@ def get_user_from_request(request):
 
 
 # Return True if an user is logged, else return False
-def get_user_is_logged(request):
-    # if not NativeAnonymousUser in request.user.__class__.__mro__:
-    if not AnonymousUser in request.user.__class__.__mro__:
-        session_request = request.user.session.get()
+def get_user_is_logged(request=None, scope=None):
+    # Support wsgi.
+    if request is not None:
+        if not AnonymousUser in request.user.__class__.__mro__:
+            session_request = request.user.session.get()
 
-        if session_request is not None:
-            current_user_session = session_request[0]
+            if session_request is not None:
+                current_user_session = session_request[0]
 
-            if current_user_session is not None:
+                if current_user_session is not None:
 
-                if request.session:
+                    if request.session:
 
-                    if "logged_user_uuid" in request.session:
+                        if "logged_user_uuid" in request.session:
 
-                        logged_user_uuid = request.session['logged_user_uuid']
-                        if logged_user_uuid is not None:
+                            logged_user_uuid = request.session['logged_user_uuid']
+                            if logged_user_uuid is not None:
 
-                            if request.user.uuid == logged_user_uuid and \
-                                    request.session.session_key == current_user_session.session_key:
+                                if request.user.uuid == logged_user_uuid and \
+                                        request.session.session_key == current_user_session.session_key:
 
-                                return True
-    return False
+                                    return True
+
+    # Support asgi.
+    elif scope is not None:
+        if not AnonymousUser in scope["user"].__class__.__mro__:
+            session_request = scope["user"].session.get()
+
+            if session_request is not None:
+                current_user_session = session_request[0]
+
+                if current_user_session is not None:
+
+                    if scope["session"]:
+
+                        if "logged_user_uuid" in scope["session"]:
+
+                            logged_user_uuid = scope["session"]['logged_user_uuid']
+                            if logged_user_uuid is not None:
+
+                                if scope["user"].uuid == logged_user_uuid and \
+                                        scope["session"].session_key == current_user_session.session_key:
+
+                                    return True
+
+    else:
+        return False

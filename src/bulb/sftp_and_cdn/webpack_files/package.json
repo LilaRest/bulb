@@ -1,7 +1,7 @@
 {
     "name": "bulb",
-    "version": "0.0.2",
-    "description": "This Python 3.X package provides Neo4j support for the Django framework.",
+    "version": "0.0.88",
+    "description": "Neo4j integration for Django, and much more tools to deploy consequent websites...",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/LilaRest/bulb.git"
+        "url": "git+https://github.com/Bulb-Core/bulb.git"
     },
     "author": "Lila REST",
     "license": "GPL-3.0-or-later",
