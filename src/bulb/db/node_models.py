@@ -20,6 +20,14 @@ class FakeClass:
     pass
 
 
+class Spatial2D:
+
+    def __init__ (self, latitude, longitude):
+        self.latitude = latitude
+        self.longitude = longitude
+        self.position = "point({latitude: %s, longitude: %s})" % (self.latitude, self.longitude)
+
+
 class DatabaseNode:
     """
     This class has tools to :
@@ -53,7 +61,7 @@ class DatabaseNode:
     def create(self):
         """
         This method handle datas' formatting to cypher language, and the node's creation in the database.
-        :return: It return the created node.
+        :return: It returns the created node.
         """
         object_labels = self.__class__.format_labels_to_cypher(self.current_object_labels_list)
         object_properties = self.__class__.format_properties_to_cypher(self.related_class_properties_fields_dict,
@@ -95,8 +103,8 @@ class DatabaseNode:
                 for key, value in object_properties_dict.items():
                     if field_name == key:
 
-                        # Integer, float, boolean and list handling.
-                        if isinstance(value, int) or isinstance(value, float) or isinstance(value, bool) or isinstance(value, list):
+                        # Integer, float, boolean, list and tuple handling.
+                        if isinstance(value, int) or isinstance(value, float) or isinstance(value, bool) or isinstance(value, list) or isinstance(value, tuple) :
                             render.append(f"{key}: {value}")
 
                         # Datetime handling.
@@ -110,6 +118,11 @@ class DatabaseNode:
                         # Time handling.
                         elif isinstance(value, datetime.time):
                             render.append(f"{key}: time('{str(value)}')")
+
+                        # Spatial 2D handling.
+                        elif isinstance(value, Spatial2D):
+                            render.append(f"{key}: {value.position}")
+
 
                         # String handling.
                         elif isinstance(value, str):
@@ -143,19 +156,23 @@ class Property:
 
     :param (optional, default=False) sftp: If set on True, and if the value is a file object, it will be stored on the SFTP server.
 
+    :param (optional, default=False) spatial_2D: Create a 2 dimensions spatial object. Must be filled with tuple of integers
+                                                 (latitude, longitude)
+
     """
 
-    def __init__(self, content=None, required=False, unique=False, default=None, sftp=False):
+    def __init__(self, content=None, required=False, unique=False, default=None, sftp=False, spatial_2D=False):
         self.content = content
         self.required = required
         self.unique = unique
         self.default = default
         self.sftp = sftp
+        self.spatial_2D = spatial_2D
 
     @staticmethod
     def _build(node_or_rel_object, recovered_fields_values_dict):
         """
-        This method take a Node object and datas recovered during its instantiation and _build a dictionary that
+        This method take a Node object and datas recovered during its instantiation and build a dictionary that
         contains key/content combinations for each property of the object.
 
         :param node_or_rel_object: An instance of the Node class.
@@ -184,9 +201,9 @@ class Property:
                         if key == field_name:
                             not_defined_fields.remove((field_name, field_content))
 
-                            # Handle sftp fields:
                             if eval(f"node_or_rel_object.__class__.{key}") is not None:
 
+                                # Handle sftp fields:
                                 if eval(f"node_or_rel_object.__class__.{key}.sftp"):
 
                                     if not isinstance(value, InMemoryUploadedFile) and not isinstance(value, TemporaryUploadedFile):
@@ -235,6 +252,33 @@ class Property:
 
                                         setattr(node_or_rel_object, key, full_stored_file_path)
                                         current_object_properties_dict[key] = full_stored_file_path
+
+                                # Handle spatial 2D fields.
+                                elif eval(f"node_or_rel_object.__class__.{key}.spatial_2D"):
+                                    if isinstance(value, tuple):
+                                        if len(value) == 2:
+
+                                            # Test if each value is an integer.
+                                            for tuple_item in value:
+                                                if not isinstance(tuple_item, int):
+                                                    bulb_logger.error(
+                                                        f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                                                    raise BULBPropertyError(
+                                                        f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+
+                                            setattr(node_or_rel_object, key, Spatial2D(value[0], value[1]))
+
+                                        else:
+                                            bulb_logger.error(
+                                                f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                                            raise BULBPropertyError(
+                                                f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+
+                                    else:
+                                        bulb_logger.error(
+                                            f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                                        raise BULBPropertyError(
+                                            f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
 
                                 # Callable value handling.
                                 elif callable(value):
@@ -407,7 +451,6 @@ class BaseNodeAndRelationship:
 
         :return: A dictionary of all Node instance's properties.
         """
-        print("\n\n\nSTART OF TEST ZONE\n\n\n")
 
         properties_dict = {}
 
@@ -529,9 +572,9 @@ class Node(BaseNodeAndRelationship):
 
     def _constructor(self, received_properties_dict):
         """
-        This method handle the construction of a node, it ensures a creation in the database and as a python instance.
+        This method handle the construction of a node, it ensures its creation in the database and as well as the creation a python instance.
 
-        :param received_properties_dict (required) : The dictionary of values recovered during the instantiation of the node_model.
+        :param received_properties_dict (required) : The values' dictionary recovered during the instantiation of the node_model.
         """
         self.labels = self.__class__._get_labels()
         self.properties_fields = self.__class__._get_property_fields()
