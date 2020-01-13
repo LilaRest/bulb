@@ -47,8 +47,8 @@ class Validator {
         if (this.field.parentElement.previousElementSibling.className === "errorlist") {
             return this.field.parentElement.previousElementSibling;
         }
-        else if (this.field.previousElementSibling.className === "errorlist") {
-            return this.field.previousElementSibling;
+        else if (this.field.parentElement.firstChild.className === "errorlist") {
+            return this.field.parentElement.firstChild;
         }
 
         // If there isn't.
@@ -281,11 +281,16 @@ export class ConfirmationFieldValidator extends Validator {
     // Set the input event listener on the field.
     init() {
         if (this.field.value) {
-            this.validate()
-        }
 
-        this.field.addEventListener("input", this.validate.bind(this));
-    }
+            // Don't validate the field if the server has already sent an error.
+            if (this.errorlist.childElementCount === 0) {
+                this.validate()
+            }
+
+            else {
+                this.field.classList.add("error");
+            }
+        }
 
     // Check if the confirmation field is valid.
     validate() {
