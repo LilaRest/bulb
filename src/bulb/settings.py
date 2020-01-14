@@ -469,6 +469,11 @@ def set_bulb_settings_on(root_settings):
     root_settings['BULB_SFTP_SRC_STATICFILES_MODE'] = "bundled"
 
     """
+        Add a version to all bundled files. Useful to force client's caches to reload after updates.
+    """
+    root_settings['BULB_BUNDLED_FILES_VERSION'] = None
+
+    """
         The webpack polyfill is the easiest way to implement polyfills for the entire website.
         Just set this variable on True and all your scripts will be compatible for all browsers of all versions.
 
