@@ -1,9 +1,11 @@
 from bulb.contrib.auth.decorators import login_required, staff_only
+from django.contrib.staticfiles.finders import find
 from django.shortcuts import render
 from django.conf import settings
 import os
 
 login_page_url = "/" + settings.BULB_ADMIN_BASEPATH_NAME + "/login"
+
 
 @staff_only()
 @login_required(login_page_url=login_page_url)

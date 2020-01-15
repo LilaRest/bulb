@@ -11,7 +11,15 @@
         {% endcompress %}
 
     {% elif not DEBUG %}
-        <link rel="stylesheet" href="{% static_bundled_src 'admin/bundle_admin_home.css' %}"/>
+        {% if BULB_BUNDLED_FILES_VERSION != None %}
+            {% with url='admin/bundle_admin_home&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.css' %}
+                <link rel="stylesheet" href="{% static_bundled_src url %}"/>
+            {% endwith %}
+
+        {% else %}
+            <link rel="stylesheet" href="{% static_bundled_src 'admin/bundle_admin_home.css' %}"/>
+
+        {% endif %}
 
     {% endif %}
 {% endblock head %}

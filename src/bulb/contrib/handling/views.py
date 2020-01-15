@@ -585,7 +585,8 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
             raise BULBAdminError("You must provide the 'action' key in the POST request.")
 
     except:
-        return sys.exc_info()
+        raise
+        # return sys.exc_info()
 
 
 @staff_only()

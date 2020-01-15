@@ -193,6 +193,16 @@ def set_bulb_settings_on(root_settings):
     else:
         INSTALLED_APPS.insert(0, 'bulb.utils')
 
+    # Add the django's humanize module.
+    try:
+        INSTALLED_APPS = root_settings['INSTALLED_APPS']
+
+    except KeyError:
+        root_settings['INSTALLED_APPS'] = ['django.contrib.humanize', ]
+
+    else:
+        INSTALLED_APPS.insert(0, 'django.contrib.humanize')
+
     # Add the django-compressor module.
     try:
         INSTALLED_APPS = root_settings['INSTALLED_APPS']
@@ -287,6 +297,17 @@ def set_bulb_settings_on(root_settings):
 
     else:
         TEMPLATES_context_processors.insert(0, 'bulb.contrib.handling.context_processors.website_settings')
+
+    # Add the bulb sftp_and_cdn 'bundled_files_version' context processors.
+    try:
+        TEMPLATES_context_processors = root_settings['TEMPLATES'][0]['OPTIONS']['context_processors']
+
+    except KeyError:
+        root_settings['TEMPLATES'][0]['OPTIONS']['context_processors'] = [
+            'bulb.sftp_and_cdn.context_processors.bundled_files_version', ]
+
+    else:
+        TEMPLATES_context_processors.insert(0, 'bulb.sftp_and_cdn.context_processors.bundled_files_version')
 
     # Remove the DATABASES variable :
     try:

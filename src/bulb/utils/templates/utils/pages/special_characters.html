@@ -14,8 +14,15 @@
             {% endcompress %}
 
         {% elif not DEBUG %}
-            <link rel="stylesheet" href="{% static_bundled_src 'utils/bundle_special_characters.css' %}"/>
+            {% if BULB_BUNDLED_FILES_VERSION != None %}
+                {% with url='utils/bundle_special_characters&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.css' %}
+                    <link rel="stylesheet" href="{% static_bundled_src url %}"/>
+                {% endwith %}
 
+            {% else %}
+                <link rel="stylesheet" href="{% static_bundled_src 'utils/bundle_special_characters.css' %}"/>
+
+            {% endif %}
         {% endif %}
 
     </head>
@@ -40,7 +47,15 @@
             <script src="{% static 'utils/js/special_characters.js' %}"></script>
 
         {% elif not DEBUG %}
-            <script src="{% static_bundled_src 'utils/bundle_special_characters.js' %}"></script>
+            {% if BULB_BUNDLED_FILES_VERSION != None %}
+                {% with url='utils/bundle_special_characters&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.js' %}
+                    <script src="{% static_bundled_src url %}"></script>
+                {% endwith %}
+
+            {% else %}
+                <script src="{% static_bundled_src 'utils/bundle_special_characters.js' %}"></script>
+
+            {% endif %}
 
         {% endif %}
     </body>

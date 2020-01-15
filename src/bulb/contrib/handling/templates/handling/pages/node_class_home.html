@@ -5,16 +5,23 @@
 {% block title %}Handling : {{ node_class_name }}{% endblock title %}
 
 {% block head %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {% if DEBUG %}
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_class_home_page.scss" %}"/>
         {% endcompress %}
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
-{% elif not DEBUG %}
-    <link rel="stylesheet" href="{% static_bundled_src "handling/bundle_node_class_home.css" %}"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    {% elif not DEBUG %}
+        {% if BULB_BUNDLED_FILES_VERSION != None %}
+            {% with url='handling/bundle_node_class_home&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.css' %}
+                <link rel="stylesheet" href="{% static_bundled_src url %}"/>
+            {% endwith %}
+
+        {% else %}
+            <link rel="stylesheet" href="{% static_bundled_src "handling/bundle_node_class_home.css" %}"/>
+
+        {% endif %}
 
 
 {% endif %}
@@ -100,7 +107,15 @@
         <script type="module" src="{% static "handling/js/search_bar.js" %}"></script>
 
     {% elif not DEBUG %}
-        <script src = "{% static_bundled_src 'handling/bundle_node_class_home.js' %}" ></script>
+        {% if BULB_BUNDLED_FILES_VERSION != None %}
+            {% with url='handling/bundle_node_class_home&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.js' %}
+                <script src="{% static_bundled_src url %}"></script>
+            {% endwith %}
+
+        {% else %}
+            <script src = "{% static_bundled_src 'handling/bundle_node_class_home.js' %}" ></script>
+
+        {% endif %}
 
     {% endif %}
 {% endblock scripts %}
