@@ -1,3 +1,7 @@
+0.0.94 | Administration + Utils : ["Add suport for versionned staticfiles"] ; Administration > Activity : ["Fix errors caused by updates"] ; Administration > Releases : ["Fix errors caused by updates"]
+
+0.0.93 | Staticfiles : ["Add 'bundled_files_version' context processor"]
+
 0.0.92 | Staticfiles : ["Add bundled files versioning to force client's caches refresh"]
 
 0.0.91 | Node : ["Add spatial 2D support (latitude, longitude) + some fixes"]

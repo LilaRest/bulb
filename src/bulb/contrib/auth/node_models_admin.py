@@ -1,3 +1,5 @@
+from django.conf import settings
+
 
 User_preview_fields = {"1": "last_name",
                        "2": "first_name",
@@ -62,6 +64,13 @@ User_fields_infos = {"is_super_user": {"type": "checkbox",
                                     "choices_render": ["name"],
                                 }}
                      }
+
+if settings.BULB_REGISTRATION_USE_EMAIL_CONFIRMATION:
+    User_fields_infos["email_is_confirmed"] = {
+                            "type": "checkbox",
+                            "label": "Confirmed email",
+                            "description": "Indicate if the user's email is confirmed."
+                        }
 
 Permission_preview_fields = {"1": "codename",
                              "2": "description",

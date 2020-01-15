@@ -5,15 +5,23 @@
 {% block title %}Activity{% endblock title %}
 
 {% block head %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     {% if DEBUG %}
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "activity/css/style/activity_page.scss" %}"/>
         {% endcompress %}
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     {% elif not DEBUG %}
-        <link rel="stylesheet" href="{% static_bundled_src "activity/bundle_activity_page.css" %}"/>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        {% if BULB_BUNDLED_FILES_VERSION != None %}
+            {% with url='activity/bundle_activity_page&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.css' %}
+                <link rel="stylesheet" href="{% static_bundled_src url %}"/>
+            {% endwith %}
+
+        {% else %}
+            <link rel="stylesheet" href="{% static_bundled_src "activity/bundle_activity_page.css" %}"/>
+
+        {% endif %}
 
     {% endif %}
 {% endblock head %}

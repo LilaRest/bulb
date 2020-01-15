@@ -5,15 +5,23 @@
 {% block title %}Handling{% endblock title %}
 
 {% block head %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     {% if DEBUG %}
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_handling_and_creation_pages.scss" %}"/>
         {% endcompress %}
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     {% elif not DEBUG %}
-        <link rel="stylesheet" href="{% static_bundled_src "handling/bundle_node_creation.css" %}"/>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        {% if BULB_BUNDLED_FILES_VERSION != None %}
+            {% with url='handling/bundle_node_creation&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.css' %}
+                <link rel="stylesheet" href="{% static_bundled_src url %}"/>
+            {% endwith %}
+
+        {% else %}
+            <link rel="stylesheet" href="{% static_bundled_src "handling/bundle_node_creation.css" %}"/>
+
+        {% endif %}
 
     {% endif %}
 {% endblock head %}
@@ -278,7 +286,15 @@
         <script src="{% static "handling/js/description.js" %}"></script>
 
     {% elif not DEBUG %}
-        <script src="{% static_bundled_src "handling/bundle_node_creation.js" %}"></script>
+        {% if BULB_BUNDLED_FILES_VERSION != None %}
+            {% with url='handling/bundle_node_creation&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.js' %}
+                <script src="{% static_bundled_src url %}"></script>
+            {% endwith %}
+
+        {% else %}
+            <script src="{% static_bundled_src "handling/bundle_node_creation.js" %}"></script>
+
+        {% endif %}
 
     {% endif %}
 {% endblock scripts %}

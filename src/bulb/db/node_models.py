@@ -822,6 +822,7 @@ class Node(BaseNodeAndRelationship):
                 BULBNodeWarning)
 
         else:
+            print(property_name)
             # Create property if it not exists.
             if property_name not in self.__dict__.keys():
                 try:

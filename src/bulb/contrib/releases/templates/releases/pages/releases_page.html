@@ -5,15 +5,23 @@
 {% block title %}Releases{% endblock title %}
 
 {% block head %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     {% if DEBUG %}
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "releases/css/style/releases_page.scss" %}"/>
         {% endcompress %}
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     {% elif not DEBUG %}
-        <link rel="stylesheet" href="{% static_bundled_src "releases/bundle_releases_page.css" %}"/>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        {% if BULB_BUNDLED_FILES_VERSION != None %}
+            {% with url='releases/bundle_releases_page&V='|add:BULB_BUNDLED_FILES_VERSION|add:'.css' %}
+                <link rel="stylesheet" href="{% static_bundled_src url %}"/>
+            {% endwith %}
+
+        {% else %}
+            <link rel="stylesheet" href="{% static_bundled_src "releases/bundle_releases_page.css" %}"/>
+
+        {% endif %}
 
     {% endif %}
 {% endblock head %}
@@ -25,7 +33,7 @@
 {% endblock administration_part_name %}
 
 {% block content %}
-    <h2>Bulb's releases</h1>
+    <h2>Bulb's releases</h2>
 
     <div id="logo-div">
         <img src="{% static 'releases/cropped_and_compressed_logo.jpg' %}"/>
