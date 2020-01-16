@@ -822,7 +822,6 @@ class Node(BaseNodeAndRelationship):
                 BULBNodeWarning)
 
         else:
-            print(property_name)
             # Create property if it not exists.
             if property_name not in self.__dict__.keys():
                 try:
@@ -975,8 +974,42 @@ class Node(BaseNodeAndRelationship):
 
                     new_property_value = full_stored_file_path
 
+            # Handle spatial 2D fields.
+            elif eval(f"self.__class__.{property_name}.spatial_2D"):
+                if isinstance(new_property_value, tuple):
+                    if len(new_property_value) == 2:
+
+                        # Test if each value is an integer.
+                        for tuple_item in new_property_value:
+                            if not isinstance(tuple_item, int):
+                                bulb_logger.error(
+                                    f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                                raise BULBPropertyError(
+                                    f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+
+                        point_str = "point({latitude:%s, longitude:%s})" % (new_property_value[0], new_property_value[1])
+                        gdbh.w_transaction("""
+                        MATCH (n:%s {uuid:"%s"})
+                        WHERE exists(n.%s)
+                        SET n.%s = %s
+                        """ % (class_name, self.uuid,
+                               property_name,
+                               property_name, point_str))
+                        new_property_value = Spatial2D(new_property_value[0], new_property_value[1])
+                    else:
+                        bulb_logger.error(
+                            f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                        raise BULBPropertyError(
+                            f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+
+                else:
+                    bulb_logger.error(
+                        f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                    raise BULBPropertyError(
+                        f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+
             # Integer, float, boolean and list handling.
-            elif isinstance(new_property_value, int) or isinstance(new_property_value, float) or isinstance(new_property_value, bool) or isinstance(new_property_value, list):
+            elif isinstance(new_property_value, int) or isinstance(new_property_value, float) or isinstance(new_property_value, bool) or isinstance(new_property_value, list) or isinstance(new_property_value, tuple):
                 gdbh.w_transaction("""
                 MATCH (n:%s {uuid:"%s"})
                 WHERE exists(n.%s)

@@ -13,7 +13,7 @@
 <br/>
 
 The **bulb** package extends the **_Django_** framework to make it compatible with the **_Neo4j_** databases, and provides much more tools to deploy consequent websites.
-Two other solutions already exist to use **Django** with **Neo4j**, but they each have their own inconveniences :  
+Two other solutions already exist to use **Django** with **Neo4j**, but they each have their own inconveniences :
 
 | [**neo4django**](https://github.com/scholrly/neo4django) | [**neomodel**](https://github.com/neo4j-contrib/neomodel) |
 |:--------------:|:------------:|
@@ -45,11 +45,11 @@ Look at this comparison chart, and make the better choice for your needs :
 | Neo4j's clusters support | ✅ | ❌ | ❌ |
 | Neo4j's customizable sessions support | ✅ | ❌ | ❌ |
 | Neo4j's causal chaining support | ✅ | ❌ | ❌ |
-| Neo4j's geospacial operations support | ❌ | ✅ | ❌ |
+| Neo4j's geospacial operations support | ✅ | ✅ | ❌ |
 | Fully CDN integration | ✅ | ❌ | ❌ |
 | Automatic staticfiles compression | ✅ | ❌ | ❌ |
 | Automatic staticfiles compilation | ✅ | ❌ | ❌ |
-| Fully SFTP support for staticfiles | ✅ | ❌ | ❌ |
+| Full SFTP support for staticfiles | ✅ | ❌ | ❌ |
 | Reinforcement of the password system | ✅ | ❌ | ❌ |
 | SASS/SCSS support | ✅ | ❌ | ❌ |
 | Webpack integration | ✅ | ❌ | ❌ |
@@ -103,7 +103,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>>
 ```
 
-   If no error message is raised, that's good.  
+   If no error message is raised, that's good.
 <br/>
 <br/>
 <br/>
@@ -117,7 +117,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 The **bulb package** is very fast to setup. Just **2 steps** are needed to execute yours first cypher requests.
 
->> If you don't have already install the package, please see the [installation](https://bulb.readthedocs.io/en/latest/installation/) page.  
+>> If you don't have already install the package, please see the [installation](https://bulb.readthedocs.io/en/latest/installation/) page.
 <br/>
 <br/>
 
@@ -143,9 +143,9 @@ set_bulb_settings_on(locals())
 <br/>
 <br/>
 
-Finally, and always in the same file (**just below the method** that we have previously set), configure yours Neo4j credentials with the 3 parameters :  
-    - **`BULB_DATABASE_URI`**,  
-    - **`BULB_DATABASE_ID`**,  
+Finally, and always in the same file (**just below the method** that we have previously set), configure yours Neo4j credentials with the 3 parameters :
+    - **`BULB_DATABASE_URI`**,
+    - **`BULB_DATABASE_ID`**,
     - and **`BULB_DATABASE_PASSWORD`**.
 
 **`BULB_DATABASE_URI`** is the bolt address of your database. Generally on a local server, the bolt address is '**bolt://localhost:7687**'. But you can find more details in the parameters of your Neo4j database and on the official [documentation](https://neo4j.com/docs/driver-manual/1.7/client-applications/#driver-connection-uris).
@@ -208,7 +208,7 @@ gdbh.w_transaction("CREATE (:Person) {first_name: 'Adrien', age: 18}")
 ```
 <br/>
 
->> The **`w_transaction()`** method, means **writing transaction**, so use it preferably when you want to create or modify datas in the database.  
+>> The **`w_transaction()`** method, means **writing transaction**, so use it preferably when you want to create or modify datas in the database.
 We also find the **`r_transaction()`** method that means **reading transaction**, which one should be used preferably to retrieve datas from the database.
 <br/>
 <br/>
