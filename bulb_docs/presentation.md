@@ -6,7 +6,7 @@
 <br/>
 
 The **bulb** package extends the **_Django_** framework to make it compatible with the **_Neo4j_** databases, and provides many more tools to deploy consequent websites.
-Two other solutions already exist to use **Django** with **Neo4j**, but they each have their own inconveniences :  
+Two other solutions already exist to use **Django** with **Neo4j**, but they each have their own inconveniences :
 
 | [**neo4django**](https://github.com/scholrly/neo4django) | [**neomodel**](https://github.com/neo4j-contrib/neomodel) |
 |:--------------:|:------------:|
@@ -38,11 +38,11 @@ Look at this comparison chart, and make the better choice for your needs :
 | Neo4j's clusters support | ✅ | ❌ | ❌ |
 | Neo4j's customizable sessions support | ✅ | ❌ | ❌ |
 | Neo4j's causal chaining support | ✅ | ❌ | ❌ |
-| Neo4j's geospacial operations support | ❌ | ✅ | ❌ |
+| Neo4j's geospacial operations support | ✅ | ✅ | ❌ |
 | Fully CDN integration | ✅ | ❌ | ❌ |
 | Automatic staticfiles compression | ✅ | ❌ | ❌ |
 | Automatic staticfiles compilation | ✅ | ❌ | ❌ |
-| Fully SFTP support for staticfiles | ✅ | ❌ | ❌ |
+| Full SFTP support for staticfiles | ✅ | ❌ | ❌ |
 | Reinforcement of the password system | ✅ | ❌ | ❌ |
 | SASS/SCSS support | ✅ | ❌ | ❌ |
 | Webpack integration | ✅ | ❌ | ❌ |
