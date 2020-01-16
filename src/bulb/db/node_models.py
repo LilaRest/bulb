@@ -260,25 +260,25 @@ class Property:
 
                                             # Test if each value is an integer.
                                             for tuple_item in value:
-                                                if not isinstance(tuple_item, int):
+                                                if not isinstance(tuple_item, int) and not isinstance(tuple_item, float):
                                                     bulb_logger.error(
-                                                        f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                                                        f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers/floats (longitude, latitude).")')
                                                     raise BULBPropertyError(
-                                                        f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+                                                        f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers/floats (longitude, latitude).")
 
                                             setattr(node_or_rel_object, key, Spatial2D(value[0], value[1]))
 
                                         else:
                                             bulb_logger.error(
-                                                f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                                                f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers/floats (longitude, latitude).")')
                                             raise BULBPropertyError(
-                                                f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+                                                f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers/floats (longitude, latitude).")
 
                                     else:
                                         bulb_logger.error(
-                                            f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                                            f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers/floats (longitude, latitude).")')
                                         raise BULBPropertyError(
-                                            f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+                                            f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers/floats (longitude, latitude).")
 
                                 # Callable value handling.
                                 elif callable(value):
@@ -981,11 +981,11 @@ class Node(BaseNodeAndRelationship):
 
                         # Test if each value is an integer.
                         for tuple_item in new_property_value:
-                            if not isinstance(tuple_item, int):
+                            if not isinstance(tuple_item, int) and not isinstance(tuple_item, float):
                                 bulb_logger.error(
-                                    f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                                    f'BULBPropertyError("The property \'{property_name}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers/floats (longitude, latitude).")')
                                 raise BULBPropertyError(
-                                    f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+                                    f"The property '{property_name}' is configured with 'spatial_2D=True' its value must be a tuple of integers/floats (longitude, latitude).")
 
                         point_str = "point({latitude:%s, longitude:%s})" % (new_property_value[0], new_property_value[1])
                         gdbh.w_transaction("""
@@ -998,15 +998,15 @@ class Node(BaseNodeAndRelationship):
                         new_property_value = Spatial2D(new_property_value[0], new_property_value[1])
                     else:
                         bulb_logger.error(
-                            f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                            f'BULBPropertyError("The property \'{property_name}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers/floats (longitude, latitude).")')
                         raise BULBPropertyError(
-                            f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+                            f"The property '{property_name}' is configured with 'spatial_2D=True' its value must be a tuple of integers/floats (longitude, latitude).")
 
                 else:
                     bulb_logger.error(
-                        f'BULBPropertyError("The property \'{key}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers (longitude, latitude).")')
+                        f'BULBPropertyError("The property \'{property_name}\' is configured with \'spatial_2D=True\' its value must be a tuple of integers/floats (longitude, latitude).")')
                     raise BULBPropertyError(
-                        f"The property '{key}' is configured with 'spatial_2D=True' its value must be a tuple of integers (longitude, latitude).")
+                        f"The property '{property_name}' is configured with 'spatial_2D=True' its value must be a tuple of integers/floats (longitude, latitude).")
 
             # Integer, float, boolean and list handling.
             elif isinstance(new_property_value, int) or isinstance(new_property_value, float) or isinstance(new_property_value, bool) or isinstance(new_property_value, list) or isinstance(new_property_value, tuple):

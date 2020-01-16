@@ -1,4 +1,6 @@
-0.0.95 |  Node : ["Add spatial 2D support (latitude, longitude) for the update() method"]
+0.0.96 | Node : ["Allow float numbers as spatial 2D values"]
+
+0.0.95 | Node : ["Add spatial 2D support (latitude, longitude) for the update() method"]
 
 0.0.94 | Administration + Utils : ["Add suport for versionned staticfiles"] ; Administration > Activity : ["Fix errors caused by updates"] ; Administration > Releases : ["Fix errors caused by updates"]
 
