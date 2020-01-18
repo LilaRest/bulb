@@ -32,7 +32,7 @@ def _login_user(request, user):
     gdbh.w_transaction("""
         MATCH (u:User {uuid: '%s'}), (s:Session {session_key: '%s'})
         CREATE (s)-[:IS_SESSION_OF]->(u)
-        """ % (user.uuid, request.session.session_key))
+    """ % (user.uuid, request.session.session_key))
 
 
 def preserve_or_login(request, if_authentication_user=AnonymousUser()):
@@ -48,29 +48,28 @@ def preserve_or_login(request, if_authentication_user=AnonymousUser()):
             if isinstance(request.user, User):
                 from_request_user = request.user
 
-        if not if_authentication_user and not request.user:
+        if isinstance(if_authentication_user, AnonymousUser) and isinstance(request.user, AnonymousUser): #changed
             bulb_logger.error(
                 'BULBLoginError("To login an user with the \'preserve_or_login()\' function, you must provide as function\'s parameters : the request and the user object.")')
             raise BULBLoginError(
                 "To login an user with the 'preserve_or_login()' function, you must provide as function's parameters : the request and the user object.")
 
     except BULBLoginError:
-        request.session.flush()
+        force_clear_user_session(request)
         bulb_logger.error(
             'BULBLoginError("To login an user with the \'preserve_or_login()\' function, you must provide as function\'s parameters : the request and the user object.")')
         raise
 
     else:
+
         # If the function is called during an authentication, to login an user :
         if not isinstance(from_authentication_user, AnonymousUser):
 
-            # If the user is not an AnonymousUser and if a 'logged_user_uuid' is already in the session (if the
-            # user try to login although it is MAYBE already) :
-            if 'logged_user_uuid' in request.session:
+            # Prevent double authentication :
+            if "logged_user_uuid" in request.session:
+                if request.session["logged_user_uuid"] is not None:
 
-                if not isinstance(from_request_user, AnonymousUser) and request.session['logged_user_uuid'] is not None:
-
-                    # If the user is the same in database and session :
+                    #If the user is the same in database and session :
                     if from_request_user.uuid == from_authentication_user.uuid == request.session['logged_user_uuid']:
                         current_user_session = from_authentication_user.session.get()[0]
 
@@ -81,34 +80,27 @@ def preserve_or_login(request, if_authentication_user=AnonymousUser()):
                             # If settings.BULB_SESSION_CHANGE_ON_EVERY_REQUEST is True, delete and create a new session
                             # Else, just preserve the current session.
                             if settings.BULB_SESSION_CHANGE_ON_EVERY_REQUEST:
-                                force_clear_user_session(request)
+                                force_clear_user_session(request, user=from_authentication_user)
                                 _login_user(request, from_authentication_user)
 
-                        # If the sessions datas are not identical
-                        else:
-                            force_clear_user_session(request)
-                            _login_user(request, from_authentication_user)
 
-                    # If the users datas are not identical
                     else:
-                        force_clear_user_session(request)
+                        force_clear_user_session(request, user=from_authentication_user)
                         _login_user(request, from_authentication_user)
 
-                # Else if the user is not already logged in :
                 else:
-                    force_clear_user_session(request)
+                    force_clear_user_session(request, user=from_authentication_user)
                     _login_user(request, from_authentication_user)
 
             else:
-                force_clear_user_session(request)
+                force_clear_user_session(request, user=from_authentication_user)
                 _login_user(request, from_authentication_user)
 
         # If the user is not provided during authentication (he is the currently logged user stored in request.user)
         elif not isinstance(from_request_user, AnonymousUser):
 
             # If a 'logged_user_uuid' is already in the session (if the user is MAYBE already logged) :
-            if 'logged_user_uuid' in request.session:
-
+            if "logged_user_uuid" in request.session:
                 if request.session['logged_user_uuid'] is not None:
 
                     # If the user is the same in database and session :
@@ -144,17 +136,23 @@ def preserve_or_login(request, if_authentication_user=AnonymousUser()):
             else:
                 force_clear_user_session(request)
 
-        else:
-            request.session.flush()
-
 
 # Logout function : clear the sessions stored in the cookie and in the database + set request.user with an instance
 # of AnonymousUsers
-def force_clear_user_session(request):
-    gdbh.w_transaction("""
-        MATCH (:User {uuid: '%s'})<-[:IS_SESSION_OF]-(s:Session)
-        DETACH DELETE (s)
+def force_clear_user_session(request, user=None):
+
+    if not isinstance(request.user, AnonymousUser):
+        gdbh.w_transaction("""
+            MATCH (:User {uuid: '%s'})<-[:IS_SESSION_OF]-(s:Session)
+            DETACH DELETE (s)
         """ % (request.user.uuid))
+
+    if user is not None:
+        if not isinstance(user, AnonymousUser):
+            gdbh.w_transaction("""
+                MATCH (:User {uuid: '%s'})<-[:IS_SESSION_OF]-(s:Session)
+                DETACH DELETE (s)
+            """ % (user.uuid))
 
     request.session.flush()
     request.user = AnonymousUser()

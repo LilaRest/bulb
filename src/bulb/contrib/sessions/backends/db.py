@@ -24,19 +24,35 @@ class SessionStore(SessionBase):
         return self.get_model_class()
 
     def _get_session_from_db(self):
-        try:
-            return self.model.get(session_key=self.session_key)
+        session = self.model.get(session_key=self.session_key)
 
-        except (BULBSessionDoesNotExist, SuspiciousOperation) as e:
-            if isinstance(e, SuspiciousOperation):
-                logger = logging.getLogger('django.security.%s' % e.__class__.__name__)
-                logger.warning(str(e))
+        if session is not None:
+            return session
+
+        else:
+            # if isinstance(e, SuspiciousOperation):
+            #     logger = logging.getLogger('django.security.%s' % e.__class__.__name__)
+            #     logger.warning(str(e))
             self._session_key = None
+
+        # try:
+        #     return self.model.get(session_key=self.session_key)
+        #
+        # except (BULBSessionDoesNotExist, SuspiciousOperation) as e:
+        #     if isinstance(e, SuspiciousOperation):
+        #         logger = logging.getLogger('django.security.%s' % e.__class__.__name__)
+        #         logger.warning(str(e))
+        #     self._session_key = None
 
     def load(self):
         s = self._get_session_from_db()
-        session_data = s.session_data
-        return self.decode(session_data) if s else {}
+
+        if s is not None:
+            session_data = s.session_data
+            return self.decode(session_data)
+
+        else:
+            return {}
 
     def exists(self, session_key):
         return self.model.exists(session_key=session_key)

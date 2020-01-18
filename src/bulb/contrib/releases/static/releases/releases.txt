@@ -1,3 +1,5 @@
+0.0.97 | Session : ["Fix sessions errors caused by doublons"]
+
 0.0.96 | Node : ["Allow float numbers as spatial 2D values"]
 
 0.0.95 | Node : ["Add spatial 2D support (latitude, longitude) for the update() method"]
