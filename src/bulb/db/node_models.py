@@ -123,7 +123,6 @@ class DatabaseNode:
                         elif isinstance(value, Spatial2D):
                             render.append(f"{key}: {value.position}")
 
-
                         # String handling.
                         elif isinstance(value, str):
                             # Escape quotes to prevent cypher syntax errors.
@@ -1081,7 +1080,7 @@ class Node(BaseNodeAndRelationship):
 
         for field_name, field_content in class_properties_dict.items():
 
-            if eval(f"self.__class__.{field_name}.sftp"):
+            if eval(f"self.__class__.{field_name}.sftp") and settings.DEBUG is False:
 
                 old_remote_file_path_for_purge = None
 
@@ -1131,7 +1130,7 @@ class Node(BaseNodeAndRelationship):
             for field_name, field_value in relationship_properties.items():
 
                 # if eval(f"field_value.__class__.{field_name}.sftp"):
-                if field_value.sftp:
+                if field_value.sftp and settings.DEBUG is False:
 
                     old_remote_file_path_for_purge = None
 
@@ -1957,7 +1956,9 @@ class Relationship(BaseNodeAndRelationship):
         # Build the where statement.
         if filter is not None:
             where_statement = "WHERE " + filter
-            where_statement = where_statement.replace("n.", "r.")
+
+            if returned == "rel":
+                where_statement = where_statement.replace("n.", "r.")
 
         # Build other statements.
         return_statement_list = ["RETURN"]
