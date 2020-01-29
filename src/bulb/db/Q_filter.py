@@ -11,7 +11,7 @@ class Qstr(str):
     :param complex_query: A simple query is when the search is done on the self instance properties (example:
                           "user__name='John'". And a complex query is when the search is focused on the instances
                           related (with a relationship) to the self instance (example: user__friends__name="John", we
-                          search all the f)
+                          search all the friends with name="John")
     """
 
     def __or__(self, other):
