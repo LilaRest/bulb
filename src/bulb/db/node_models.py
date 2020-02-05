@@ -1166,23 +1166,18 @@ class Node(BaseNodeAndRelationship):
         """
 
         for relationship_field_name, relationship_field in class_relationships_dict.items():
-            if relationship_field.on_delete == "PROTECT":
-                gdbh.w_transaction("""
-                MATCH (n:%s {uuid:'%s'})
-                DETACH DELETE (n)
-                """ % (self.__class__.__name__, self.uuid))
-
-            elif relationship_field.on_delete == "CASCADE":
+            if relationship_field.on_delete == "CASCADE":
                 related_nodes = eval(f"self.{relationship_field_name}.get()")
-
-                gdbh.w_transaction("""
-                MATCH (n:%s {uuid:'%s'})
-                DETACH DELETE (n)
-                """ % (self.__class__.__name__, self.uuid))
 
                 if related_nodes is not None:
                     for node in related_nodes:
                         node.delete()
+
+        gdbh.w_transaction("""
+        MATCH (n:%s {uuid:'%s'})
+        DETACH DELETE (n)
+        """ % (self.__class__.__name__, self.uuid))
+
 
     @classmethod
     def count(cls, uuid=None, order_by=None, limit=None, skip=None, desc=False, only=None, filter=None, distinct=False, handmade=None,
