@@ -8,9 +8,15 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     {% if DEBUG %}
-        {% compress css %}
-            <link rel="stylesheet" type="text/x-scss" href="{% static "logs/css/style/logs_page.scss" %}"/>
-        {% endcompress %}
+        {% if not BULB_REQUIRES_INITIAL_PATHS %}
+            {% compress css %}
+                <link rel="stylesheet" type="text/x-scss" href="{% static "logs/css/style/logs_page.scss" %}"/>
+            {% endcompress %}
+
+        {% else %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'logs/css/style/logs_page.scss' %}"/>
+
+        {% endif %}
 
     {% elif not DEBUG %}
         {% if BULB_BUNDLED_FILES_VERSION != None %}

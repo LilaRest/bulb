@@ -6,9 +6,15 @@
 
 {% block head %}
     {% if DEBUG %}
-        {% compress css %}
-            <link rel="stylesheet" type="text/x-scss" href="{% static "admin/css/style/admin_home_page.scss" %}"/>
-        {% endcompress %}
+        {% if not BULB_REQUIRES_INITIAL_PATHS %}
+            {% compress css %}
+                <link rel="stylesheet" type="text/x-scss" href="{% static "admin/css/style/admin_home_page.scss" %}"/>
+            {% endcompress %}
+
+        {% else %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'admin/css/style/admin_home_page.scss' %}"/>
+
+        {% endif %}
 
     {% elif not DEBUG %}
         {% if BULB_BUNDLED_FILES_VERSION != None %}

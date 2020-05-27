@@ -8,9 +8,15 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     {% if DEBUG %}
-        {% compress css %}
-            <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_handling_and_creation_pages.scss" %}"/>
-        {% endcompress %}
+        {% if not BULB_REQUIRES_INITIAL_PATHS %}
+            {% compress css %}
+                <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_handling_and_creation_pages.scss" %}"/>
+            {% endcompress %}
+
+        {% else %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'handling/css/style/node_handling_and_creation_pages.scss' %}"/>
+
+        {% endif %}
 
     {% elif not DEBUG %}
         {% if BULB_BUNDLED_FILES_VERSION != None %}
@@ -270,8 +276,8 @@
     </div>
 
     <div id="action-buttons-div">
-        <button id="submit-button" onclick="document.getElementById('creation-form').submit()"><i
-                class='material-icons'>save</i></button>
+        <button id="submit-button"><i class='material-icons'>save</i></button>
+        <!-- <button id="submit-button" onclick="document.getElementById('creation-form').submit()"><i class='material-icons'>save</i></button> -->
         <a id="previous-page-button" href="{% url "node_model_home" node_model_name=node_model_name %}"><i class='material-icons'>arrow_back</i></a>
     </div>
 

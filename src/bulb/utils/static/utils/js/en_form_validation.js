@@ -83,6 +83,7 @@ export class FieldValidator extends Validator {
                 second_regex,
                 case_sensitive,
                 ajax_validation,
+                ajax_validation_url,
                 ajax_validation_test_type,
                 ajax_exists_message,
                 ajax_not_exists_message,
@@ -105,6 +106,7 @@ export class FieldValidator extends Validator {
         this.first_regex = RegExp(first_regex);
         this.second_regex = RegExp(second_regex);
         this.ajax_validation = ajax_validation;
+        this.ajax_validation_url = ajax_validation_url;
         this.ajax_validation_test_type = ajax_validation_test_type;
         this.ajax_exists_message = ajax_exists_message;
         this.ajax_not_exists_message = ajax_not_exists_message;
@@ -231,7 +233,16 @@ export class FieldValidator extends Validator {
             this.timeout = setTimeout(function () {
                 const request = new XMLHttpRequest();
 
-                const url = window.location;
+                let url = null;
+                console.log(this.ajax_validation_url)
+                if (!this.ajax_validation_url) {
+                    url = window.location;
+                }
+
+                else {
+                    url = this.ajax_validation_url
+                }
+
                 const method = "POST";
                 const data = new FormData();
 

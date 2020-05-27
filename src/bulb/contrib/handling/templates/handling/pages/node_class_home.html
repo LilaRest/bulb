@@ -7,9 +7,15 @@
 {% block head %}
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {% if DEBUG %}
-        {% compress css %}
-            <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_class_home_page.scss" %}"/>
-        {% endcompress %}
+        {% if not BULB_REQUIRES_INITIAL_PATHS %}
+            {% compress css %}
+                <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_class_home_page.scss" %}"/>
+            {% endcompress %}
+
+        {% else %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'handling/css/style/node_class_home_page.scss' %}"/>
+
+        {% endif %}
 
 
     {% elif not DEBUG %}

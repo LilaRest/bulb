@@ -9,9 +9,15 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width"/>
         {% if DEBUG %}
-            {% compress css %}
+            {% if not BULB_REQUIRES_INITIAL_PATHS %}
+                {% compress css %}
+                    <link rel="stylesheet" type="text/x-scss" href="{% static 'utils/css/style/special_characters.scss' %}"/>
+                {% endcompress %}
+
+            {% else %}
                 <link rel="stylesheet" type="text/x-scss" href="{% static 'utils/css/style/special_characters.scss' %}"/>
-            {% endcompress %}
+
+            {% endif %}
 
         {% elif not DEBUG %}
             {% if BULB_BUNDLED_FILES_VERSION != None %}
