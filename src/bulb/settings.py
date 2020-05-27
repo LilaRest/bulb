@@ -271,10 +271,10 @@ def set_bulb_settings_on(root_settings):
         TEMPLATES_context_processors = root_settings['TEMPLATES'][0]['OPTIONS']['context_processors']
 
     except KeyError:
-        root_settings['TEMPLATES'][0]['OPTIONS']['context_processors'] = ['bulb.template.context_processors.debug',]
+        root_settings['TEMPLATES'][0]['OPTIONS']['context_processors'] = ['bulb.template.context_processors.bulb_variables',]
 
     else:
-        TEMPLATES_context_processors.insert(0, 'bulb.template.context_processors.debug')
+        TEMPLATES_context_processors.insert(0, 'bulb.template.context_processors.bulb_variables')
 
     # Add the bulb admin 'additionnal_admin_modules' context processors.
     try:
@@ -548,6 +548,8 @@ def set_bulb_settings_on(root_settings):
     root_settings['PASSWORD_HASHERS'] = [
         'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
     ]
+
+    root_settings['BULB_REQUIRES_INITIAL_PATHS'] = False
 
     root_settings['STATIC_ROOT'] = os.path.join(root_settings["BASE_DIR"], 'staticfiles')
 

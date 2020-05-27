@@ -7,9 +7,16 @@
 {% block head %}
     {% if DEBUG %}
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        {% compress css %}
-            <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_handling_and_creation_pages.scss" %}"/>
-        {% endcompress %}
+
+        {% if not BULB_REQUIRES_INITIAL_PATHS %}
+            {% compress css %}
+                <link rel="stylesheet" type="text/x-scss" href="{% static "handling/css/style/node_handling_and_creation_pages.scss" %}"/>
+            {% endcompress %}
+
+        {% else %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'handling/css/style/node_handling_and_creation_pages.scss' %}"/>
+
+        {% endif %}
 
     {% elif not DEBUG %}
         {% if BULB_BUNDLED_FILES_VERSION != None %}

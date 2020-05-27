@@ -95,7 +95,7 @@ class DatabaseNode:
 
         :return: Cypher formatted properties.
         """
-
+        print("format_properties_to_cypher")
         if isinstance(object_properties_dict, dict):
             render = []
 
@@ -109,14 +109,24 @@ class DatabaseNode:
 
                         # Datetime handling.
                         elif isinstance(value, datetime.datetime):
+                            print("datetime")
+                            print(value)
+                            print(str(value))
+                            print(str(value).replace(' ', 'T'))
                             render.append(f"{key}: datetime('{str(value).replace(' ', 'T')}')")
 
                         # Date handling.
                         elif isinstance(value, datetime.date):
+                            print("date")
+                            print(value)
+                            print(str(value))
                             render.append(f"{key}: date('{str(value)}')")
 
                         # Time handling.
                         elif isinstance(value, datetime.time):
+                            print("time")
+                            print(value)
+                            print(str(value))
                             render.append(f"{key}: time('{str(value)}')")
 
                         # Spatial 2D handling.
@@ -246,7 +256,7 @@ class Property:
                                         os.remove(temporary_local_file_path)
 
                                         full_stored_file_path_list = (settings.BULB_SFTP_PULL_URL + remote_file_path).split("/")
-                                        full_stored_file_path_list.pop(3)
+                                        full_stored_file_path_list.pop(4)
                                         full_stored_file_path = "/".join(full_stored_file_path_list)
 
                                         setattr(node_or_rel_object, key, full_stored_file_path)
@@ -767,15 +777,20 @@ class Node(BaseNodeAndRelationship):
                 return request_statement
 
         else:
-            response = gdbh.r_transaction(handmade)
 
-            fake_instances_list = []
+            if return_query is False:
+                response = gdbh.r_transaction(handmade)
 
-            for node_object in response:
-                fake_instances_list.append(cls.build_fake_instance(node_object["n"],
-                                                                   forced_fake_instance_class=cls))
+                fake_instances_list = []
 
-            return fake_instances_list
+                for node_object in response:
+                    fake_instances_list.append(cls.build_fake_instance(node_object["n"],
+                                                                       forced_fake_instance_class=cls))
+
+                return fake_instances_list
+
+            else:
+                return handmade
 
 
     @classmethod
@@ -960,7 +975,7 @@ class Node(BaseNodeAndRelationship):
                     os.remove(temporary_local_file_path)
 
                     full_stored_file_path_list = (settings.BULB_SFTP_PULL_URL + remote_file_path).split("/")
-                    full_stored_file_path_list.pop(3)
+                    full_stored_file_path_list.pop(4)
                     full_stored_file_path = "/".join(full_stored_file_path_list)
 
                     gdbh.w_transaction("""
@@ -1071,6 +1086,8 @@ class Node(BaseNodeAndRelationship):
                        property_name, new_property_value))
 
             setattr(self, property_name, new_property_value)
+
+        return self
 
     def delete(self):
 
@@ -1187,6 +1204,7 @@ class Node(BaseNodeAndRelationship):
         request_count_statement = None
 
         if not distinct:
+            print(request_statement)
             request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(n)"
 
         else:
@@ -2355,7 +2373,7 @@ class RelationshipInstance:
                     os.remove(temporary_local_file_path)
 
                     full_stored_file_path_list = (settings.BULB_SFTP_PULL_URL + remote_file_path).split("/")
-                    full_stored_file_path_list.pop(3)
+                    full_stored_file_path_list.pop(4)
                     full_stored_file_path = "/".join(full_stored_file_path_list)
 
                     gdbh.w_transaction("""

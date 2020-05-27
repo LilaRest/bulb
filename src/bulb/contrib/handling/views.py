@@ -16,6 +16,7 @@ import datetime
 import json
 import time
 import sys
+import asyncio
 
 
 login_page_url = "/" + settings.BULB_ADMIN_BASEPATH_NAME + "/login"
@@ -367,6 +368,7 @@ def node_model_home_search_view(request, node_model_name):
 
 
 def handle_edition(request, admin_fields_dict, node_model_name, instance, all_objects_dict):
+
     try:
         admin_request_post = dict(request.POST)
         admin_request_files = dict(request.FILES)
@@ -685,6 +687,8 @@ def node_handling_view(request, node_model_name, node_uuid):
                                             available_objects_dict[field_name].append(values_tuple)
 
         if request.POST or request.FILES:
+            # handle_edition(request, admin_fields_dict, node_model_name, instance, all_objects_dict)
+
             pool = Pool(processes=1)
 
             def my_generator():
@@ -1547,10 +1551,14 @@ def node_handling_view(request, node_model_name, node_uuid):
                     </center>
                 """
 
+                # time.sleep(2)
+
                 response = pool.apply_async(handle_edition,
                                            (request, admin_fields_dict, node_model_name, instance, all_objects_dict))
 
+
                 while True:
+
                     if response.ready():
                         yield "<script>document.getElementById('loader-box').style.display = 'none';</script>"
 
@@ -1574,6 +1582,7 @@ def node_handling_view(request, node_model_name, node_uuid):
 
                     time.sleep(3)
                     yield "<span style='color: transparent;'>.</span>"
+
 
                 yield """
                     <script>
@@ -1740,7 +1749,8 @@ def handle_creation(request, admin_fields_dict, node_model, node_model_name, ava
         #     return "no preview fields"
 
     except:
-        return sys.exc_info()
+        raise
+        # return sys.exc_info()
 
 
 
@@ -1764,935 +1774,936 @@ def node_creation_view(request, node_model_name):
         # Get availables objects for relationships.
         available_objects_dict = {}
 
-        for field_name, field_settings in admin_fields_dict.items():
-            if field_settings["type"] == "relationship":
+        if admin_fields_dict is not None:
+            for field_name, field_settings in admin_fields_dict.items():
+                if field_settings["type"] == "relationship":
 
-                available_objects_dict[field_name] = []
+                    available_objects_dict[field_name] = []
 
-                for nm in all_node_models:
-                    try:
-                        related_node_model_name = field_settings['rel']['related_node_model_name']
+                    for nm in all_node_models:
+                        try:
+                            related_node_model_name = field_settings['rel']['related_node_model_name']
 
-                    except KeyError:
-                        pass
+                        except KeyError:
+                            pass
 
-                    else:
-                        if nm.__name__ == field_settings['rel']['related_node_model_name']:
-                            available_objects_response = {}
-                            available_objects_response[field_name] = nm.get(order_by=field_settings['rel']['choices_render'][0],
-                                                                            only=["uuid"] + field_settings['rel']['choices_render'])
+                        else:
+                            if nm.__name__ == field_settings['rel']['related_node_model_name']:
+                                available_objects_response = {}
+                                available_objects_response[field_name] = nm.get(order_by=field_settings['rel']['choices_render'][0],
+                                                                                only=["uuid"] + field_settings['rel']['choices_render'])
 
-                            if available_objects_response[field_name] is not None:
-                                for object_dict in available_objects_response[field_name]:
-                                    values_tuple = []
-                                    for name, value in object_dict.items():
-                                        values_tuple.append(value)
-                                    values_tuple = tuple(values_tuple)
-                                    available_objects_dict[field_name].append(values_tuple)
+                                if available_objects_response[field_name] is not None:
+                                    for object_dict in available_objects_response[field_name]:
+                                        values_tuple = []
+                                        for name, value in object_dict.items():
+                                            values_tuple.append(value)
+                                        values_tuple = tuple(values_tuple)
+                                        available_objects_dict[field_name].append(values_tuple)
 
-        if request.POST or request.FILES:
-            # handle_creation(request.POST, request.FILES, admin_fields_dict, node_model, node_model_name,
-            #                 available_objects_dict)
+            if request.POST or request.FILES:
+                # handle_creation(request, admin_fields_dict, node_model, node_model_name, available_objects_dict)
 
-            pool = Pool(processes=1)
+                pool = Pool(processes=1)
 
-            def my_generator():
-                yield '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">'
+                def my_generator():
+                    yield '<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">'
 
-                yield """
-                <style>
-                    body {
-                        margin: 0;
-                    }
+                    yield """
+                    <style>
+                        body {
+                            margin: 0;
+                        }
 
-                    p {
-                        font-size: 40px;
-                        margin-top: 0;
-                    }
+                        p {
+                            font-size: 40px;
+                            margin-top: 0;
+                        }
 
-                    i {
-                        padding: 50px;
-                        padding-bottom: 20px;
-                        font-size: 100px;
-                    }
+                        i {
+                            padding: 50px;
+                            padding-bottom: 20px;
+                            font-size: 100px;
+                        }
 
-                    i.valid-icons {
-                        color: #60db94;
-                    }
+                        i.valid-icons {
+                            color: #60db94;
+                        }
 
-                    i.error-icons {
-                        color: #e78586;
-                    }
+                        i.error-icons {
+                            color: #e78586;
+                        }
 
-                    #loader {
-                        margin-top: 38.5px;
-                        width: 112px;
-                        height: 112px;
-                        transform: scale(0.5);
-                    }
-
-                    #loader .box1,
-                    #loader .box2,
-                    #loader .box3 {
-                        border: 16px solid #2d3436;
-                        box-sizing: border-box;
-                        position: absolute;
-                        display: block;
-                    }
-
-                    #loader .box1 {
-                        width: 112px;
-                        height: 48px;
-                        margin-top: 64px;
-                        margin-left: 0px;
-                        animation: anime1 4s 0s forwards ease-in-out infinite;
-                    }
-
-                    #loader .box2 {
-                        width: 48px;
-                        height: 48px;
-                        margin-top: 0px;
-                        margin-left: 0px;
-                        animation: anime2 4s 0s forwards ease-in-out infinite;
-                    }
-
-                    #loader .box3 {
-                        width: 48px;
-                        height: 48px;
-                        margin-top: 0px;
-                        margin-left: 64px;
-                        animation: anime3 4s 0s forwards ease-in-out infinite;
-                    }
-
-                    @-moz-keyframes anime1 {
-                        0% {
+                        #loader {
+                            margin-top: 38.5px;
                             width: 112px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        50% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        75% {
-                            width: 48px;
                             height: 112px;
-                            margin-top: 0px;
-                            margin-left: 0px;
+                            transform: scale(0.5);
                         }
 
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
+                        #loader .box1,
+                        #loader .box2,
+                        #loader .box3 {
+                            border: 16px solid #2d3436;
+                            box-sizing: border-box;
+                            position: absolute;
+                            display: block;
                         }
 
-                        100% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-                    }
-
-                    @-webkit-keyframes anime1 {
-                        0% {
+                        #loader .box1 {
                             width: 112px;
                             height: 48px;
                             margin-top: 64px;
                             margin-left: 0px;
+                            animation: anime1 4s 0s forwards ease-in-out infinite;
                         }
 
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        50% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 112px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        87.5% {
+                        #loader .box2 {
                             width: 48px;
                             height: 48px;
                             margin-top: 0px;
                             margin-left: 0px;
+                            animation: anime2 4s 0s forwards ease-in-out infinite;
                         }
 
-                        100% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-                    }
-
-                    @-o-keyframes anime1 {
-                        0% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        50% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 112px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        100% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-                    }
-
-                    @keyframes anime1 {
-                        0% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        50% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 112px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        100% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-                    }
-
-                    @-moz-keyframes anime2 {
-                        0% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        50% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        62.5% {
+                        #loader .box3 {
                             width: 48px;
                             height: 48px;
                             margin-top: 0px;
                             margin-left: 64px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        100% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-                    }
-
-                    @-webkit-keyframes anime2 {
-                        0% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        50% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        100% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-                    }
-
-                    @-o-keyframes anime2 {
-                        0% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        50% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        100% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-                    }
-
-                    @keyframes anime2 {
-                        0% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        50% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 0px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        100% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-                    }
-
-                    @-moz-keyframes anime3 {
-                        0% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 112px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        50% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        100% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-                    }
-
-                    @-webkit-keyframes anime3 {
-                        0% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 112px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        50% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        100% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-                    }
-
-                    @-o-keyframes anime3 {
-                        0% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 112px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        50% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        100% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-                    }
-
-                    @keyframes anime3 {
-                        0% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        12.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        25% {
-                            width: 48px;
-                            height: 112px;
-                            margin-top: 0px;
-                            margin-left: 64px;
-                        }
-
-                        37.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        50% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        62.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        75% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        87.5% {
-                            width: 48px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 64px;
-                        }
-
-                        100% {
-                            width: 112px;
-                            height: 48px;
-                            margin-top: 64px;
-                            margin-left: 0px;
-                        }
-                    }
-                </style>"""
-
-                yield """
-                    <center id="loader-box">
-                        <div id="loader">
-                            <div class="box1"></div>
-                            <div class="box2"></div>
-                            <div class="box3"></div>
-                        </div>
-                        Loading...
-                    </center>
-                """
-
-                response = pool.apply_async(handle_creation,
-                                            (request, admin_fields_dict, node_model, node_model_name,
-                                             available_objects_dict))
-
-                while True:
-                    if response.ready():
-                        yield "<script>document.getElementById('loader-box').style.display = 'none';</script>"
-
-                        if response.successful():
-                            if not response.get():
-                                yield "<center><i style='font-size: 150px;' class='material-icons valid-icons'>check_circle</i><br/><br/><p>Successful</p></center>"
-                                time.sleep(2)
-                                break
-
+                            animation: anime3 4s 0s forwards ease-in-out infinite;
+                        }
+
+                        @-moz-keyframes anime1 {
+                            0% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            50% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 112px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            100% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+                        }
+
+                        @-webkit-keyframes anime1 {
+                            0% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            50% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 112px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            100% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+                        }
+
+                        @-o-keyframes anime1 {
+                            0% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            50% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 112px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            100% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+                        }
+
+                        @keyframes anime1 {
+                            0% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            50% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 112px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            100% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+                        }
+
+                        @-moz-keyframes anime2 {
+                            0% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            50% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            100% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+                        }
+
+                        @-webkit-keyframes anime2 {
+                            0% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            50% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            100% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+                        }
+
+                        @-o-keyframes anime2 {
+                            0% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            50% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            100% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+                        }
+
+                        @keyframes anime2 {
+                            0% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            50% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 0px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            100% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+                        }
+
+                        @-moz-keyframes anime3 {
+                            0% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 112px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            50% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            100% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+                        }
+
+                        @-webkit-keyframes anime3 {
+                            0% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 112px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            50% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            100% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+                        }
+
+                        @-o-keyframes anime3 {
+                            0% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 112px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            50% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            100% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+                        }
+
+                        @keyframes anime3 {
+                            0% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            12.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            25% {
+                                width: 48px;
+                                height: 112px;
+                                margin-top: 0px;
+                                margin-left: 64px;
+                            }
+
+                            37.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            50% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            62.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            75% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            87.5% {
+                                width: 48px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 64px;
+                            }
+
+                            100% {
+                                width: 112px;
+                                height: 48px;
+                                margin-top: 64px;
+                                margin-left: 0px;
+                            }
+                        }
+                    </style>"""
+
+                    yield """
+                        <center id="loader-box">
+                            <div id="loader">
+                                <div class="box1"></div>
+                                <div class="box2"></div>
+                                <div class="box3"></div>
+                            </div>
+                            Loading...
+                        </center>
+                    """
+
+                    response = pool.apply_async(handle_creation,
+                                                (request, admin_fields_dict, node_model, node_model_name, available_objects_dict))
+
+                    yield "<span style='color: transparent;'>.</span>"
+
+                    while True:
+                        if response.ready():
+                            yield "<script>document.getElementById('loader-box').style.display = 'none';</script>"
+
+                            if response.successful():
+                                if not response.get():
+                                    yield "<center><i style='font-size: 150px;' class='material-icons valid-icons'>check_circle</i><br/><br/><p>Successful</p></center>"
+                                    time.sleep(2)
+                                    break
+
+                                else:
+                                    yield "<center><i style='font-size: 150px;' class='material-icons error-icons'>cancel</i><br/><br/><p>Failed</p></center>"
+                                    time.sleep(2)
+                                    break
                             else:
                                 yield "<center><i style='font-size: 150px;' class='material-icons error-icons'>cancel</i><br/><br/><p>Failed</p></center>"
                                 time.sleep(2)
                                 break
-                        else:
-                            yield "<center><i style='font-size: 150px;' class='material-icons error-icons'>cancel</i><br/><br/><p>Failed</p></center>"
-                            time.sleep(2)
-                            break
 
-                    time.sleep(3)
-                    yield "<span style='color: transparent;'>.</span>"
+                        time.sleep(3)
+                        yield "<span style='color: transparent;'>.</span>"
 
-                yield """
-                    <script>
-                        function redirect_to_home () {
-                            window.location.href = window.location.origin + '/admin/handling/%s'
-                        }
+                    yield """
+                        <script>
+                            function redirect_to_home () {
+                                window.location.href = window.location.origin + '/admin/handling/%s'
+                            }
 
-                        redirect_to_home()
-                    </script>
-                """ % node_model_name
+                            redirect_to_home()
+                        </script>
+                    """ % node_model_name
 
-            return StreamingHttpResponse(my_generator())
+                return StreamingHttpResponse(my_generator())
 
         return render(request, "handling/pages/node_creation.html", locals())
 

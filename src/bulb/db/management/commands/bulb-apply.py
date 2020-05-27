@@ -1,4 +1,4 @@
-from bulb.db.exceptions import BULBNodeLabelsInitializationError
+from bulb.db.exceptions import BULBLabelsError
 from bulb.utils import get_files_paths_list
 from bulb.utils.log import bulb_logger
 from bulb.db.node_models import Node
@@ -128,5 +128,5 @@ class Command(BaseCommand):
                 return ':'.join(render)
 
             else:
-                bulb_logger.error('BULBNodeLabelsInitializationError("self.labels attribute must be a list.")')
-                raise BULBNodeLabelsInitializationError("self.labels attribute must be a list.")
+                bulb_logger.error('BULBLabelsError("self.labels attribute must be a list.")')
+                raise BULBLabelsError("self.labels attribute must be a list.")

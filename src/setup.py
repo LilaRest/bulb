@@ -3,7 +3,7 @@ from distutils.util import convert_path
 from fnmatch import fnmatchcase
 import os
 
-bulb_version = "0.0.99"
+bulb_version = "0.1.04"
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -115,6 +115,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "Framework :: Django",
         "Framework :: Django :: 2.2",
+	"Framework :: Django :: 3.0",
         "Natural Language :: English",
         "Topic :: Database",
         "Topic :: Internet :: File Transfer Protocol (FTP)",

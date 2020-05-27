@@ -84,7 +84,7 @@ Permission_fields_infos = {"uuid": {"type": "locked",
                                         "label": "Nom de code"},
 
                            "description": {"type": "text",
-                                           "label": "Actif"},
+                                           "label": "Description"},
 
                            }
 
