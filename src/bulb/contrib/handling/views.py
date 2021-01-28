@@ -420,12 +420,17 @@ def handle_edition(request, admin_fields_dict, node_model_name, instance, all_ob
                                     # Per default the Neo4j database add timezone (represented by 9 characters) to time object.
                                     except ValueError:
                                         # property_value[0] = datetime.datetime.fromisoformat(property_value[0][:-9]) # Doesn't work before Python 3.7
-                                        property_value[0] = datetime.datetime(int(property_value[3]),
-                                                                              int(property_value[2]),
-                                                                              int(property_value[1]),
-                                                                              int(property_value[4]),
-                                                                              int(property_value[5]),
-                                                                              int(property_value[6]))
+
+                                        try:
+                                            property_value[0] = datetime.datetime(int(property_value[3]),
+                                                                                  int(property_value[2]),
+                                                                                  int(property_value[1]),
+                                                                                  int(property_value[4]),
+                                                                                  int(property_value[5]),
+                                                                                  int(property_value[6]))
+
+                                        except:
+                                            pass
 
                             # Handle date values.
                             elif related_admin_field_dict["type"] == "date":

@@ -95,7 +95,6 @@ class DatabaseNode:
 
         :return: Cypher formatted properties.
         """
-        print("format_properties_to_cypher")
         if isinstance(object_properties_dict, dict):
             render = []
 
@@ -109,24 +108,14 @@ class DatabaseNode:
 
                         # Datetime handling.
                         elif isinstance(value, datetime.datetime):
-                            print("datetime")
-                            print(value)
-                            print(str(value))
-                            print(str(value).replace(' ', 'T'))
                             render.append(f"{key}: datetime('{str(value).replace(' ', 'T')}')")
 
                         # Date handling.
                         elif isinstance(value, datetime.date):
-                            print("date")
-                            print(value)
-                            print(str(value))
                             render.append(f"{key}: date('{str(value)}')")
 
                         # Time handling.
                         elif isinstance(value, datetime.time):
-                            print("time")
-                            print(value)
-                            print(str(value))
                             render.append(f"{key}: time('{str(value)}')")
 
                         # Spatial 2D handling.
@@ -256,7 +245,7 @@ class Property:
                                         os.remove(temporary_local_file_path)
 
                                         full_stored_file_path_list = (settings.BULB_SFTP_PULL_URL + remote_file_path).split("/")
-                                        full_stored_file_path_list.pop(4)
+                                        full_stored_file_path_list.pop(3)
                                         full_stored_file_path = "/".join(full_stored_file_path_list)
 
                                         setattr(node_or_rel_object, key, full_stored_file_path)
@@ -662,7 +651,7 @@ class Node(BaseNodeAndRelationship):
 
             # Build the where statement.
             if filter is not None:
-                if not filter[0] != "n":
+                if filter[0:2] == "n." or filter[0:6] == "NOT n.":
                     where_statement = "WHERE " + filter
 
                 else:
@@ -673,7 +662,14 @@ class Node(BaseNodeAndRelationship):
 
             # Build order_by statements.
             if order_by is not None:
-                order_by_statement = f"ORDER BY n.{order_by}"
+                if isinstance(order_by, dict):
+                    order_by_statement = "ORDER BY"
+                    for order_property, is_desc in order_by.items():
+                        order_by_statement += f" n.{order_property} {'DESC' if is_desc else ''},"
+                    order_by_statement = order_by_statement[0:-1]
+
+                else:
+                    order_by_statement = f"ORDER BY n.{order_by}"
 
             # Build return_statement statements.
             if not only:
@@ -727,7 +723,7 @@ class Node(BaseNodeAndRelationship):
                     f"The 'desc' parameter of the get() method of {cls.__name__} must be a boolean.")
 
             else:
-                if desc is True:
+                if desc is True and not isinstance(order_by, dict):
                     desc_statement = "DESC"
 
             request_statement = """
@@ -975,7 +971,7 @@ class Node(BaseNodeAndRelationship):
                     os.remove(temporary_local_file_path)
 
                     full_stored_file_path_list = (settings.BULB_SFTP_PULL_URL + remote_file_path).split("/")
-                    full_stored_file_path_list.pop(4)
+                    full_stored_file_path_list.pop(3)
                     full_stored_file_path = "/".join(full_stored_file_path_list)
 
                     gdbh.w_transaction("""
@@ -1204,7 +1200,6 @@ class Node(BaseNodeAndRelationship):
         request_count_statement = None
 
         if not distinct:
-            print(request_statement)
             request_count_statement = request_statement.split("RETURN")[0] + "RETURN COUNT(n)"
 
         else:
@@ -1989,7 +1984,14 @@ class Relationship(BaseNodeAndRelationship):
             with_statement = "WITH r"
 
             if order_by is not None:
-                order_by_statement = "ORDER BY r.%s"
+                if isinstance(order_by, dict):
+                    order_by_statement = "ORDER BY"
+                    for order_property, is_desc in order_by.items():
+                        order_by_statement += f" r.{order_property} {'DESC' if is_desc else ''},"
+                    order_by_statement = order_by_statement[0:-1]
+
+                else:
+                    order_by_statement = f"ORDER BY r.{order_by}"
 
             if not only:
                 return_statement_list.append("(r)")
@@ -2006,7 +2008,14 @@ class Relationship(BaseNodeAndRelationship):
         elif returned == "node":
             with_statement = "WITH n"
             if order_by is not None:
-                order_by_statement = "ORDER BY n.%s"
+                if isinstance(order_by, dict):
+                    order_by_statement = "ORDER BY"
+                    for order_property, is_desc in order_by.items():
+                        order_by_statement += f" n.{order_property} {'DESC' if is_desc else ''},"
+                    order_by_statement = order_by_statement[0:-1]
+
+                else:
+                    order_by_statement = f"ORDER BY n.{order_by}"
 
             if not only:
                 return_statement_list.append("(n)")
@@ -2055,22 +2064,23 @@ class Relationship(BaseNodeAndRelationship):
                                              self.rel_type))
 
         # Add order_by_statement required variable.
-        if order_by is not None:
-            request_required_values_list.append(order_by)
-
-        # Build limit_statement and add its required variable.
-        if limit is not None:
-            limit_statement = "LIMIT %s"
-            request_required_values_list.append(limit)
+        # if order_by is not None:
+        #     request_required_values_list.append(order_by)
 
         # Build skip_statement and add its required variable.
         if skip is not None:
             skip_statement = "SKIP %s"
             request_required_values_list.append(skip)
 
+        # Build limit_statement and add its required variable.
+        if limit is not None:
+            limit_statement = "LIMIT %s"
+            request_required_values_list.append(limit)
+
         # Build desc_statement.
         if desc is True:
-            desc_statement = "DESC"
+            if not isinstance(order_by, dict):
+                desc_statement = "DESC"
 
         request_statement = """
         %s
@@ -2373,7 +2383,7 @@ class RelationshipInstance:
                     os.remove(temporary_local_file_path)
 
                     full_stored_file_path_list = (settings.BULB_SFTP_PULL_URL + remote_file_path).split("/")
-                    full_stored_file_path_list.pop(4)
+                    full_stored_file_path_list.pop(3)
                     full_stored_file_path = "/".join(full_stored_file_path_list)
 
                     gdbh.w_transaction("""
