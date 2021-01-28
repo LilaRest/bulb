@@ -72,6 +72,12 @@ class Command(BaseCommand):
                     babelrc_file.write(open(bulb_path + "/sftp_and_cdn/webpack_files/.babelrc", "r").read())
                     babelrc_file.close()
 
+                    # Create the babel.config.js file.
+                    # babel_config_file_path = os.path.join(BASE_DIR, "babel.config.js")
+                    # babel_config_file = open(babel_config_file_path, "w")
+                    # babel_config_file.write(open(bulb_path + "/sftp_and_cdn/webpack_files/babel.config.js", "r").read())
+                    # babel_config_file.close()
+
                     # Install npm dependencies
                     subprocess.call(f"npm install", shell=True)
 

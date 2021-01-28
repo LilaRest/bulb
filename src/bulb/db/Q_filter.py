@@ -95,21 +95,33 @@ class Q:
                 if action == "startswith":
                     self.filter = Qstr(f"n.{parameter_name} STARTS WITH '{property_value}'")
 
+                if action == "not_startswith":
+                    self.filter = Qstr(f"NOT n.{parameter_name} STARTS WITH '{property_value}'")
+
                 elif action == "endswith":
                     self.filter = Qstr(f"n.{parameter_name} ENDS WITH '{property_value}'")
+
+                elif action == "not_endswith":
+                    self.filter = Qstr(f"NOT n.{parameter_name} ENDS WITH '{property_value}'")
 
                 elif action == "contains":
                     self.filter = Qstr(f"n.{parameter_name} CONTAINS '{property_value}'")
 
+                elif action == "not_contains":
+                    self.filter = Qstr(f"NOT n.{parameter_name} CONTAINS '{property_value}'")
+
                 elif action == "regex":
                     self.filter = Qstr(f"n.{parameter_name} =~ '{property_value}'")
+
+                elif action == "not_regex":
+                    self.filter = Qstr(f"NOT n.{parameter_name} =~ '{property_value}'")
 
                 elif action == "exact":
                     if isinstance(property_value, bool) or isinstance(property_value, int) or isinstance(property_value, list):
                         self.filter = Qstr(f"n.{parameter_name} = {property_value}")
 
                     elif isinstance(property_value, datetime.datetime):
-                        self.filter = Qstr(f"n.{parameter_name} = datetime('{property_value}')")
+                        self.filter = Qstr(f"n.{parameter_name} = datetime('{str(property_value).replace(' ', 'T')}')")
 
                     elif isinstance(property_value, datetime.date):
                         self.filter = Qstr(f"n.{parameter_name} = date('{property_value}')")
@@ -123,25 +135,56 @@ class Q:
                     else:
                         self.filter = Qstr(f"n.{parameter_name} = '{property_value}'")
 
+                elif action == "not_exact":
+                    if isinstance(property_value, bool) or isinstance(property_value, int) or isinstance(property_value, list):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = {property_value}")
+
+                    elif isinstance(property_value, datetime.datetime):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = datetime('{str(property_value).replace(' ', 'T')}')")
+
+                    elif isinstance(property_value, datetime.date):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = date('{property_value}')")
+
+                    elif isinstance(property_value, datetime.time):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = time('{property_value}')")
+
+                    elif isinstance(property_value, str):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = '{property_value}'")
+
+                    else:
+                        self.filter = Qstr(f"NOT n.{parameter_name} = '{property_value}'")
+
                 # Case insensitive structure filters.
                 elif action == "istartswith":
                     self.filter = Qstr(f"n.{parameter_name} =~ '(?i){property_value}(.*)'")
 
+                elif action == "not_istartswith":
+                    self.filter = Qstr(f"NOT n.{parameter_name} =~ '(?i){property_value}(.*)'")
+
                 elif action == "iendswith":
                     self.filter = Qstr(f"n.{parameter_name} =~ '(?i)(.*){property_value}'")
+
+                elif action == "not_iendswith":
+                    self.filter = Qstr(f"NOT n.{parameter_name} =~ '(?i)(.*){property_value}'")
 
                 elif action == "icontains":
                     self.filter = Qstr(f"n.{parameter_name} =~ '(?i)(.*){property_value}(.*)'")
 
+                elif action == "not_icontains":
+                    self.filter = Qstr(f"NOT n.{parameter_name} =~ '(?i)(.*){property_value}(.*)'")
+
                 elif action == "iregex":
                     self.filter = Qstr(f"n.{parameter_name} =~ '(?i){property_value}'")
+
+                elif action == "not_iregex":
+                    self.filter = Qstr(f"NOT n.{parameter_name} =~ '(?i){property_value}'")
 
                 elif action == "iexact":
                     if isinstance(property_value, bool) or isinstance(property_value, int) or isinstance(property_value, list):
                         self.filter = Qstr(f"n.{parameter_name} = {property_value}")
 
                     elif isinstance(property_value, datetime.datetime):
-                        self.filter = Qstr(f"n.{parameter_name} = datetime('{property_value}')")
+                        self.filter = Qstr(f"n.{parameter_name} = datetime('{str(property_value).replace(' ', 'T')}')")
 
                     elif isinstance(property_value, datetime.date):
                         self.filter = Qstr(f"n.{parameter_name} = date('{property_value}')")
@@ -151,6 +194,25 @@ class Q:
 
                     elif isinstance(property_value, str):
                         self.filter = Qstr(f"n.{parameter_name} =~ '(?i){property_value}'")
+
+                    else:
+                        self.filter = Qstr(f"n.{parameter_name} =~ '(?i){property_value}'")
+
+                elif action == "not_iexact":
+                    if isinstance(property_value, bool) or isinstance(property_value, int) or isinstance(property_value, list):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = {property_value}")
+
+                    elif isinstance(property_value, datetime.datetime):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = datetime('{str(property_value).replace(' ', 'T')}')")
+
+                    elif isinstance(property_value, datetime.date):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = date('{property_value}')")
+
+                    elif isinstance(property_value, datetime.time):
+                        self.filter = Qstr(f"NOT n.{parameter_name} = time('{property_value}')")
+
+                    elif isinstance(property_value, str):
+                        self.filter = Qstr(f"NOT n.{parameter_name} =~ '(?i){property_value}'")
 
                     else:
                         self.filter = Qstr(f"n.{parameter_name} =~ '(?i){property_value}'")
@@ -161,7 +223,7 @@ class Q:
                         self.filter = Qstr(f"n.{parameter_name} < {property_value}")
 
                     elif isinstance(property_value, datetime.datetime):
-                        self.filter = Qstr(f"n.{parameter_name} < datetime('{property_value}')")
+                        self.filter = Qstr(f"n.{parameter_name} < datetime('{str(property_value).replace(' ', 'T')}')")
 
                     elif isinstance(property_value, datetime.date):
                         self.filter = Qstr(f"n.{parameter_name} < date('{property_value}')")
@@ -174,7 +236,7 @@ class Q:
                         self.filter = Qstr(f"n.{parameter_name} > {property_value}")
 
                     elif isinstance(property_value, datetime.datetime):
-                        self.filter = Qstr(f"n.{parameter_name} > datetime('{property_value}')")
+                        self.filter = Qstr(f"n.{parameter_name} > datetime('{str(property_value).replace(' ', 'T')}')")
 
                     elif isinstance(property_value, datetime.date):
                         self.filter = Qstr(f"n.{parameter_name} > date('{property_value}')")
@@ -187,7 +249,7 @@ class Q:
                         self.filter = Qstr(f"n.{parameter_name} <= {property_value}")
 
                     elif isinstance(property_value, datetime.datetime):
-                        self.filter = Qstr(f"n.{parameter_name} <= datetime('{property_value}')")
+                        self.filter = Qstr(f"n.{parameter_name} <= datetime('{str(property_value).replace(' ', 'T')}')")
 
                     elif isinstance(property_value, datetime.date):
                         self.filter = Qstr(f"n.{parameter_name} <= date('{property_value}')")
@@ -200,7 +262,7 @@ class Q:
                         self.filter = Qstr(f"n.{parameter_name} >= {property_value}")
 
                     elif isinstance(property_value, datetime.datetime):
-                        self.filter = Qstr(f"n.{parameter_name} >= datetime('{property_value}')")
+                        self.filter = Qstr(f"n.{parameter_name} >= datetime('{str(property_value).replace(' ', 'T')}')")
 
                     elif isinstance(property_value, datetime.date):
                         self.filter = Qstr(f"n.{parameter_name} >= date('{property_value}')")
