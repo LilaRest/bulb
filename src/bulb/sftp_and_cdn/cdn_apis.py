@@ -18,18 +18,21 @@ class CDN77:
         :param request_number: The current request number (user for console printing).
         :return: It returns the response of the CDN77 API.
         """
-        url = "https://api.cdn77.com/v2.0/data/purge"
+        url = "https://api.cdn77.com/v3/cdn/%s/job/purge" % str(settings.BULB_CDN77_RESOURCE_ID)
 
-        data = {
-            "login": settings.BULB_CDN77_LOGIN,
-            "passwd": settings.BULB_CDN77_API_KEY,
-            "cdn_id": int(settings.BULB_CDN77_RESOURCE_ID),
-            "url[]": paths_list
+        headers = {
+            "Authorization": "Bearer %s" % str(settings.BULB_CDN77_API_KEY),
+            "Content-Type": "application/json",
         }
+
+        data = json.dumps({
+            "paths": paths_list
+        })
 
         print(f"\nAPI PURGE RESPONSE {'n° ' + str(request_number) if request_number is not None else ''}:\n")
 
         purge_response = requests.post(url=url,
+                                       headers=headers,
                                        data=data)
 
         for key, value in json.loads(purge_response.content).items():

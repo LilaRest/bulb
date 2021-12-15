@@ -520,7 +520,6 @@ def set_bulb_settings_on(root_settings):
     # CDN77:
     root_settings['BULB_USE_CDN77'] = False
 
-    root_settings['BULB_CDN77_LOGIN'] = None
 
     root_settings['BULB_CDN77_API_KEY'] = None
 
