@@ -228,8 +228,6 @@ BULB_SRC_BUNDLES_USE_WEBPACK_POLYFILL = False
 # CDN77:
 BULB_USE_CDN77 = False
 
-BULB_CDN77_LOGIN = None
-
 BULB_CDN77_API_KEY = None
 
 BULB_CDN77_RESOURCE_ID = None  # See : https://client.cdn77.com/support/api/version/2.0/cdn-resource#List
