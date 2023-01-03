@@ -1,15 +1,17 @@
-### You can find the full documentation on ReadTheDocs [here](https://bulb.readthedocs.io/en/latest/).
+<hr>
 
----
+> :warning: **This project is archived since Nov, 2021 and I haven't planned to maintain it again it the future. Technologies have evolved and Python is almost not used anymore to build websites' logic.**
 
-<br/>
-<br/>
+<hr>
+<br>
 
-# Presentation :
-<br/>
+<div align="center">
+    <h1>Bulb</h1>
+    <p>Neo4j integration for Django and a toolkit to deploy consequent websites </p>
+    <img src="https://bulb.readthedocs.io/en/latest/img/cropped_and_compressed_logo.jpg" alt="cropped_and_compressed_logo" width="200"/>
+    <h3>Full documentation can be found on ReadTheDocs <a href="https://bulb.readthedocs.io/en/latest/" target="_blank">here</a></h3>
+</div>
 
-![cropped_and_compressed_logo](https://bulb.readthedocs.io/en/latest/img/cropped_and_compressed_logo.jpg)
-<br/>
 <br/>
 
 The **bulb** package extends the **_Django_** framework to make it compatible with the **_Neo4j_** databases, and provides much more tools to deploy consequent websites.
@@ -25,8 +27,9 @@ Two other solutions already exist to use **Django** with **Neo4j**, but they eac
 Then, and to a lesser extent than **neomodel**, we have rewrite the Django's _'models'_ , to make them _'node_models'_. *bulb*'s node_models are a bit different than the original Django's models, but let you more flexibility. S
 
 Look at this comparison chart, and make the better choice for your needs :
+<div align="center">
 
-| | [**bulb**](https://github.com/LilaRest/bulb) | [**neomodel**](https://github.com/neo4j-contrib/neomodel) | [**neo4django**](https://github.com/scholrly/neo4django) |
+| | [**bulb**](https://github.com/LilaRest/bulb) | [**neomodel**](https://github.com/neo4j-contrib/neomodel) | [**neo4django**](https://github.com/scholrly/neo4django) |
 |:--------------:|:------------:|:--------------:|:------------:|
 | Python 2.X support | ❌ | ✅ | ✅ |
 | Python 3.X support | ✅ | ✅ | ❌ |
@@ -56,6 +59,7 @@ Look at this comparison chart, and make the better choice for your needs :
 | Polyfill integration | ✅ | ❌ | ❌ |
 | Some front-end tools | ✅ | ❌ | ❌ |
 
+</div>
 To conclude, if you absolutely want exactly same models' structure than Django or if you have to make compatible an already existing project with Neo4j (and if you don't need neither sessions, nor authentication, nor administration), you should use [**neomodel**](https://github.com/neo4j-contrib/neomodel).
 For the other cases, check this documentation :)
 
